@@ -35,7 +35,7 @@ public class UserController {
         return userRepository.findByUserStatus(UserStatus.PENDING);
     }
 
-    @PostMapping("/admin/approve/{id}")
+    @PostMapping("/approveUser/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> approveUser(@PathVariable Long id) {
 

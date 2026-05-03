@@ -24,14 +24,16 @@ public class BookService {
     private final StudentRepository studentRepository;
     private final BorrowRepository borrowRepository;
     private final FineRepository fineRepository;
+    private final FIneService fineService;
 
     public BookService(BookRepository bookRepository,
-                       StudentRepository studentRepository, BorrowRepository borrowRepository, FineRepository fineRepository) {
+                       StudentRepository studentRepository, BorrowRepository borrowRepository, FineRepository fineRepository, FIneService fineService) {
 
         this.bookRepository = bookRepository;
         this.studentRepository = studentRepository;
         this.borrowRepository = borrowRepository;
         this.fineRepository = fineRepository;
+        this.fineService = fineService;
     }
 
     public Book borrowBook(Long id, Authentication authentication) {
@@ -201,12 +203,26 @@ public class BookService {
 
         LocalDate today = LocalDate.now();
 
-        // ❌ Rule 1: Cannot renew if already returned
+        //Calculating fine for student
+        double applicableFine = 0.0;
+        List<BorrowRecord> booksBorrowed = borrowRepository.findByStudentAndReturnDateIsNull(student);
+
+//        for (BorrowRecord borrow : booksBorrowed) {
+//            if (borrow.getDueDate().isBefore(today)) {
+//                long daysBetween = ChronoUnit.DAYS.between(today, borrow.getDueDate());
+//                applicableFine = applicableFine + 5 * daysBetween;
+//            }
+//        }
+
+        fineService.generateFineIfLate(booksBorrowed);
+
+
+        // Cannot renew if already returned
         if (record.getReturnDate() != null) {
             throw new RuntimeException("Book already returned");
         }
 
-        // ❌ Rule 2: Cannot renew if overdue AND fine not paid
+        //  Cannot renew if overdue AND fine not paid
         if (today.isAfter(record.getDueDate())) {
 
             List<Fine> fines = fineRepository.findByStudent(student);
@@ -226,7 +242,7 @@ public class BookService {
             }
         }
 
-        // ❌ Rule 3: Limit renew count (optional)
+        // Limit renew count (optional)
         // (add field in BorrowRecord: int renewCount)
         // if (record.getRenewCount() >= 2) throw error;
 
@@ -234,9 +250,9 @@ public class BookService {
             throw new RuntimeException("Cannot renew more than 2 times");
         }
 
-        // ✅ Extend due date by 7 days
+        // Extend due date by 7 days
         record.setDueDate(record.getDueDate().plusDays(7));
-
+        record.setRenewCount(record.getRenewCount() + 1);
         borrowRepository.save(record);
     }
 

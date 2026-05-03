@@ -4,9 +4,11 @@ import com.sgdbf.studentmanagement.poc.entity.Student;
 import com.sgdbf.studentmanagement.poc.entity.User;
 import com.sgdbf.studentmanagement.poc.enums.UserStatus;
 import com.sgdbf.studentmanagement.poc.repository.StudentRepository;
+import com.sgdbf.studentmanagement.poc.repository.UserRepository;
 import com.sgdbf.studentmanagement.poc.service.StudentService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,34 +17,38 @@ import java.util.List;
 @RequestMapping("/students")
 @CrossOrigin(origins = "http://localhost:4200")
 public class StudentController {
-    private final StudentService service;
+    private final StudentService studentService;
     private final StudentRepository studentRepository;
+    private final UserRepository userRepository;
 
-    public StudentController(StudentService service, StudentRepository studentRepository) {
-        this.service = service;
+    public StudentController(StudentService studentService, StudentRepository studentRepository, UserRepository userRepository) {
+        this.studentService = studentService;
         this.studentRepository = studentRepository;
+        this.userRepository = userRepository;
     }
 
     @PreAuthorize("hasAnyRole('ADMIN','LIBRARIAN')")
     @GetMapping
     public List<Student> getAllStudent() {
-        return service.getAll();
+        return studentService.getAll();
     }
 
     @PreAuthorize("hasAnyRole('ADMIN','LIBRARIAN','STUDENT')")
     @PostMapping("/signup")
     public Student addStudent(@RequestBody Student student) {
         student.setUserStatus(UserStatus.PENDING);
-        return service.save(student);
+        return studentService.save(student);
     }
 
     @PostMapping("/approveStudent/{id}")
     @PreAuthorize("hasAnyRole('ADMIN','LIBRARIAN')")
     public ResponseEntity<?> approveStudent(@PathVariable Long id) {
-        Student student = service.findStudentById(id);
+        Student student = studentService.findStudentById(id);
         if (student != null) {
             student.setUserStatus(UserStatus.APPROVED);
             studentRepository.save(student);
+            student.getUser().setUserStatus(UserStatus.APPROVED);
+            userRepository.save(student.getUser());
         } else {
             throw new RuntimeException("Student not found");
         }
@@ -58,6 +64,16 @@ public class StudentController {
     @PreAuthorize("hasAnyRole('ADMIN','STUDENT','LIBRARIAN')")
     @DeleteMapping("/{id}")
     public void deleteStudent(@PathVariable Long id) {
-        service.delete(id);
+        studentService.delete(id);
+    }
+
+    @PutMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN','LIBRARIAN')")
+    public ResponseEntity<?> updateStudent(@PathVariable Long id,
+                                           @RequestBody Student student,
+                                           Authentication authentication) {
+
+        studentService.updateStudent(id, student, authentication);
+        return ResponseEntity.ok("Student updated");
     }
 }

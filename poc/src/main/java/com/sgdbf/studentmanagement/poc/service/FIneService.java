@@ -105,52 +105,57 @@ public class FIneService {
         return summary;
     }
 
-    public void refundFine(Long fineId, double amount) {
 
-        Fine fine = fineRepository.findById(fineId)
-                .orElseThrow(() -> new RuntimeException("Fine not found"));
+//    public void generateFineIfLate(List<BorrowRecord> record) {
+//
+//        if (record.getReturnDate() == null) return;
+//
+//        if (record.getReturnDate().isAfter(record.getDueDate())) {
+//
+//            long daysLate = ChronoUnit.DAYS.between(
+//                    record.getDueDate(),
+//                    record.getReturnDate()
+//            );
+//
+//            double fineAmount = daysLate * 10;
+//
+//            Fine fine = new Fine();
+//            fine.setStudent(record.getStudent());
+//            fine.setBorrowRecord(record);
+//            fine.setAmount(fineAmount);
+//            fine.setPaidAmount(0);
+//            fine.setPaid(false);
+//            fine.setLastPaymentDate(null);
+//
+//            fineRepository.save(fine);
+//        }
+//    }
 
-        if (amount <= 0) {
-            throw new RuntimeException("Invalid refund amount");
-        }
+    public void generateFineIfLate(List<BorrowRecord> records) {
 
-        if (amount > fine.getPaidAmount()) {
-            throw new RuntimeException("Refund exceeds paid amount");
-        }
+        for (BorrowRecord record : records) {
 
-        fine.setPaidAmount(fine.getPaidAmount() - amount);
+            if (record.getReturnDate() == null) continue;
 
-        if (fine.getPaidAmount() < fine.getAmount()) {
-            fine.setPaid(false);
-        }
+            if (record.getReturnDate().isAfter(record.getDueDate())) {
 
-        fine.setLastPaymentDate(LocalDate.now());
+                long daysLate = ChronoUnit.DAYS.between(
+                        record.getDueDate(),
+                        record.getReturnDate()
+                );
 
-        fineRepository.save(fine);
-    }
+                double fineAmount = daysLate * 10;
 
-    public void generateFineIfLate(BorrowRecord record) {
+                Fine fine = new Fine();
+                fine.setStudent(record.getStudent());
+                fine.setBorrowRecord(record);
+                fine.setAmount(fineAmount);
+                fine.setPaidAmount(0);
+                fine.setPaid(false);
+                fine.setLastPaymentDate(null);
 
-        if (record.getReturnDate() == null) return;
-
-        if (record.getReturnDate().isAfter(record.getDueDate())) {
-
-            long daysLate = ChronoUnit.DAYS.between(
-                    record.getDueDate(),
-                    record.getReturnDate()
-            );
-
-            double fineAmount = daysLate * 10;
-
-            Fine fine = new Fine();
-            fine.setStudent(record.getStudent());
-            fine.setBorrowRecord(record);
-            fine.setAmount(fineAmount);
-            fine.setPaidAmount(0);
-            fine.setPaid(false);
-            fine.setLastPaymentDate(null);
-
-            fineRepository.save(fine);
+                fineRepository.save(fine);
+            }
         }
     }
 

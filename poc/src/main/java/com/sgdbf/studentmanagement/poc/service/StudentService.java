@@ -6,6 +6,7 @@ import com.sgdbf.studentmanagement.poc.enums.Role;
 import com.sgdbf.studentmanagement.poc.enums.UserStatus;
 import com.sgdbf.studentmanagement.poc.repository.StudentRepository;
 import com.sgdbf.studentmanagement.poc.repository.UserRepository;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -43,6 +44,7 @@ public class StudentService {
         }
 
         // ✅ Save student first
+        student.setPassword(encoder.encode(student.getPassword()));
         Student savedStudent = studentRepository.save(student);
 
         // ✅ Create User automatically
@@ -66,5 +68,35 @@ public class StudentService {
 
     public Student findStudentById(Long id) {
         return studentRepository.findById(id).orElse(null);
+    }
+
+    public Student updateStudent(Long id, Student updatedStudent, Authentication authentication) {
+
+        Student existing = studentRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Student not found"));
+
+        // ✅ Update only if value is present
+        if (updatedStudent.getFirstName() != null) {
+            existing.setFirstName(updatedStudent.getFirstName());
+        }
+
+        if (updatedStudent.getLastName() != null) {
+            existing.setLastName(updatedStudent.getLastName());
+        }
+
+        if (updatedStudent.getEmail() != null) {
+            existing.setEmail(updatedStudent.getEmail());
+        }
+
+        if (updatedStudent.getUsername() != null) {
+            existing.setUsername(updatedStudent.getUsername());
+        }
+
+        // ✅ Password update (only if provided)
+        if (updatedStudent.getPassword() != null && !updatedStudent.getPassword().isEmpty()) {
+            existing.setPassword(encoder.encode(updatedStudent.getPassword()));
+        }
+
+        return studentRepository.save(existing);
     }
 }
