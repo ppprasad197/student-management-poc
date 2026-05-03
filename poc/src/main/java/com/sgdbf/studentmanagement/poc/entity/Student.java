@@ -1,5 +1,6 @@
 package com.sgdbf.studentmanagement.poc.entity;
 
+import com.sgdbf.studentmanagement.poc.enums.UserStatus;
 import jakarta.persistence.*;
 
 @Entity
@@ -29,10 +30,13 @@ public class Student {
     @OneToOne(mappedBy = "student", cascade = CascadeType.ALL)
     private User user;
 
+    @Enumerated(EnumType.STRING)
+    private UserStatus userStatus;
+
     public Student() {
     }
 
-    public Student(Long id, String firstName, String lastName, String email, String username, String password, String studentId, User user) {
+    public Student(Long id, String firstName, String lastName, String email, String username, String password, String studentId, User user, UserStatus userStatus) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -41,6 +45,7 @@ public class Student {
         this.password = password;
         this.studentId = studentId;
         this.user = user;
+        this.userStatus = userStatus;
     }
 
     public Long getId() {
@@ -105,5 +110,13 @@ public class Student {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public UserStatus getUserStatus() {
+        return userStatus;
+    }
+
+    public void setUserStatus(UserStatus userStatus) {
+        this.userStatus = userStatus;
     }
 }

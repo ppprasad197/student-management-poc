@@ -19,7 +19,6 @@ public class BookController {
         this.bookService = bookService;
     }
 
-
     @PreAuthorize("hasAnyRole('ADMIN','STUDENT','LIBRARIAN')")
     @GetMapping
     public List<Book> getAllBooks() {

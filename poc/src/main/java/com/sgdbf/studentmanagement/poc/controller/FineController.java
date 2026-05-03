@@ -29,23 +29,23 @@ public class FineController {
         return ResponseEntity.ok("Fine payment successful");
     }
 
-    // ✅ Get all fines
+
     @GetMapping("/my")
     public List<Fine> getMyFines(Authentication authentication) {
         return fineService.getMyFines(authentication);
     }
 
-    // ✅ Summary
+
     @GetMapping("/summary")
     public Map<String, Double> getSummary(Authentication authentication) {
         return fineService.getFineSummary(authentication);
     }
 
-    @PostMapping("/refund/{id}")
-    public ResponseEntity<String> refund(@PathVariable Long id,
-                                         @RequestParam double amount) {
-        fineService.refundFine(id, amount);
-        return ResponseEntity.ok("Refund successful");
-    }
+//    @PostMapping("/refund/{id}")
+//    public ResponseEntity<String> refund(@PathVariable Long id,
+//                                         @RequestParam double amount) {
+//        fineService.refundFine(id, amount);
+//        return ResponseEntity.ok("Refund successful");
+//    }
 }
 

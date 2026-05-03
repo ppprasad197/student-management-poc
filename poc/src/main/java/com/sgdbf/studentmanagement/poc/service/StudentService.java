@@ -3,6 +3,7 @@ package com.sgdbf.studentmanagement.poc.service;
 import com.sgdbf.studentmanagement.poc.entity.Student;
 import com.sgdbf.studentmanagement.poc.entity.User;
 import com.sgdbf.studentmanagement.poc.enums.Role;
+import com.sgdbf.studentmanagement.poc.enums.UserStatus;
 import com.sgdbf.studentmanagement.poc.repository.StudentRepository;
 import com.sgdbf.studentmanagement.poc.repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -51,6 +52,7 @@ public class StudentService {
         user.setUserName(student.getUsername());
         user.setPassword(encoder.encode(student.getPassword()));
         user.setRole(Role.STUDENT);
+        user.setUserStatus(UserStatus.PENDING);
         user.setStudent(savedStudent);
 
         userRepository.save(user);
@@ -62,4 +64,7 @@ public class StudentService {
         studentRepository.deleteById(id);
     }
 
+    public Student findStudentById(Long id) {
+        return studentRepository.findById(id).orElse(null);
+    }
 }
