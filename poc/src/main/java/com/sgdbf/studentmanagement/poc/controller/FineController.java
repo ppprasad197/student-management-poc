@@ -1,10 +1,9 @@
 package com.sgdbf.studentmanagement.poc.controller;
 
 import com.sgdbf.studentmanagement.poc.entity.Fine;
-import com.sgdbf.studentmanagement.poc.repository.FineRepository;
-import com.sgdbf.studentmanagement.poc.service.FIneService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.sgdbf.studentmanagement.poc.service.FineService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,27 +13,28 @@ import java.util.Map;
 @RestController
 @RequestMapping("/fine")
 public class FineController {
-    private final FIneService fineService;
+    private final FineService fineService;
 
-    public FineController(FIneService fineService) {
+    public FineController(FineService fineService) {
         this.fineService = fineService;
     }
 
-    @PostMapping("/pay-fine")
-    public ResponseEntity<String> payFine(@RequestBody double amount,
+    @PreAuthorize("hasAnyRole('STUDENT')")
+    @PostMapping("/pay")
+    public ResponseEntity<String> payFine(@RequestBody Fine fine,
                                           Authentication authentication) {
 
-        fineService.payFine(amount, authentication);
+        fineService.payFine(fine.getAmount(), authentication);
 
         return ResponseEntity.ok("Fine payment successful");
     }
 
 
-    @GetMapping("/my")
+    @PreAuthorize("hasAnyRole('STUDENT')")
+    @GetMapping("/myFine")
     public List<Fine> getMyFines(Authentication authentication) {
         return fineService.getMyFines(authentication);
     }
-
 
     @GetMapping("/summary")
     public Map<String, Double> getSummary(Authentication authentication) {

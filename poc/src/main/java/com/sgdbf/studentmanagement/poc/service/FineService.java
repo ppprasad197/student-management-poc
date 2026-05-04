@@ -17,12 +17,12 @@ import java.util.List;
 import java.util.Map;
 
 @Service
-public class FIneService {
+public class FineService {
     private final FineRepository fineRepository;
     private final StudentRepository studentRepository;
     private final UserRepository userRepository;
 
-    public FIneService(FineRepository fineRepository, StudentRepository studentRepository, UserRepository userRepository) {
+    public FineService(FineRepository fineRepository, StudentRepository studentRepository, UserRepository userRepository) {
         this.fineRepository = fineRepository;
         this.studentRepository = studentRepository;
         this.userRepository = userRepository;
@@ -32,13 +32,12 @@ public class FIneService {
 
         String username = authentication.getName();
 
-        User user = userRepository.findByUserName(username)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+        User user = getUser(username);
 
-        Student student = user.getStudent();
+//        Student student = user.getStudent();
 
-        List<Fine> fines = fineRepository.findByStudentAndPaidFalse(student);
-
+//        List<Fine> fines = fineRepository.findByStudentAndPaidFalse(student);
+        List<Fine> fines = getMyFines(authentication);
         for (Fine fine : fines) {
 
             double remaining = fine.getAmount() - fine.getPaidAmount();
@@ -57,9 +56,7 @@ public class FIneService {
                 fine.setLastPaymentDate(LocalDate.now());
                 amount = 0;
             }
-
             fineRepository.save(fine);
-
             if (amount == 0) break;
         }
 
@@ -68,22 +65,33 @@ public class FIneService {
         }
     }
 
+    public User getUser(String username) {
+        return userRepository.findByUserName(username)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+    }
+
     public List<Fine> getMyFines(Authentication authentication) {
 
         String username = authentication.getName();
+        System.out.println(username);
 
-        User user = userRepository.findByUserName(username)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+        User user = getUser(username);
 
-        return fineRepository.findByStudent(user.getStudent());
+        List<Fine> myFines = fineRepository.findByStudentAndPaid(user.getStudent(), false);
+
+        double amount = 0;
+        for (Fine fine : myFines) {
+            amount += fine.getAmount() - fine.getPaidAmount();
+        }
+        System.out.println(amount);
+        return myFines;
     }
 
     public Map<String, Double> getFineSummary(Authentication authentication) {
 
         String username = authentication.getName();
 
-        User user = userRepository.findByUserName(username)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+        User user = getUser(username);
 
         List<Fine> fines = fineRepository.findByStudent(user.getStudent());
 
@@ -131,21 +139,18 @@ public class FIneService {
 //        }
 //    }
 
-    public void generateFineIfLate(List<BorrowRecord> records) {
+    public double generateFineIfLate(List<BorrowRecord> records) {
+
+        LocalDate today = LocalDate.now();
+        double totalFineAmount = 0;
 
         for (BorrowRecord record : records) {
-
-            if (record.getReturnDate() == null) continue;
-
-            if (record.getReturnDate().isAfter(record.getDueDate())) {
-
-                long daysLate = ChronoUnit.DAYS.between(
+            if (record.getReturnDate() == null && today.isAfter(record.getDueDate())) {
+                double daysLate = ChronoUnit.DAYS.between(
                         record.getDueDate(),
-                        record.getReturnDate()
+                        today
                 );
-
                 double fineAmount = daysLate * 10;
-
                 Fine fine = new Fine();
                 fine.setStudent(record.getStudent());
                 fine.setBorrowRecord(record);
@@ -155,25 +160,28 @@ public class FIneService {
                 fine.setLastPaymentDate(null);
 
                 fineRepository.save(fine);
+                totalFineAmount += fineAmount;
             }
         }
+
+        return totalFineAmount;
     }
 
-    public boolean canStudentBorrow(Student student) {
-
-        List<Fine> fines = fineRepository.findByStudent(student);
-
-        double total = 0;
-        double paid = 0;
-
-        for (Fine fine : fines) {
-            total += fine.getAmount();
-            paid += fine.getPaidAmount();
-        }
-
-        if (total == 0) return true;
-
-        return paid >= (total * 0.5); // at least 50% paid
-    }
+//    public boolean canStudentBorrow(Student student) {
+//
+//        List<Fine> fines = fineRepository.findByStudent(student);
+//
+//        double total = 0;
+//        double paid = 0;
+//
+//        for (Fine fine : fines) {
+//            total += fine.getAmount();
+//            paid += fine.getPaidAmount();
+//        }
+//
+//        if (total == 0) return true;
+//
+//        return paid >= (total * 0.5); // at least 50% paid
+//    }
 
 }

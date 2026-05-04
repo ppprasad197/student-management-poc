@@ -50,7 +50,7 @@ public class BookController {
     }
 
     @PreAuthorize("hasAnyRole('STUDENT')")
-    @PostMapping("/{id}")
+    @PostMapping("/borrow/{id}")
     public ResponseEntity<?> borrowBook(@PathVariable Long id, Authentication authentication) {
         bookService.borrowBook(id, authentication);
         return ResponseEntity.ok("Book borrowed successfully");
@@ -60,9 +60,7 @@ public class BookController {
     @PreAuthorize("hasRole('STUDENT')")
     public ResponseEntity<?> returnBook(@PathVariable Long id,
                                         Authentication authentication) {
-
         bookService.returnBook(id, authentication);
-
         return ResponseEntity.ok("Book returned successfully");
     }
 

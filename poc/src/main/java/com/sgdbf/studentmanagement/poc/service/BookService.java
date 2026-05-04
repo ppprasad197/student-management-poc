@@ -24,10 +24,10 @@ public class BookService {
     private final StudentRepository studentRepository;
     private final BorrowRepository borrowRepository;
     private final FineRepository fineRepository;
-    private final FIneService fineService;
+    private final FineService fineService;
 
     public BookService(BookRepository bookRepository,
-                       StudentRepository studentRepository, BorrowRepository borrowRepository, FineRepository fineRepository, FIneService fineService) {
+                       StudentRepository studentRepository, BorrowRepository borrowRepository, FineRepository fineRepository, FineService fineService) {
 
         this.bookRepository = bookRepository;
         this.studentRepository = studentRepository;
@@ -41,22 +41,21 @@ public class BookService {
         String userName = authentication.getName();
         if (book != null) {
             int quantity = book.getQuantity();
-            if (quantity > 1) {
+            if (quantity >= 1) {
                 quantity = quantity - 1;
                 updateQuantity(id, quantity);
-            }
-            updateBorrowRecord(quantity, id, userName);
+            } else throw new RuntimeException("Book is not available");
+            updateBorrowRecord(quantity, id, userName, authentication);
         }
         System.out.println("Logged in user's username : " + userName);
         return book;
     }
 
-    public void updateBorrowRecord(int quantity, Long bookId, String userName) {
+    public void updateBorrowRecord(int quantity, Long bookId, String userName, Authentication authentication) {
 
-        Student student = studentRepository.findByUsername(userName)
-                .orElseThrow(() -> new RuntimeException("Student not found"));
+        Student student = getStudent(userName);
 
-        if (canStudentBorrowNewBook(student)) {
+        if (canStudentBorrowNewBook(student, authentication)) {
             Book book = bookRepository.findById(bookId)
                     .orElseThrow(() -> new RuntimeException("Book not found"));
 
@@ -69,20 +68,25 @@ public class BookService {
             borrowRecord.setReturnDate(null); // not returned yet
 
             borrowRepository.save(borrowRecord);
-        }
+        } else throw new RuntimeException("You cannot borrow book");
     }
 
-    public boolean canStudentBorrowNewBook(Student student) {
+    public Student getStudent(String username) {
+        return studentRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("Student not found"));
+    }
+
+    public boolean canStudentBorrowNewBook(Student student, Authentication authentication) {
 
         // ✅ Rule 1: Max 3 active books
         int activeBooks = borrowRepository.countByStudentAndReturnDateIsNull(student);
 
         if (activeBooks >= 3) {
+            System.out.println("Maximum Books has been borrowed");
             return false;
         }
 
-        // ✅ Rule 2: Fine check
-        List<Fine> fines = fineRepository.findByStudent(student);
+        List<Fine> fines = fineService.getMyFines(authentication);
 
         double total = 0.0;
         double paid = 0.0;
@@ -98,8 +102,7 @@ public class BookService {
         }
 
         // ✅ Apply rule AFTER loop
-        if (total > 0 && paid < (total * 0.5)) {
-            System.out.println("You have to pay : " + total * .5 + " Rs");
+        if (total > 0) {
             return false;
         }
 
@@ -118,17 +121,13 @@ public class BookService {
         return bookRepository.findAll();
     }
 
-    // ==============================
-    // 📚 GET BY ID
-    // ==============================
+
     public Book getById(Long id) {
         return bookRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Book not found"));
     }
 
-    // ==============================
-    // 📚 ADD BOOK
-    // ==============================
+
     public Book save(Book book) {
         if (book.getQuantity() < 0) {
             throw new RuntimeException("Invalid quantity");
@@ -136,9 +135,7 @@ public class BookService {
         return bookRepository.save(book);
     }
 
-    // ==============================
-    // 📚 UPDATE BOOK
-    // ==============================
+
     public Book update(Long id, Book updatedBook) {
         Book book = getById(id);
 
@@ -148,9 +145,7 @@ public class BookService {
         return bookRepository.save(book);
     }
 
-    // ==============================
-    // 📚 DELETE BOOK
-    // ==============================
+
     public void delete(Long id) {
         Book book = getById(id);
         bookRepository.delete(book);
@@ -160,8 +155,7 @@ public class BookService {
 
         String username = authentication.getName();
 
-        Student student = studentRepository.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("Student not found"));
+        Student student = getStudent(username);
 
         BorrowRecord record = borrowRepository
                 .findByStudentAndBookAndReturnDateIsNull(student, getById(bookId))
@@ -194,8 +188,7 @@ public class BookService {
 
         String username = authentication.getName();
 
-        Student student = studentRepository.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("Student not found"));
+        Student student = getStudent(username);
 
         BorrowRecord record = borrowRepository
                 .findByStudentAndBookAndReturnDateIsNull(student, getById(bookId))
@@ -214,8 +207,10 @@ public class BookService {
 //            }
 //        }
 
-        fineService.generateFineIfLate(booksBorrowed);
+        //Generating fine if exceeded due date
+        double fineAmount = fineService.generateFineIfLate(booksBorrowed);
 
+        if (fineAmount > 0) throw new RuntimeException("You have to pay : " + fineAmount + " Rs");
 
         // Cannot renew if already returned
         if (record.getReturnDate() != null) {
@@ -223,24 +218,24 @@ public class BookService {
         }
 
         //  Cannot renew if overdue AND fine not paid
-        if (today.isAfter(record.getDueDate())) {
-
-            List<Fine> fines = fineRepository.findByStudent(student);
-
-            double total = 0;
-            double paid = 0;
-
-            for (Fine fine : fines) {
-                if (!fine.isPaid()) {
-                    total += fine.getAmount();
-                    paid += fine.getPaidAmount();
-                }
-            }
-
-            if (total > 0 && paid < (total * 0.5)) {
-                throw new RuntimeException("Pay at least 50% fine before renewal");
-            }
-        }
+//        if (today.isAfter(record.getDueDate())) {
+//
+//            List<Fine> fines = fineRepository.findByStudent(student);
+//
+//            double total = 0;
+//            double paid = 0;
+//
+//            for (Fine fine : fines) {
+//                if (!fine.isPaid()) {
+//                    total += fine.getAmount();
+//                    paid += fine.getPaidAmount();
+//                }
+//            }
+//
+//            if (total > 0 && paid < (total * 0.5)) {
+//                throw new RuntimeException("Pay at least 50% fine before renewal");
+//            }
+//        }
 
         // Limit renew count (optional)
         // (add field in BorrowRecord: int renewCount)
