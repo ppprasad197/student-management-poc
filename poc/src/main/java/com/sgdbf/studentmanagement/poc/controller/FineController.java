@@ -23,8 +23,8 @@ public class FineController {
     @PostMapping("/pay")
     public ResponseEntity<String> payFine(@RequestBody Fine fine,
                                           Authentication authentication) {
-
-        fineService.payFine(fine.getAmount(), authentication);
+        String username = authentication.getName();
+        fineService.payFine(fine.getAmount(), username);
 
         return ResponseEntity.ok("Fine payment successful");
     }
@@ -32,7 +32,7 @@ public class FineController {
 
     @PreAuthorize("hasAnyRole('STUDENT')")
     @GetMapping("/myFine")
-    public List<Fine> getMyFines(Authentication authentication) {
+    public Map<String, Object> getMyFines(Authentication authentication) {
         return fineService.getMyFines(authentication);
     }
 

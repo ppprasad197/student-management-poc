@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class BookService {
@@ -28,7 +29,6 @@ public class BookService {
 
     public BookService(BookRepository bookRepository,
                        StudentRepository studentRepository, BorrowRepository borrowRepository, FineRepository fineRepository, FineService fineService) {
-
         this.bookRepository = bookRepository;
         this.studentRepository = studentRepository;
         this.borrowRepository = borrowRepository;
@@ -37,38 +37,46 @@ public class BookService {
     }
 
     public Book borrowBook(Long id, Authentication authentication) {
-        Book book = bookRepository.findById(id).orElse(null);
+
         String userName = authentication.getName();
-        if (book != null) {
-            int quantity = book.getQuantity();
-            if (quantity >= 1) {
-                quantity = quantity - 1;
-                updateQuantity(id, quantity);
-            } else throw new RuntimeException("Book is not available");
-            updateBorrowRecord(quantity, id, userName, authentication);
+        Student student = getStudent(userName);
+
+        Book book = bookRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Book not found"));
+
+        // ✅ Step 1: Check availability
+        if (book.getQuantity() <= 0) {
+            throw new RuntimeException("Book is not available");
         }
+
+        // ✅ Step 2: Validate borrow rules FIRST
+        if (!canStudentBorrowNewBook(student, authentication)) {
+            throw new RuntimeException("You cannot borrow book");
+        }
+
+        // ✅ Step 3: Reduce quantity
+        book.setQuantity(book.getQuantity() - 1);
+        bookRepository.save(book);
+
+        // ✅ Step 4: Create borrow record
+        createBorrowRecord(student, book);
+
         System.out.println("Logged in user's username : " + userName);
+
         return book;
     }
 
-    public void updateBorrowRecord(int quantity, Long bookId, String userName, Authentication authentication) {
+    public void createBorrowRecord(Student student, Book book) {
 
-        Student student = getStudent(userName);
+        BorrowRecord borrowRecord = new BorrowRecord();
+        borrowRecord.setStudent(student);
+        borrowRecord.setBook(book);
+        borrowRecord.setIssueDate(LocalDate.now());
+        borrowRecord.setDueDate(LocalDate.now().plusDays(7));
+        borrowRecord.setReturnDate(null);
+        borrowRecord.setRenewCount(0);
 
-        if (canStudentBorrowNewBook(student, authentication)) {
-            Book book = bookRepository.findById(bookId)
-                    .orElseThrow(() -> new RuntimeException("Book not found"));
-
-            BorrowRecord borrowRecord = new BorrowRecord();
-            borrowRecord.setStudent(student);
-            borrowRecord.setBook(book); // only if you added mapping
-
-            borrowRecord.setIssueDate(LocalDate.now());
-            borrowRecord.setDueDate(LocalDate.now().plusDays(7));
-            borrowRecord.setReturnDate(null); // not returned yet
-
-            borrowRepository.save(borrowRecord);
-        } else throw new RuntimeException("You cannot borrow book");
+        borrowRepository.save(borrowRecord);
     }
 
     public Student getStudent(String username) {
@@ -82,27 +90,18 @@ public class BookService {
         int activeBooks = borrowRepository.countByStudentAndReturnDateIsNull(student);
 
         if (activeBooks >= 3) {
-            System.out.println("Maximum Books has been borrowed");
+            System.out.println("Maximum books already borrowed");
             return false;
         }
 
-        List<Fine> fines = fineService.getMyFines(authentication);
+        // ✅ Rule 2: Fine check (use existing method)
+        Map<String, Object> fineData = fineService.getMyFines(authentication);
 
-        double total = 0.0;
-        double paid = 0.0;
+        double totalDue = Double.parseDouble(fineData.get("amount").toString());
 
-        for (Fine fine : fines) {
-
-            if (fine.isPaid()) {
-                continue;
-            }
-
-            total += fine.getAmount();
-            paid += fine.getPaidAmount();
-        }
-
-        // ✅ Apply rule AFTER loop
-        if (total > 0) {
+        // ❌ Block if ANY fine pending
+        if (totalDue > 0) {
+            System.out.println("Pending fine: " + totalDue);
             return false;
         }
 
@@ -145,7 +144,6 @@ public class BookService {
         return bookRepository.save(book);
     }
 
-
     public void delete(Long id) {
         Book book = getById(id);
         bookRepository.delete(book);
@@ -154,32 +152,27 @@ public class BookService {
     public void returnBook(Long bookId, Authentication authentication) {
 
         String username = authentication.getName();
-
         Student student = getStudent(username);
 
-        BorrowRecord record = borrowRepository
-                .findByStudentAndBookAndReturnDateIsNull(student, getById(bookId))
-                .orElseThrow(() -> new RuntimeException("No active borrow found"));
+        // ✅ Step 1: Check fines FIRST
+        Map<String, Object> fineData = fineService.getMyFines(authentication);
+        double totalDue = Double.parseDouble(fineData.get("amount").toString());
 
+        if (totalDue > 0) {
+            throw new RuntimeException("Please clear the pending due: " + totalDue + " Rs");
+        }
+
+        // ✅ Step 2: Fetch borrow record
+        BorrowRecord record = getBorrowRecord(student, bookId);
+
+        // ✅ Step 3: Return book
         record.setReturnDate(LocalDate.now());
 
-        // ✅ Increase quantity
+        // ✅ Step 4: Increase quantity
         Book book = record.getBook();
         book.setQuantity(book.getQuantity() + 1);
 
-        // ✅ Fine calculation
-        if (record.getReturnDate().isAfter(record.getDueDate())) {
-            long daysLate = ChronoUnit.DAYS.between(record.getDueDate(), record.getReturnDate());
-
-            Fine fine = new Fine();
-            fine.setStudent(student);
-            fine.setAmount(daysLate * 5.0);
-            fine.setPaidAmount(0);
-            fine.setPaid(false);
-
-            fineRepository.save(fine);
-        }
-
+        // ✅ Step 5: Save
         borrowRepository.save(record);
         bookRepository.save(book);
     }
@@ -187,68 +180,40 @@ public class BookService {
     public void renewBook(Long bookId, Authentication authentication) {
 
         String username = authentication.getName();
-
         Student student = getStudent(username);
 
-        BorrowRecord record = borrowRepository
-                .findByStudentAndBookAndReturnDateIsNull(student, getById(bookId))
-                .orElseThrow(() -> new RuntimeException("No active borrow found"));
+        BorrowRecord record = getBorrowRecord(student, bookId);
 
         LocalDate today = LocalDate.now();
 
-        //Calculating fine for student
-        double applicableFine = 0.0;
-        List<BorrowRecord> booksBorrowed = borrowRepository.findByStudentAndReturnDateIsNull(student);
+        // ✅ Step 1: Check pending fines
+        Map<String, Object> fineData = fineService.getMyFines(authentication);
+        double totalDue = Double.parseDouble(fineData.get("amount").toString());
 
-//        for (BorrowRecord borrow : booksBorrowed) {
-//            if (borrow.getDueDate().isBefore(today)) {
-//                long daysBetween = ChronoUnit.DAYS.between(today, borrow.getDueDate());
-//                applicableFine = applicableFine + 5 * daysBetween;
-//            }
-//        }
-
-        //Generating fine if exceeded due date
-        double fineAmount = fineService.generateFineIfLate(booksBorrowed);
-
-        if (fineAmount > 0) throw new RuntimeException("You have to pay : " + fineAmount + " Rs");
-
-        // Cannot renew if already returned
-        if (record.getReturnDate() != null) {
-            throw new RuntimeException("Book already returned");
+        if (totalDue > 0) {
+            throw new RuntimeException("Please pay pending fine: " + totalDue + " Rs");
         }
 
-        //  Cannot renew if overdue AND fine not paid
-//        if (today.isAfter(record.getDueDate())) {
-//
-//            List<Fine> fines = fineRepository.findByStudent(student);
-//
-//            double total = 0;
-//            double paid = 0;
-//
-//            for (Fine fine : fines) {
-//                if (!fine.isPaid()) {
-//                    total += fine.getAmount();
-//                    paid += fine.getPaidAmount();
-//                }
-//            }
-//
-//            if (total > 0 && paid < (total * 0.5)) {
-//                throw new RuntimeException("Pay at least 50% fine before renewal");
-//            }
-//        }
+        // ✅ Step 2: Prevent renewal if overdue
+        if (today.isAfter(record.getDueDate())) {
+            throw new RuntimeException("Cannot renew overdue book. Please return and clear fine first and your due is : " + totalDue);
+        }
 
-        // Limit renew count (optional)
-        // (add field in BorrowRecord: int renewCount)
-        // if (record.getRenewCount() >= 2) throw error;
-
+        // ✅ Step 3: Renewal limit
         if (record.getRenewCount() >= 2) {
             throw new RuntimeException("Cannot renew more than 2 times");
         }
 
-        // Extend due date by 7 days
+        // ✅ Step 4: Extend due date
         record.setDueDate(record.getDueDate().plusDays(7));
         record.setRenewCount(record.getRenewCount() + 1);
+
         borrowRepository.save(record);
     }
 
+    public BorrowRecord getBorrowRecord(Student student, Long bookId) {
+        return borrowRepository
+                .findByStudentAndBookAndReturnDateIsNull(student, getById(bookId))
+                .orElseThrow(() -> new RuntimeException("No active borrow found"));
+    }
 }
