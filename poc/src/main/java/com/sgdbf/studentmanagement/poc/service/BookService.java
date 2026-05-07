@@ -1,5 +1,6 @@
 package com.sgdbf.studentmanagement.poc.service;
 
+import com.sgdbf.studentmanagement.poc.dto.FineDTO;
 import com.sgdbf.studentmanagement.poc.entity.Book;
 import com.sgdbf.studentmanagement.poc.entity.BorrowRecord;
 import com.sgdbf.studentmanagement.poc.entity.Fine;
@@ -50,7 +51,7 @@ public class BookService {
         }
 
         // ✅ Step 2: Validate borrow rules FIRST
-        if (!canStudentBorrowNewBook(student, authentication)) {
+        if (!canStudentBorrowNewBook(student, userName)) {
             throw new RuntimeException("You cannot borrow book");
         }
 
@@ -84,7 +85,7 @@ public class BookService {
                 .orElseThrow(() -> new RuntimeException("Student not found"));
     }
 
-    public boolean canStudentBorrowNewBook(Student student, Authentication authentication) {
+    public boolean canStudentBorrowNewBook(Student student, String username) {
 
         // ✅ Rule 1: Max 3 active books
         int activeBooks = borrowRepository.countByStudentAndReturnDateIsNull(student);
@@ -95,9 +96,9 @@ public class BookService {
         }
 
         // ✅ Rule 2: Fine check (use existing method)
-        Map<String, Object> fineData = fineService.getMyFines(authentication);
+        FineDTO fineData = fineService.getMyFines(username);
 
-        double totalDue = Double.parseDouble(fineData.get("amount").toString());
+        double totalDue = fineData.getTotalAmount();
 
         // ❌ Block if ANY fine pending
         if (totalDue > 0) {
@@ -155,8 +156,8 @@ public class BookService {
         Student student = getStudent(username);
 
         // ✅ Step 1: Check fines FIRST
-        Map<String, Object> fineData = fineService.getMyFines(authentication);
-        double totalDue = Double.parseDouble(fineData.get("amount").toString());
+        FineDTO fineData = fineService.getMyFines(username);
+        double totalDue = fineData.getTotalAmount();
 
         if (totalDue > 0) {
             throw new RuntimeException("Please clear the pending due: " + totalDue + " Rs");
@@ -187,8 +188,8 @@ public class BookService {
         LocalDate today = LocalDate.now();
 
         // ✅ Step 1: Check pending fines
-        Map<String, Object> fineData = fineService.getMyFines(authentication);
-        double totalDue = Double.parseDouble(fineData.get("amount").toString());
+        FineDTO fineData = fineService.getMyFines(username);
+        double totalDue = fineData.getTotalAmount();
 
         if (totalDue > 0) {
             throw new RuntimeException("Please pay pending fine: " + totalDue + " Rs");

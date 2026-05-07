@@ -21,20 +21,20 @@ public class Fine {
 
     private double paidAmount;
 
-    private LocalDate lastPaymentDate;
+    private LocalDate paidDate;
 
     private boolean paid;
 
     public Fine() {
     }
 
-    public Fine(Long id, Student student, BorrowRecord borrowRecord, double amount, double paidAmount, LocalDate lastPaymentDate, boolean paid) {
+    public Fine(Long id, Student student, BorrowRecord borrowRecord, double amount, double paidAmount, LocalDate paidDate, boolean paid) {
         this.id = id;
         this.student = student;
         this.borrowRecord = borrowRecord;
         this.amount = amount;
         this.paidAmount = paidAmount;
-        this.lastPaymentDate = lastPaymentDate;
+        this.paidDate = paidDate;
         this.paid = paid;
     }
 
@@ -78,19 +78,19 @@ public class Fine {
         this.paidAmount = paidAmount;
     }
 
-    public LocalDate getLastPaymentDate() {
-        return lastPaymentDate;
-    }
-
-    public void setLastPaymentDate(LocalDate lastPaymentDate) {
-        this.lastPaymentDate = lastPaymentDate;
-    }
-
     public BorrowRecord getBorrowRecord() {
         return borrowRecord;
     }
 
     public void setBorrowRecord(BorrowRecord borrowRecord) {
         this.borrowRecord = borrowRecord;
+    }
+
+    public LocalDate getPaidDate() {
+        return paidDate;
+    }
+
+    public void setPaidDate(LocalDate paidDate) {
+        this.paidDate = paidDate;
     }
 }

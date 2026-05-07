@@ -33,7 +33,7 @@ public class AdminAccountSetup implements ApplicationRunner {
     @Override
     public void run(ApplicationArguments args) throws Exception {
         if (userRepository.findByUserName("admin").isEmpty()) {
-            User admin = new User(1L, "admin", "admin", "admin", passwordEncoder.encode("admin123"), Role.ADMIN, UserStatus.APPROVED, null);
+            User admin = new User(1L, "admin", "admin", "admin@gmail.com", "admin", passwordEncoder.encode("admin123"), Role.ADMIN, UserStatus.APPROVED, null);
             admin.setUserStatus(UserStatus.APPROVED);
             userRepository.save(admin);
         }

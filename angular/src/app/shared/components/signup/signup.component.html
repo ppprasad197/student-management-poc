@@ -1,0 +1,49 @@
+<div class="signup-container">
+    <form class="signup-form">
+        <h2>Create Account</h2>
+        <div class="form-row">
+            <div class="input-group">
+                <label>First Name</label>
+                <input type="text" id="firstName" required>
+            </div>
+            <div class="input-group">
+                <label>Last Name</label>
+                <input type="text" id="lastName" required>
+            </div>
+        </div>
+
+        <div class="input-group">
+            <label>User Name</label>
+            <input type="text" id="userName" required>
+        </div>
+
+        <div class="input-group">
+            <label>Email</label>
+            <input type="text" id="email" required>
+        </div>
+
+        <div class="input-group">
+            <label>Password</label>
+            <input type="text" id="password" required>
+        </div>
+
+        <div class="input-group">
+            <label>Role</label>
+            <select [(ngModel)]="userRole" name="role" id="role">
+                <option value="LIBRARIAN">User</option>
+                <option value="ADMIN">Admin</option>
+                <option value="STUDENT">Student</option>
+            </select>
+        </div>
+
+        @if (userRole === 'STUDENT') {
+        <div class="input-group">
+            <label>Student ID</label>
+            <input type="text" id="studentId" required />
+        </div>
+        }
+
+        <button type="submit" class="signup-btn">Sign Up</button>
+
+    </form>
+</div>

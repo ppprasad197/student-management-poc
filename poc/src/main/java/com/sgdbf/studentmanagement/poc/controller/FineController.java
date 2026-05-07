@@ -1,13 +1,14 @@
 package com.sgdbf.studentmanagement.poc.controller;
 
-import com.sgdbf.studentmanagement.poc.entity.Fine;
+import com.sgdbf.studentmanagement.poc.dto.FineDTO;
+import com.sgdbf.studentmanagement.poc.dto.FinePaymentRequestDTO;
+import com.sgdbf.studentmanagement.poc.dto.FinePaymentResponseDTO;
 import com.sgdbf.studentmanagement.poc.service.FineService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -19,27 +20,29 @@ public class FineController {
         this.fineService = fineService;
     }
 
-    @PreAuthorize("hasAnyRole('STUDENT')")
+    @PreAuthorize("hasRole('STUDENT')")
     @PostMapping("/pay")
-    public ResponseEntity<String> payFine(@RequestBody Fine fine,
-                                          Authentication authentication) {
-        String username = authentication.getName();
-        fineService.payFine(fine.getAmount(), username);
+    public ResponseEntity<FinePaymentResponseDTO> payFine(
+            @RequestBody FinePaymentRequestDTO request,
+            Authentication authentication) {
 
-        return ResponseEntity.ok("Fine payment successful");
+        return ResponseEntity.ok(
+                fineService.payFine(request.getAmount(), authentication.getName())
+        );
     }
 
-
-    @PreAuthorize("hasAnyRole('STUDENT')")
+    @PreAuthorize("hasRole('STUDENT')")
     @GetMapping("/myFine")
-    public Map<String, Object> getMyFines(Authentication authentication) {
-        return fineService.getMyFines(authentication);
+    public ResponseEntity<FineDTO> getMyFines(Authentication authentication) {
+        return ResponseEntity.ok(
+                fineService.getMyFines(authentication.getName())
+        );
     }
 
-    @GetMapping("/summary")
-    public Map<String, Double> getSummary(Authentication authentication) {
-        return fineService.getFineSummary(authentication);
-    }
+//    @GetMapping("/summary")
+//    public Map<String, Double> getSummary(Authentication authentication) {
+//        return fineService.getFineSummary(authentication.getName());
+//    }
 
 //    @PostMapping("/refund/{id}")
 //    public ResponseEntity<String> refund(@PathVariable Long id,
