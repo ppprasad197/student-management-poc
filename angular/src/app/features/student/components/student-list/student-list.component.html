@@ -1,0 +1,57 @@
+<table>
+
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Email</th>
+      <th>Status</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+
+  <tbody>
+
+    @for(student of students | async; track student.id){
+
+      <tr>
+
+        <td>
+          {{ student.firstName }}
+          {{ student.lastName }}
+        </td>
+
+        <td>{{ student.email }}</td>
+
+        <td>{{ student.userStatus }}</td>
+
+        <td>
+
+          <button>
+            View
+          </button>
+
+          <button>
+            Update
+          </button>
+
+          <button
+            (click)="deleteStudent(student.id)">
+            Delete
+          </button>
+
+          @if(student.userStatus === 'PENDING'){
+
+            <button
+              (click)="approveStudent(student.id)">
+              Approve
+            </button>
+          }
+
+        </td>
+
+      </tr>
+    }
+
+  </tbody>
+
+</table>

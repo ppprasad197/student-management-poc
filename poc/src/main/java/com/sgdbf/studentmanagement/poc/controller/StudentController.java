@@ -27,11 +27,11 @@ public class StudentController {
         this.userRepository = userRepository;
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN','LIBRARIAN')")
-    @GetMapping
-    public List<Student> getAllStudent() {
-        return studentService.getAll();
-    }
+        @PreAuthorize("hasAnyRole('ADMIN','LIBRARIAN')")
+        @GetMapping
+        public List<Student> getAllStudent() {
+            return studentService.getAll();
+        }
 
 
     @PostMapping("/signup")
@@ -61,7 +61,7 @@ public class StudentController {
 
         return ResponseEntity.ok("User approved");
     }
-    
+
 
     @PreAuthorize("hasAnyRole('ADMIN','STUDENT','LIBRARIAN')")
     @DeleteMapping("/{id}")

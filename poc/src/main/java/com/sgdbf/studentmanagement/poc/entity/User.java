@@ -1,5 +1,6 @@
 package com.sgdbf.studentmanagement.poc.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sgdbf.studentmanagement.poc.enums.Role;
 import com.sgdbf.studentmanagement.poc.enums.UserStatus;
 import jakarta.persistence.*;
@@ -33,6 +34,7 @@ public class User {
 
     @OneToOne
     @JoinColumn(name = "student_id")
+    @JsonIgnore
     private Student student;
 
     public User() {

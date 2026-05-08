@@ -31,6 +31,7 @@ export class AuthService {
   }
 
   signupUser(data: any) {
+    console.log("Data.userName : " + data.userName);
     return this.httpClient.post(
       `${this.baseUrl}/user/signup`,
       data
@@ -38,8 +39,8 @@ export class AuthService {
   }
 
   signupStudent(data: any) {
-    console.log("Authservice username : " + data.username)
-    console.log("Authservice username : " + data.email)
+    // console.log("Authservice username : " + data.username)
+    // console.log("Authservice username : " + data.email)
 
     return this.httpClient.post(
       `${this.baseUrl}/students/signup`,

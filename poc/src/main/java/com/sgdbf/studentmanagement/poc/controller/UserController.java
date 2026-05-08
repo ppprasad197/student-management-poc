@@ -25,6 +25,7 @@ public class UserController {
 
     @PostMapping("/signup")
     public ResponseEntity<?> signup(@RequestBody User user) {
+        System.out.println(user.getUserName());
         userService.save(user);
         return ResponseEntity.ok("User created");
     }

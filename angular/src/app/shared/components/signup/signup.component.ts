@@ -35,7 +35,7 @@ export class SignupComponent {
   signupData = {
     firstName: '',
     lastName: '',
-    username: '',
+    userName: '',
     email: '',
     password: '',
     studentId: ''
@@ -43,7 +43,7 @@ export class SignupComponent {
 
   signup() {
     console.log("studentID : " + this.signupData.studentId);
-    console.log("studentID : " + this.signupData.username);
+    console.log("studentID : " + this.signupData.userName);
     console.log("email : " + this.signupData.email);
     this.store.dispatch(AuthActions.signUp({
       role: this.userRole,
