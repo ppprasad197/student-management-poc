@@ -19,8 +19,21 @@ public class UserService {
     }
 
     public void save(User user) {
+
+        if (userRepository.existsByUserName(user.getUserName())) {
+            throw new RuntimeException("Username already exists");
+        }
+
+        if (userRepository.existsByEmail(user.getEmail())) {
+            throw new RuntimeException("Email already exists");
+        }
+
         user.setUserStatus(UserStatus.PENDING);
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+
+        user.setPassword(
+                passwordEncoder.encode(user.getPassword())
+        );
+
         userRepository.save(user);
     }
 }

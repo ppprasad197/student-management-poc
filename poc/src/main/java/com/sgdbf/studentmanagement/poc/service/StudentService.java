@@ -9,6 +9,7 @@ import com.sgdbf.studentmanagement.poc.repository.UserRepository;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -17,11 +18,13 @@ public class StudentService {
     private final StudentRepository studentRepository;
     private final UserRepository userRepository;
     private final PasswordEncoder encoder;
+    private final UserService userService;
 
-    public StudentService(StudentRepository studentRepository, UserRepository userRepository, PasswordEncoder encoder) {
+    public StudentService(StudentRepository studentRepository, UserRepository userRepository, PasswordEncoder encoder, UserService userService) {
         this.studentRepository = studentRepository;
         this.userRepository = userRepository;
         this.encoder = encoder;
+        this.userService = userService;
     }
 
     public List<Student> getAll() {
@@ -29,6 +32,7 @@ public class StudentService {
     }
 
 
+    @Transactional
     public Student save(Student student) {
 
         String studentId = student.getStudentId();
@@ -40,24 +44,58 @@ public class StudentService {
         String regex = "^SG\\d{4}[A-Z]{3}[A-Z]{2}\\d{3}$";
 
         if (!studentId.matches(regex)) {
-            throw new RuntimeException("Invalid Student ID so you can not enrolled as library user");
+            throw new RuntimeException(
+                    "Invalid Student ID so you can not enrolled as library user"
+            );
         }
 
-        // ✅ Save student first
-        student.setPassword(encoder.encode(student.getPassword()));
+        // ---------- VALIDATIONS ----------
+
+        if (studentRepository.existsByEmail(student.getEmail())
+                || userRepository.existsByEmail(student.getEmail())) {
+
+            throw new RuntimeException("Email already exists");
+        }
+
+        if (studentRepository.existsByUsername(student.getUsername())
+                || userRepository.existsByUserName(student.getUsername())) {
+
+            throw new RuntimeException("Username already exists");
+        }
+
+        if (studentRepository.existsByStudentId(student.getStudentId())) {
+
+            throw new RuntimeException("Student ID already exists");
+        }
+
+        // ---------- SAVE STUDENT ----------
+
+        student.setPassword(
+                encoder.encode(student.getPassword())
+        );
+
+        student.setUserStatus(UserStatus.PENDING);
+
         Student savedStudent = studentRepository.save(student);
 
-        // ✅ Create User automatically
+        // ---------- CREATE USER ----------
+
         User user = new User();
+
         user.setFirstName(student.getFirstName());
         user.setLastName(student.getLastName());
+
         user.setUserName(student.getUsername());
-        user.setPassword(encoder.encode(student.getPassword()));
+
+        user.setEmail(student.getEmail());
+
+        user.setPassword(student.getPassword());
+
         user.setRole(Role.STUDENT);
-        user.setUserStatus(UserStatus.PENDING);
+
         user.setStudent(savedStudent);
 
-        userRepository.save(user);
+        userService.save(user);
 
         return savedStudent;
     }

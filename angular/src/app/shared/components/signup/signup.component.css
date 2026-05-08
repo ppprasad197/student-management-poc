@@ -21,6 +21,7 @@ h2 {
 }
 
 .input-group {
+    flex: 1;
     margin-bottom: 10px;
 }
 
@@ -48,6 +49,6 @@ select {
     cursor: pointer;
 }
 
-.signup-btn :hover {
+.signup-btn:hover {
     background-color: #357ABD;
 }

@@ -33,9 +33,15 @@ public class StudentController {
         return studentService.getAll();
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN','LIBRARIAN','STUDENT')")
+
     @PostMapping("/signup")
     public Student addStudent(@RequestBody Student student) {
+        System.out.println(student.getStudentId());
+        System.out.println(student.getFirstName());
+        System.out.println(student.getLastName());
+        System.out.println(student.getEmail());
+        System.out.println(student.getPassword());
+        System.out.println(student.getUsername());
         student.setUserStatus(UserStatus.PENDING);
         return studentService.save(student);
     }
@@ -55,11 +61,7 @@ public class StudentController {
 
         return ResponseEntity.ok("User approved");
     }
-
-//    @PostMapping("/signUp")
-//    public Student signUp(@RequestBody Student student) {
-//        return addStudent(student);
-//    }
+    
 
     @PreAuthorize("hasAnyRole('ADMIN','STUDENT','LIBRARIAN')")
     @DeleteMapping("/{id}")

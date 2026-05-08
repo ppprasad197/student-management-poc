@@ -1,36 +1,36 @@
 <div class="signup-container">
-    <form class="signup-form">
+    <form class="signup-form" (ngSubmit)="signup()">
         <h2>Create Account</h2>
         <div class="form-row">
             <div class="input-group">
                 <label>First Name</label>
-                <input type="text" id="firstName" required>
+                <input type="text" id="firstName" name="firstName" [(ngModel)]="signupData.firstName" required>
             </div>
             <div class="input-group">
                 <label>Last Name</label>
-                <input type="text" id="lastName" required>
+                <input type="text" id="lastName" name="lastName" [(ngModel)]="signupData.lastName" required>
             </div>
         </div>
 
         <div class="input-group">
             <label>User Name</label>
-            <input type="text" id="userName" required>
+            <input type="text" id="userName" name="userName" [(ngModel)]="signupData.username" required>
         </div>
 
         <div class="input-group">
             <label>Email</label>
-            <input type="text" id="email" required>
+            <input type="text" id="email" name="password" [(ngModel)]="signupData.email" required>
         </div>
 
         <div class="input-group">
             <label>Password</label>
-            <input type="text" id="password" required>
+            <input type="password" id="password" name="password" [(ngModel)]="signupData.password" required>
         </div>
 
         <div class="input-group">
             <label>Role</label>
-            <select [(ngModel)]="userRole" name="role" id="role">
-                <option value="LIBRARIAN">User</option>
+            <select [(ngModel)]="userRole" name="userRole" id="role">
+                <option value="LIBRARIAN">Librarian</option>
                 <option value="ADMIN">Admin</option>
                 <option value="STUDENT">Student</option>
             </select>
@@ -39,7 +39,7 @@
         @if (userRole === 'STUDENT') {
         <div class="input-group">
             <label>Student ID</label>
-            <input type="text" id="studentId" required />
+            <input type="text" id="studentId" name="studentId" [(ngModel)]="signupData.studentId" required />
         </div>
         }
 
