@@ -28,8 +28,7 @@ export class SignupComponent {
   //   });
   // }
 
-  userRole = 'LIBRARIAN';
-
+  // userRole = 'LIBRARIAN';
   constructor(private store: Store) { }
 
   signupData = {
@@ -38,15 +37,11 @@ export class SignupComponent {
     userName: '',
     email: '',
     password: '',
-    studentId: ''
+    role: ''
   };
 
   signup() {
-    console.log("studentID : " + this.signupData.studentId);
-    console.log("studentID : " + this.signupData.userName);
-    console.log("email : " + this.signupData.email);
     this.store.dispatch(AuthActions.signUp({
-      role: this.userRole,
       data: this.signupData
     }));
   }

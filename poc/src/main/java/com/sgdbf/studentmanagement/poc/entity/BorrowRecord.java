@@ -11,8 +11,8 @@ public class BorrowRecord {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "student_id")
-    private Student student;
+    @JoinColumn(name = "user_id")
+    private User user;
 
     @ManyToOne
     @JoinColumn(name = "book_id")
@@ -27,9 +27,9 @@ public class BorrowRecord {
 
     }
 
-    public BorrowRecord(Long id, Student student, LocalDate issueDate, LocalDate dueDate, LocalDate returnDate, Book book, int renewCount) {
+    public BorrowRecord(Long id, User user, LocalDate issueDate, LocalDate dueDate, LocalDate returnDate, Book book, int renewCount) {
         this.id = id;
-        this.student = student;
+        this.user = user;
         this.issueDate = issueDate;
         this.dueDate = dueDate;
         this.returnDate = returnDate;
@@ -45,16 +45,8 @@ public class BorrowRecord {
         this.id = id;
     }
 
-    public Student getStudent() {
-        return student;
-    }
-
     public Book getBook() {
         return book;
-    }
-
-    public void setStudent(Student student) {
-        this.student = student;
     }
 
     public void setBook(Book book) {
@@ -91,5 +83,13 @@ public class BorrowRecord {
 
     public void setRenewCount(int renewCount) {
         this.renewCount = renewCount;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }

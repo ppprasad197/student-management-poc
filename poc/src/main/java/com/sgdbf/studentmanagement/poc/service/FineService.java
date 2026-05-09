@@ -6,6 +6,7 @@ import com.sgdbf.studentmanagement.poc.entity.BorrowRecord;
 import com.sgdbf.studentmanagement.poc.entity.Fine;
 import com.sgdbf.studentmanagement.poc.entity.Student;
 import com.sgdbf.studentmanagement.poc.entity.User;
+import com.sgdbf.studentmanagement.poc.enums.Role;
 import com.sgdbf.studentmanagement.poc.repository.BorrowRepository;
 import com.sgdbf.studentmanagement.poc.repository.FineRepository;
 import com.sgdbf.studentmanagement.poc.repository.UserRepository;
@@ -65,8 +66,10 @@ public class FineService {
 
     private int persistFines(FineDTO fineDTO, String username) {
 
-        User user = getUser(username);
-        Student student = user.getStudent();
+        User user = userRepository.findByUserNameAndRole(username, Role.STUDENT);
+
+//        User user = getUser(username);
+//        Student student = user.getStudent();
 
         List<Fine> finesToSave = new ArrayList<>();
         List<BorrowRecord> recordsToUpdate = new ArrayList<>();
@@ -78,19 +81,18 @@ public class FineService {
 
             // ✅ Prevent duplicate entries
             boolean exists = fineRepository
-                    .existsByStudentAndBorrowRecord(student, record);
+                    .existsByUserAndBorrowRecord(user, record);
 
             if (exists) {
                 continue;
             }
 
             Fine fine = new Fine();
-            fine.setStudent(student);
+//            fine.setStudent(student);
             fine.setBorrowRecord(record);
             fine.setAmount(item.getFineAmount());
             fine.setPaid(true);
             fine.setPaidDate(LocalDate.now());
-
             finesToSave.add(fine);
 
             // optional
@@ -111,11 +113,13 @@ public class FineService {
 
     public FineDTO getMyFines(String username) {
 
-        User user = getUser(username);
-        Student student = user.getStudent();
+        User user = userRepository.findByUserNameAndRole(username, Role.STUDENT);
+
+//        User user = getUser(username);
+//        Student student = user.getStudent();
 
         List<BorrowRecord> records =
-                borrowRepository.findByStudentAndReturnDateIsNull(student);
+                borrowRepository.findByUserAndReturnDateIsNull(user);
 
         List<FineDTO.FineItem> fineItems = new ArrayList<>();
         double totalAmount = 0;
@@ -127,7 +131,7 @@ public class FineService {
             // OPTIONAL: skip if already cleared
 //            if (record.isFineCleared()) continue;
 
-            if(fineRepository.existsByBorrowRecord(record))
+            if (fineRepository.existsByBorrowRecord(record))
                 continue;
 
             LocalDate dueDate = record.getDueDate();
@@ -169,7 +173,7 @@ public class FineService {
     public Map<String, Double> getFineSummary(String username) {
         User user = getUser(username);
 
-        List<Fine> fines = fineRepository.findByStudent(user.getStudent());
+        List<Fine> fines = fineRepository.findByUser(user);
 
         double total = 0;
         double paid = 0;

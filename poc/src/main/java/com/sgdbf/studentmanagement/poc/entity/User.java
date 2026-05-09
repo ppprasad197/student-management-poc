@@ -26,16 +26,17 @@ public class User {
     @Column(nullable = false)
     private String password;
 
+    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private Role role;
 
     @Enumerated(EnumType.STRING)
     private UserStatus userStatus;
 
-    @OneToOne
-    @JoinColumn(name = "student_id")
-    @JsonIgnore
-    private Student student;
+//    @OneToOne
+//    @JoinColumn(name = "student_id")
+//    @JsonIgnore
+//    private Student student;
 
     public User() {
     }
@@ -48,8 +49,6 @@ public class User {
         this.userName = userName;
         this.password = password;
         this.role = role;
-        userStatus = userStatus;
-        this.student = student;
     }
 
     public Long getId() {
@@ -76,7 +75,6 @@ public class User {
         this.password = password;
     }
 
-
     public Role getRole() {
         return role;
     }
@@ -85,13 +83,13 @@ public class User {
         this.role = role;
     }
 
-    public Student getStudent() {
-        return student;
-    }
+//    public Student getStudent() {
+//        return student;
+//    }
 
-    public void setStudent(Student student) {
-        this.student = student;
-    }
+//    public void setStudent(Student student) {
+//        this.student = student;
+//    }
 
     public String getFirstName() {
         return firstName;

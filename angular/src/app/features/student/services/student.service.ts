@@ -8,8 +8,8 @@ import { Student } from '../models/student.model';
 })
 export class StudentService {
 
-  private baseUrl = "http://localhost:8080/students";
-  constructor(private httpClient: HttpClient) { }
+  private baseUrl = "http://localhost:8080/user";
+  constructor(private httpClient: HttpClient) { } 
 
   getStudents(): Observable<Student[]> {
     console.log("I am calling get all students api");

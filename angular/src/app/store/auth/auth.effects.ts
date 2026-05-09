@@ -30,7 +30,7 @@ export class AuthEffects {
     )
   );
 
-  loginSuccess$ = createEffect(
+  loginSuccess = createEffect(
     () =>
       this.actions.pipe(
         ofType(AuthActions.loginSuccess),
@@ -41,30 +41,39 @@ export class AuthEffects {
     { dispatch: false }
   );
 
-  signup$ = createEffect(() =>
+  signup = createEffect(() =>
     this.actions.pipe(
 
       ofType(AuthActions.signUp),
 
-      switchMap(({ data, role }) => {
-        console.log("Data.username : " + data.username)
+      switchMap(({ data }) =>
 
-        const request =
-          role === 'STUDENT'
-            ? this.authService.signupStudent(data)
-            : this.authService.signupUser(data);
+        this.authService.signupUser(data).pipe(
 
-        return request.pipe(
+          map((response) =>
+            AuthActions.signupSuccess({ response })
+          ),
 
-          map(() => AuthActions.signupSuccess()),
-
-          catchError(error =>
-            of(AuthActions.signupFailure({
-              error: error.error.message
-            }))
+          catchError((error) =>
+            of(
+              AuthActions.signupFailure({
+                error: error.message
+              })
+            )
           )
-        );
-      })
+
+        )
+      )
     )
   );
+
+  signupSuccess = createEffect(() =>
+    this.actions.pipe(
+      ofType(AuthActions.signupSuccess),
+      tap(() => {
+        this.router.navigate(['/home']);
+      })
+    ),
+    { dispatch: false }
+  )
 }

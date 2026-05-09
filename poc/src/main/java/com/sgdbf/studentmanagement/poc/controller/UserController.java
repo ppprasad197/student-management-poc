@@ -1,5 +1,7 @@
 package com.sgdbf.studentmanagement.poc.controller;
 
+import com.sgdbf.studentmanagement.poc.dto.UserRequestDto;
+import com.sgdbf.studentmanagement.poc.dto.UserResponseDto;
 import com.sgdbf.studentmanagement.poc.entity.User;
 import com.sgdbf.studentmanagement.poc.enums.UserStatus;
 import com.sgdbf.studentmanagement.poc.repository.UserRepository;
@@ -16,51 +18,62 @@ import java.util.List;
 public class UserController {
 
     private final UserService userService;
-    private final UserRepository userRepository;
 
-    public UserController(UserService userService, UserRepository userRepository) {
+    public UserController(UserService userService) {
         this.userService = userService;
-        this.userRepository = userRepository;
+    }
+
+    @GetMapping
+    @PreAuthorize("hasAnyRole('ADMIN','LIBRARIAN')")
+    public ResponseEntity<List<UserResponseDto>> getAllUsers() {
+
+        return ResponseEntity.ok(
+                userService.getAllStudents()
+        );
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<?> signup(@RequestBody User user) {
-        System.out.println(user.getUserName());
+    public ResponseEntity<?> signup(@RequestBody UserRequestDto user) {
         userService.save(user);
         return ResponseEntity.ok("User created");
     }
 
-    @GetMapping("/admin/pending-users")
-    @PreAuthorize("hasRole('ADMIN')")
-    public List<User> getPendingUsers() {
-        return userRepository.findByUserStatus(UserStatus.PENDING);
+    @GetMapping("/admin/pendingUsers")
+    @PreAuthorize("hasAnyRole('ADMIN','LIBRARIAN')")
+    public List<UserResponseDto> getPendingUsers() {
+        return userService.findByUserStatus(UserStatus.PENDING);
     }
 
     @PostMapping("/approveUser/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN','LIBRARIRAN')")
     public ResponseEntity<?> approveUser(@PathVariable Long id) {
-
-        User user = userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found"));
-
-        user.setUserStatus(UserStatus.APPROVED);
-
-        userRepository.save(user);
-
+        userService.approveUser(id);
         return ResponseEntity.ok("User approved");
     }
 
-    @PostMapping("/admin/reject/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PostMapping("/reject/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN','LIBRARIAN')")
     public ResponseEntity<?> rejectUser(@PathVariable Long id) {
-
-        User user = userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found"));
-
-        user.setUserStatus(UserStatus.REJECTED);
-
-        userRepository.save(user);
-
+        userService.rejectUser(id);
         return ResponseEntity.ok("User rejected");
     }
+
+    @DeleteMapping("/delete/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN','LIBRARIAN')")
+    public ResponseEntity<?> deleteUser(@PathVariable Long id) {
+        userService.deleteUserById(id);
+        return ResponseEntity.ok("User deleted");
+    }
+
+    @PutMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN','LIBRARIAN')")
+    public ResponseEntity<UserResponseDto> updateUser(
+            @PathVariable Long id,
+            @RequestBody UserRequestDto requestDto
+    ) {
+        UserResponseDto response = userService.updateUser(id, requestDto);
+
+        return ResponseEntity.ok(response);
+    }
+
 }

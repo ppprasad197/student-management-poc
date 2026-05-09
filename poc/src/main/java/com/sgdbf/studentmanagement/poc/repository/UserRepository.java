@@ -1,6 +1,7 @@
 package com.sgdbf.studentmanagement.poc.repository;
 
 import com.sgdbf.studentmanagement.poc.entity.User;
+import com.sgdbf.studentmanagement.poc.enums.Role;
 import com.sgdbf.studentmanagement.poc.enums.UserStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -15,4 +16,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
     boolean existsByUserName(String userName);
 
     boolean existsByEmail(String email);
+
+    User findByUserNameAndRole(String userName, Role role);
+
+    List<User> findAllByRole(Role role);
 }

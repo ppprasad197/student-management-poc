@@ -24,13 +24,13 @@ export const loginFailure = createAction(
 export const signUp = createAction(
   '[Auth] Signup',
   props<{
-    role: string;
     data: any;
   }>()
 );
 
 export const signupSuccess = createAction(
-  '[Auth]Signup Success'
+  '[Auth]Signup Success',
+  props<{ response: any }>()
 );
 
 export const signupFailure = createAction(

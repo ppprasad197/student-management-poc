@@ -1,14 +1,9 @@
 package com.sgdbf.studentmanagement.poc.service;
 
 import com.sgdbf.studentmanagement.poc.dto.FineDTO;
-import com.sgdbf.studentmanagement.poc.entity.Book;
-import com.sgdbf.studentmanagement.poc.entity.BorrowRecord;
-import com.sgdbf.studentmanagement.poc.entity.Fine;
-import com.sgdbf.studentmanagement.poc.entity.Student;
-import com.sgdbf.studentmanagement.poc.repository.BookRepository;
-import com.sgdbf.studentmanagement.poc.repository.BorrowRepository;
-import com.sgdbf.studentmanagement.poc.repository.FineRepository;
-import com.sgdbf.studentmanagement.poc.repository.StudentRepository;
+import com.sgdbf.studentmanagement.poc.entity.*;
+import com.sgdbf.studentmanagement.poc.enums.Role;
+import com.sgdbf.studentmanagement.poc.repository.*;
 //import com.sgdbf.studentmanagement.poc.security.JwtUtil;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
@@ -23,24 +18,22 @@ public class BookService {
 
     private final BookRepository bookRepository;
     //    private final JwtUtil jwtUtil;
-    private final StudentRepository studentRepository;
     private final BorrowRepository borrowRepository;
     private final FineRepository fineRepository;
     private final FineService fineService;
+    private final UserRepository userRepository;
 
-    public BookService(BookRepository bookRepository,
-                       StudentRepository studentRepository, BorrowRepository borrowRepository, FineRepository fineRepository, FineService fineService) {
+    public BookService(BookRepository bookRepository, BorrowRepository borrowRepository, FineRepository fineRepository, FineService fineService, UserRepository userRepository) {
         this.bookRepository = bookRepository;
-        this.studentRepository = studentRepository;
         this.borrowRepository = borrowRepository;
         this.fineRepository = fineRepository;
         this.fineService = fineService;
+        this.userRepository = userRepository;
     }
 
-    public Book borrowBook(Long id, Authentication authentication) {
+    public Book borrowBook(Long id, String userName) {
 
-        String userName = authentication.getName();
-        Student student = getStudent(userName);
+        User user = getStudent(userName);
 
         Book book = bookRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Book not found"));
@@ -51,7 +44,7 @@ public class BookService {
         }
 
         // ✅ Step 2: Validate borrow rules FIRST
-        if (!canStudentBorrowNewBook(student, userName)) {
+        if (!canStudentBorrowNewBook(user, userName)) {
             throw new RuntimeException("You cannot borrow book");
         }
 
@@ -60,17 +53,16 @@ public class BookService {
         bookRepository.save(book);
 
         // ✅ Step 4: Create borrow record
-        createBorrowRecord(student, book);
+        createBorrowRecord(user, book);
 
         System.out.println("Logged in user's username : " + userName);
 
         return book;
     }
 
-    public void createBorrowRecord(Student student, Book book) {
+    public void createBorrowRecord(User user, Book book) {
 
         BorrowRecord borrowRecord = new BorrowRecord();
-        borrowRecord.setStudent(student);
         borrowRecord.setBook(book);
         borrowRecord.setIssueDate(LocalDate.now());
         borrowRecord.setDueDate(LocalDate.now().plusDays(7));
@@ -80,15 +72,14 @@ public class BookService {
         borrowRepository.save(borrowRecord);
     }
 
-    public Student getStudent(String username) {
-        return studentRepository.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("Student not found"));
+    public User getStudent(String username) {
+        return userRepository.findByUserNameAndRole(username, Role.STUDENT);
     }
 
-    public boolean canStudentBorrowNewBook(Student student, String username) {
+    public boolean canStudentBorrowNewBook(User user, String username) {
 
         // ✅ Rule 1: Max 3 active books
-        int activeBooks = borrowRepository.countByStudentAndReturnDateIsNull(student);
+        int activeBooks = borrowRepository.countByUserAndReturnDateIsNull(user);
 
         if (activeBooks >= 3) {
             System.out.println("Maximum books already borrowed");
@@ -150,13 +141,12 @@ public class BookService {
         bookRepository.delete(book);
     }
 
-    public void returnBook(Long bookId, Authentication authentication) {
+    public void returnBook(Long bookId, String userName) {
 
-        String username = authentication.getName();
-        Student student = getStudent(username);
+        User user = getStudent(userName);
 
         // ✅ Step 1: Check fines FIRST
-        FineDTO fineData = fineService.getMyFines(username);
+        FineDTO fineData = fineService.getMyFines(userName);
         double totalDue = fineData.getTotalAmount();
 
         if (totalDue > 0) {
@@ -164,7 +154,7 @@ public class BookService {
         }
 
         // ✅ Step 2: Fetch borrow record
-        BorrowRecord record = getBorrowRecord(student, bookId);
+        BorrowRecord record = getBorrowRecord(user, bookId);
 
         // ✅ Step 3: Return book
         record.setReturnDate(LocalDate.now());
@@ -178,17 +168,16 @@ public class BookService {
         bookRepository.save(book);
     }
 
-    public void renewBook(Long bookId, Authentication authentication) {
+    public void renewBook(Long bookId, String userName) {
 
-        String username = authentication.getName();
-        Student student = getStudent(username);
+        User user = getStudent(userName);
 
-        BorrowRecord record = getBorrowRecord(student, bookId);
+        BorrowRecord record = getBorrowRecord(user, bookId);
 
         LocalDate today = LocalDate.now();
 
         // ✅ Step 1: Check pending fines
-        FineDTO fineData = fineService.getMyFines(username);
+        FineDTO fineData = fineService.getMyFines(userName);
         double totalDue = fineData.getTotalAmount();
 
         if (totalDue > 0) {
@@ -212,9 +201,8 @@ public class BookService {
         borrowRepository.save(record);
     }
 
-    public BorrowRecord getBorrowRecord(Student student, Long bookId) {
+    public BorrowRecord getBorrowRecord(User user, Long bookId) {
         return borrowRepository
-                .findByStudentAndBookAndReturnDateIsNull(student, getById(bookId))
-                .orElseThrow(() -> new RuntimeException("No active borrow found"));
+                .findByUserAndBookAndReturnDateIsNull(user, getById(bookId));
     }
 }

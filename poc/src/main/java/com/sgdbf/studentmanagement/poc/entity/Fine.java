@@ -10,8 +10,11 @@ public class Fine {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+//    @ManyToOne
+//    private Student student;
+
     @ManyToOne
-    private Student student;
+    private User user;
 
     @ManyToOne
     @JoinColumn(name = "borrow_record_id")
@@ -28,9 +31,9 @@ public class Fine {
     public Fine() {
     }
 
-    public Fine(Long id, Student student, BorrowRecord borrowRecord, double amount, double paidAmount, LocalDate paidDate, boolean paid) {
+    public Fine(Long id, User user, BorrowRecord borrowRecord, double amount, double paidAmount, LocalDate paidDate, boolean paid) {
         this.id = id;
-        this.student = student;
+        this.user = user;
         this.borrowRecord = borrowRecord;
         this.amount = amount;
         this.paidAmount = paidAmount;
@@ -46,13 +49,13 @@ public class Fine {
         this.id = id;
     }
 
-    public Student getStudent() {
-        return student;
-    }
-
-    public void setStudent(Student student) {
-        this.student = student;
-    }
+//    public Student getStudent() {
+//        return student;
+//    }
+//
+//    public void setStudent(Student student) {
+//        this.student = student;
+//    }
 
     public Double getAmount() {
         return amount;
@@ -92,5 +95,13 @@ public class Fine {
 
     public void setPaidDate(LocalDate paidDate) {
         this.paidDate = paidDate;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }
