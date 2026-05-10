@@ -1,12 +1,7 @@
 <div class="signup-container">
     <form class="signup-form" (ngSubmit)="signup()">
         <h2>
-            @if(isUpdateMode){
-            Update Student
-            }
-            @else{
-            Create Account
-            }
+            {{ isUpdateMode ? 'Update Student' : 'Create Account' }}
         </h2>
         <div class="form-row">
             <div class="input-group">
@@ -29,19 +24,29 @@
             <input type="text" id="email" name="email" [(ngModel)]="signupData.email" required>
         </div>
 
-        @if(!isUpdateMode) { <div class="input-group">
+        @if(!isUpdateMode){
+
+        <div class="input-group">
             <label>Password</label>
+
             <input type="password" id="password" name="password" [(ngModel)]="signupData.password" required>
         </div>
 
         <div class="input-group">
+
             <label>Role</label>
+
             <select [(ngModel)]="signupData.role" name="userRole" id="role">
+
                 <option value="LIBRARIAN">Librarian</option>
                 <option value="ADMIN">Admin</option>
                 <option value="STUDENT">Student</option>
+
             </select>
-        </div>}
+
+        </div>
+
+        }
 
         <!-- @if (userRole === 'STUDENT') {
         <div class="input-group">
@@ -51,12 +56,9 @@
         } -->
 
         <button type="submit" class="signup-btn">
-            @if(isUpdateMode){
-            Update Student
-            }
-            @else{
-            Sign Up
-            }
+
+            {{ isUpdateMode ? 'Update Student' : 'Sign Up' }}
+
         </button>
 
 

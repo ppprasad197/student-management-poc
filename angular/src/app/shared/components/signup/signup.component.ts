@@ -14,6 +14,10 @@ import * as StudentActions from '../../../features/student/store/student.actions
 export class SignupComponent {
   constructor(private store: Store) { }
 
+  isUpdateMode: boolean = false;
+
+  studentId!: number;
+
   signupData = {
     firstName: '',
     lastName: '',
@@ -23,37 +27,51 @@ export class SignupComponent {
     role: ''
   };
 
-  private student = history.state.student;
-  isUpdateMode = false;
-  studentId!: number;
-
   ngOnInit(): void {
-    this.isUpdateMode = true;
-    this.studentId = this.student.id;
 
-    if (this.student) {
+    const student = history.state.student;
+
+    if (student && student.id) {
+
+      this.isUpdateMode = true;
+
+      this.studentId = student.id;
+
       this.signupData = {
-        firstName: this.student.firstName,
-        lastName: this.student.lastName,
-        userName: this.student.userName,
-        email: this.student.email,
+
+        firstName: student.firstName,
+        lastName: student.lastName,
+        userName: student.userName,
+        email: student.email,
         password: '',
-        role: this.student.role
+        role: student.role
+
       };
+
     }
+
   }
 
   signup() {
 
     if (this.isUpdateMode) {
-      this.store.dispatch(StudentActions.updateStudent({
-        id: this.studentId,
-        student: this.signupData
-      }));
+
+      this.store.dispatch(
+        StudentActions.updateStudent({
+          id: this.studentId,
+          student: this.signupData
+        })
+      );
+
     } else {
-      this.store.dispatch(AuthActions.signUp({
-        data: this.signupData
-      }));
+
+      this.store.dispatch(
+        AuthActions.signUp({
+          data: this.signupData
+        })
+      );
+
     }
+
   }
 }
