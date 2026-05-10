@@ -21,6 +21,15 @@ export const approveStudent = createAction(
   props<{ id: number }>()
 );
 
+export const approveStudentSuccess = createAction(
+  '[Student]Approve Student Success',
+);
+
+export const approveStudentFailure = createAction(
+  '[Student]Approve Student Failure',
+  props<{ error: string }>()
+);
+
 export const deleteStudent = createAction(
   '[Student]Delete Student',
   props<{ id: number }>()
@@ -28,5 +37,10 @@ export const deleteStudent = createAction(
 
 export const updateStudent = createAction(
   '[Student]Update Student',
-  props<{ id: number, student: Student }>()
+  props<{ id: number, student: Partial<Student> }>()
+);
+
+export const getStudent = createAction(
+  '[Student]Get Student',
+  props<{ id: number }>()
 );

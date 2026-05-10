@@ -1,1 +1,29 @@
-<p>student-detail works!</p>
+<h2>Student Details</h2>
+
+@if(student){
+
+<div>
+
+    <p>
+        <strong>First Name :</strong>
+        {{ student.firstName }}
+    </p>
+
+    <p>
+        <strong>Last Name :</strong>
+        {{ student.lastName }}
+    </p>
+
+    <p>
+        <strong>Email :</strong>
+        {{ student.email }}
+    </p>
+
+    <p>
+        <strong>Status :</strong>
+        {{ student.userStatus }}
+    </p>
+
+</div>
+
+}

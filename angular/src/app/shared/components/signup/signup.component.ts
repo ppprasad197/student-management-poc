@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } 
 import { Store } from '@ngrx/store';
 import { first } from 'rxjs';
 import * as AuthActions from '../../../store/auth/auth.actions';
-
+import * as StudentActions from '../../../features/student/store/student.actions';
 @Component({
   selector: 'app-signup',
   standalone: true,
@@ -12,23 +12,6 @@ import * as AuthActions from '../../../store/auth/auth.actions';
   styleUrl: './signup.component.css'
 })
 export class SignupComponent {
-
-  // signupForm: FormGroup
-  // userRole: string = '';
-
-  // constructor(private fb: FormBuilder) {
-  //   this.signupForm = this.fb.group({
-  //     firstName: ['', Validators.required],
-  //     lastName: ['', Validators.required],
-  //     userName: ['', Validators.required],
-  //     email: ['', [Validators.required, Validators.email]],
-  //     password: ['', Validators.required],
-  //     role: ['LIBRARIAN', Validators.required],
-  //     studentId: ['']
-  //   });
-  // }
-
-  // userRole = 'LIBRARIAN';
   constructor(private store: Store) { }
 
   signupData = {
@@ -40,12 +23,37 @@ export class SignupComponent {
     role: ''
   };
 
-  signup() {
-    this.store.dispatch(AuthActions.signUp({
-      data: this.signupData
-    }));
+  private student = history.state.student;
+  isUpdateMode = false;
+  studentId!: number;
+
+  ngOnInit(): void {
+    this.isUpdateMode = true;
+    this.studentId = this.student.id;
+
+    if (this.student) {
+      this.signupData = {
+        firstName: this.student.firstName,
+        lastName: this.student.lastName,
+        userName: this.student.userName,
+        email: this.student.email,
+        password: '',
+        role: this.student.role
+      };
+    }
   }
 
+  signup() {
 
-
+    if (this.isUpdateMode) {
+      this.store.dispatch(StudentActions.updateStudent({
+        id: this.studentId,
+        student: this.signupData
+      }));
+    } else {
+      this.store.dispatch(AuthActions.signUp({
+        data: this.signupData
+      }));
+    }
+  }
 }

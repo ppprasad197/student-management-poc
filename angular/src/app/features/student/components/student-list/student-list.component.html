@@ -13,43 +13,41 @@
 
     @for(student of students | async; track student.id){
 
-      <tr>
+    <tr>
 
-        <td>
-          {{ student.firstName }}
-          {{ student.lastName }}
-        </td>
+      <td>
+        {{ student.firstName }}
+        {{ student.lastName }}
+      </td>
 
-        <td>{{ student.email }}</td>
+      <td>{{ student.email }}</td>
 
-        <td>{{ student.userStatus }}</td>
+      <td>{{ student.userStatus }}</td>
 
-        <td>
+      <td>
 
-          <button>
-            View
-          </button>
+        <button [routerLink]="['/studentDetail']" [state]="{student:student}">
+          View
+        </button>
 
-          <button>
-            Update
-          </button>
+        <button [routerLink]="['/updateStudent']" [state]="{student:student}">
+          Update
+        </button>
 
-          <button
-            (click)="deleteStudent(student.id)">
-            Delete
-          </button>
+        <button (click)="deleteStudent(student.id)">
+          Delete
+        </button>
 
-          @if(student.userStatus === 'PENDING'){
+        @if(student.userStatus === 'PENDING'){
 
-            <button
-              (click)="approveStudent(student.id)">
-              Approve
-            </button>
-          }
+        <button (click)="approveStudent(student.id)">
+          Approve
+        </button>
+        }
 
-        </td>
+      </td>
 
-      </tr>
+    </tr>
     }
 
   </tbody>

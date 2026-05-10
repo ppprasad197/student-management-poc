@@ -145,7 +145,7 @@ public class UserService {
     private UserResponseDto mapToResponseDto(User user) {
 
         UserResponseDto dto = new UserResponseDto();
-
+        dto.setId(user.getId());
         dto.setFirstName(user.getFirstName());
         dto.setLastName(user.getLastName());
         dto.setEmail(user.getEmail());

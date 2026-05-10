@@ -9,7 +9,7 @@ import { Student } from '../models/student.model';
 export class StudentService {
 
   private baseUrl = "http://localhost:8080/user";
-  constructor(private httpClient: HttpClient) { } 
+  constructor(private httpClient: HttpClient) { }
 
   getStudents(): Observable<Student[]> {
     console.log("I am calling get all students api");
@@ -17,12 +17,13 @@ export class StudentService {
   }
 
   approveStudent(id: number) {
-    return this.httpClient.post(`${this.baseUrl}/approveStudent/${id}`, {});
+    console.log("id form approve student : " + id)
+    return this.httpClient.post(`${this.baseUrl}/approveUser/${id}`, {});
   }
 
   deleteStudent(id: number) {
     return this.httpClient.delete(
-      `${this.baseUrl}/${id}`
+      `${this.baseUrl}/delete/${id}`
     );
   }
 

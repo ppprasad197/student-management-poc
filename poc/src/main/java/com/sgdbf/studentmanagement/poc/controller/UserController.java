@@ -38,14 +38,14 @@ public class UserController {
         return ResponseEntity.ok("User created");
     }
 
-    @GetMapping("/admin/pendingUsers")
+    @GetMapping("/pendingUsers")
     @PreAuthorize("hasAnyRole('ADMIN','LIBRARIAN')")
     public List<UserResponseDto> getPendingUsers() {
         return userService.findByUserStatus(UserStatus.PENDING);
     }
 
     @PostMapping("/approveUser/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN','LIBRARIRAN')")
+    @PreAuthorize("hasAnyRole('ADMIN','LIBRARIAN')")
     public ResponseEntity<?> approveUser(@PathVariable Long id) {
         userService.approveUser(id);
         return ResponseEntity.ok("User approved");
