@@ -1,0 +1,131 @@
+<!-- <h2>Book List</h2>
+
+@if(loading$ | async){
+
+<p>Loading books...</p>
+
+} -->
+
+<!-- @if(error$ | async; as error){
+
+<p>{{ error }}</p>
+
+} -->
+
+
+<table>
+
+    <thead>
+
+        <tr>
+
+            <th>Title</th>
+
+            <th>Author</th>
+
+            <th>Category</th>
+
+            <th>Status</th>
+
+            <th>Quantity</th>
+
+            <th>Actions</th>
+
+        </tr>
+
+    </thead>
+
+    <tbody>
+
+        @for(book of books$ | async; track book.id){
+
+        <tr>
+
+            <td>{{ book.title }}</td>
+
+            <td>{{ book.author }}</td>
+
+            <td>{{ book.category }}</td>
+
+            <td>
+
+                @if(book.available){
+
+                <span>Available</span>
+
+                }
+
+                @else {
+
+                <span>Borrowed</span>
+
+                }
+
+            </td>
+
+            <td>{{ book.quantity }}</td>
+
+            <td>
+
+                <button [routerLink]="['/books', book.id]">
+
+                    View
+
+                </button>
+
+                @if(currentUser | async; as user){
+
+                @if(
+                user.role === 'ADMIN' || user.role === 'LIBRARIAN'
+                ){
+
+                <button [routerLink]="['/update-book']" [state]="{ book: book }">
+
+                    Update
+
+                </button>
+
+                <button (click)="deleteBook(book.id)">
+
+                    Delete
+
+                </button>
+
+                }
+
+
+                @if(user.role === 'STUDENT'){
+
+                @if(book.available){
+
+                <button (click)="borrowBook(book.id)">
+
+                    Borrow
+
+                </button>
+
+                }
+
+                @else {
+
+                <button (click)="returnBook(book.id)">
+
+                    Return
+
+                </button>
+
+                }
+
+                }
+
+                }
+
+            </td>
+
+        </tr>
+
+        }
+
+    </tbody>
+
+</table>

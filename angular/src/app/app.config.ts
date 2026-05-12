@@ -10,11 +10,13 @@ import { AuthEffects } from './store/auth/auth.effects';
 import { studentReducer } from './features/student/store/student.reducer';
 import { StudentEffects } from './features/student/store/student.effects';
 import { authInterceptor } from './core/interceptors/auth.interceptor';
+import { BookEffects } from './features/book/store/book.effects';
+import { bookReducer } from './features/book/store/book.reducer';
 
 export const appConfig: ApplicationConfig = {
   providers: [provideZoneChangeDetection({ eventCoalescing: true }), provideRouter(routes),
-  provideStore({ auth: authReducer, students: studentReducer }),
-  provideEffects([AuthEffects, StudentEffects]),
+  provideStore({ auth: authReducer, students: studentReducer, books: bookReducer }),
+  provideEffects([AuthEffects, StudentEffects, BookEffects]),
   provideHttpClient(withInterceptors([authInterceptor])),
   ]
 };

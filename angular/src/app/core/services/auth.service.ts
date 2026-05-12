@@ -1,5 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
+import { User } from '../models/user.model';
 
 @Injectable({
   providedIn: 'root'
@@ -32,11 +34,19 @@ export class AuthService {
 
   signupUser(data: any) {
     return this.httpClient.post(
-      'http://localhost:8080/user/signup',
+      `${this.baseUrl}/user/signup`,
       data,
       { responseType: 'text' }
     );
   }
 
+  getCurrentUser(): Observable<User> {
 
+    return this.httpClient.get<User>(
+      `${this.baseUrl}/user/currentUser`,
+      {
+        withCredentials: true
+      }
+    );
+  }
 }

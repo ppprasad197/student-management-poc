@@ -75,7 +75,7 @@ public class SecurityConfig {
                 .cors(Customizer.withDefaults())
                 .csrf(csrf -> csrf.disable()) // disable for testing
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/login", "/user/signup", "/students/signup").permitAll()
+                        .requestMatchers("/login", "/user/signup", "/students/signup", "user/currentUser").permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form

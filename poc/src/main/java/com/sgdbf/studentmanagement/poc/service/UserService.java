@@ -6,6 +6,7 @@ import com.sgdbf.studentmanagement.poc.entity.User;
 import com.sgdbf.studentmanagement.poc.enums.Role;
 import com.sgdbf.studentmanagement.poc.enums.UserStatus;
 import com.sgdbf.studentmanagement.poc.repository.UserRepository;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -163,5 +164,10 @@ public class UserService {
         return students.stream()
                 .map(this::mapToResponseDto)
                 .toList();
+    }
+
+    public UserResponseDto getLoggedInUser(String name) {
+        User user = userRepository.findByUserName(name).orElseThrow(() -> new RuntimeException("User not found"));
+        return mapToResponseDto(user);
     }
 }

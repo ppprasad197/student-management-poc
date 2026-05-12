@@ -1,4 +1,7 @@
 import { createAction, createActionGroup, emptyProps, props } from '@ngrx/store';
+import { User } from '../../core/models/user.model';
+
+
 
 export const AuthActions = createActionGroup({
   source: 'Auth',
@@ -11,9 +14,14 @@ export const login = createAction(
   '[Auth] Login',
   props<{ username: string, password: string }>()
 );
+
+
 export const loginSuccess = createAction(
+
   '[Auth] Login Success',
+
   props<{ user: string }>()
+
 );
 
 export const loginFailure = createAction(
@@ -38,3 +46,21 @@ export const signupFailure = createAction(
   props<{ error: any }>()
 );
 
+
+export const getCurrentUser = createAction(
+  '[Auth] Get Current User'
+);
+
+export const getCurrentUserSuccess = createAction(
+
+  '[Auth] Get Current User Success',
+
+  props<{ user: User }>()
+
+);
+
+
+export const getCurrentUserFailure = createAction(
+  '[Auth] Get Current User Failure',
+  props<{ error: string }>()
+);

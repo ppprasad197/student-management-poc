@@ -1,27 +1,26 @@
 import { createReducer, on } from '@ngrx/store';
 import * as AuthActions from './auth.actions';
 import { AuthState } from '../../core/models/auth.model';
+import { User } from '../../core/models/user.model';
 
 export const authFeatureKey = 'auth';
 
-export interface State {
-
-}
-
 export const initialState: AuthState = {
 
+  username: null,
   user: null,
 
   loading: false,
 
   error: null
+
 };
 
 export const authReducer = createReducer(
 
   initialState,
 
-  // LOGIN
+
 
   on(AuthActions.login, (state) => ({
 
@@ -36,11 +35,12 @@ export const authReducer = createReducer(
 
     ...state,
 
-    user,
+    username: user,
 
     loading: false,
 
     error: null
+
   })),
 
   on(AuthActions.loginFailure, (state, { error }) => ({
@@ -52,9 +52,6 @@ export const authReducer = createReducer(
     error
   })),
 
-
-
-  // SIGNUP
 
   on(AuthActions.signUp, (state) => ({
 
@@ -81,6 +78,15 @@ export const authReducer = createReducer(
     loading: false,
 
     error
-  }))
+  })),
+
+  on(AuthActions.getCurrentUserSuccess,
+    (state, { user }) => ({
+
+      ...state,
+
+      user
+
+    }))
 );
 

@@ -4,7 +4,6 @@ import com.sgdbf.studentmanagement.poc.dto.FineDTO;
 import com.sgdbf.studentmanagement.poc.dto.FinePaymentResponseDTO;
 import com.sgdbf.studentmanagement.poc.entity.BorrowRecord;
 import com.sgdbf.studentmanagement.poc.entity.Fine;
-import com.sgdbf.studentmanagement.poc.entity.Student;
 import com.sgdbf.studentmanagement.poc.entity.User;
 import com.sgdbf.studentmanagement.poc.enums.Role;
 import com.sgdbf.studentmanagement.poc.repository.BorrowRepository;
@@ -151,7 +150,7 @@ public class FineService {
 
                 FineDTO.FineItem item = new FineDTO.FineItem();
                 item.setBorrowRecordId(record.getId());
-                item.setBookName(record.getBook().getBookName());
+                item.setBookName(record.getBook().getTitle());
                 item.setDueDate(dueDate);
                 item.setReturnDate(returnDate);
                 item.setDaysLate(daysLate);

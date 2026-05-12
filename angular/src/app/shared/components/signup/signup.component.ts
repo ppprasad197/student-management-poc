@@ -4,6 +4,7 @@ import { Store } from '@ngrx/store';
 import { first } from 'rxjs';
 import * as AuthActions from '../../../store/auth/auth.actions';
 import * as StudentActions from '../../../features/student/store/student.actions';
+import { Router } from '@angular/router';
 @Component({
   selector: 'app-signup',
   standalone: true,
@@ -12,7 +13,7 @@ import * as StudentActions from '../../../features/student/store/student.actions
   styleUrl: './signup.component.css'
 })
 export class SignupComponent {
-  constructor(private store: Store) { }
+  constructor(private store: Store, private router: Router) { }
 
   isUpdateMode: boolean = false;
 
@@ -62,16 +63,12 @@ export class SignupComponent {
           student: this.signupData
         })
       );
-
     } else {
-
       this.store.dispatch(
         AuthActions.signUp({
           data: this.signupData
         })
       );
-
     }
-
   }
 }

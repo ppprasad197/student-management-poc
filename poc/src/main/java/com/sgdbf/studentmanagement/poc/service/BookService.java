@@ -5,13 +5,10 @@ import com.sgdbf.studentmanagement.poc.entity.*;
 import com.sgdbf.studentmanagement.poc.enums.Role;
 import com.sgdbf.studentmanagement.poc.repository.*;
 //import com.sgdbf.studentmanagement.poc.security.JwtUtil;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class BookService {
@@ -130,7 +127,7 @@ public class BookService {
     public Book update(Long id, Book updatedBook) {
         Book book = getById(id);
 
-        book.setBookName(updatedBook.getBookName());
+        book.setTitle(updatedBook.getTitle());
         book.setQuantity(updatedBook.getQuantity());
 
         return bookRepository.save(book);
