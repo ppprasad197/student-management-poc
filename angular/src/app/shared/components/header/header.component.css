@@ -14,13 +14,13 @@
     text-decoration: none;
 }
 
-.navlinks ul{
+.navlinks ul {
     list-style: none;
     display: flex;
     gap: 20px;
 }
 
-.navlinks ul a{
+.navlinks ul a {
     color: white;
     text-decoration: none;
     font-size: 16px;
@@ -30,3 +30,7 @@
     color: #38bdf8;
 }
 
+.profile-section:hover {
+    color: #38bdf8;
+    cursor: pointer;
+}

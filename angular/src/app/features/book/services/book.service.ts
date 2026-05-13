@@ -17,11 +17,21 @@ export class BookService {
   }
 
   addBook(book: Book) {
-    return this.http.post(this.baseUrl, book);
+    return this.http.post<Book>(
+      this.baseUrl,
+      book
+    );
   }
 
-  updateBook(id: number, book: Partial<Book>) {
-    return this.http.put(`${this.baseUrl}/${id}`, book);
+  updateBook(
+    id: number,
+    book: Partial<Book>
+  ) {
+
+    return this.http.put<Book>(
+      `${this.baseUrl}/${id}`,
+      book
+    );
   }
 
   deleteBook(id: number) {

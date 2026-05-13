@@ -1,0 +1,93 @@
+* {
+    box-sizing: border-box;
+}
+
+.book-form-container {
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    border-radius: 8px;
+
+}
+
+.book-form {
+
+    width: 100%;
+
+    max-width: 450px;
+
+}
+
+h2 {
+
+    text-align: center;
+
+}
+
+.form-row {
+
+    display: flex;
+
+    gap: 10px;
+
+}
+
+.input-group {
+
+    flex: 1;
+
+    margin-bottom: 10px;
+
+}
+
+label {
+
+    display: block;
+
+    margin-bottom: 5px;
+
+}
+
+input,
+select,
+textarea {
+
+    width: 100%;
+
+    padding: 10px;
+
+    border: 1px solid #ddd;
+
+    border-radius: 4px;
+
+}
+
+button {
+
+    width: 100%;
+
+    padding: 1rem;
+
+    background-color: #4A90E2;
+
+    color: white;
+
+    border: none;
+
+    border-radius: 4px;
+
+    font-weight: bold;
+
+    cursor: pointer;
+
+}
+
+button:hover {
+
+    background-color: #357ABD;
+
+}

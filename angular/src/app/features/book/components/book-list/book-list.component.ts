@@ -33,19 +33,18 @@ export class BookListComponent {
   }
 
   deleteBook(id: number) {
-
     const confirmed = window.confirm(
       'Are you sure you want to delete this book?'
     );
-
     if (confirmed) {
-
       this.store.dispatch(
         BookActions.deleteBook({ id })
       );
-
     }
+  }
 
+  updateBook(id: number, book: Book) {
+    this.store.dispatch(BookActions.updateBook({ id, book }));
   }
 
   borrowBook(id: number) {

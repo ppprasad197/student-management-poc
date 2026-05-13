@@ -12,6 +12,29 @@
 
 } -->
 
+<div class="book-header">
+
+    <h2>Book List</h2>
+
+    @if(currentUser | async; as user){
+
+    @if(
+    user.role === 'ADMIN'
+    || user.role === 'LIBRARIAN'
+    ){
+
+    <button class="add-book-btn" [routerLink]="['/add-book']">
+
+        Add Book
+
+    </button>
+
+    }
+
+    }
+
+</div>
+
 
 <table>
 
@@ -57,7 +80,7 @@
 
                 @else {
 
-                <span>Borrowed</span>
+                <span>Not Available</span>
 
                 }
 
@@ -67,7 +90,7 @@
 
             <td>
 
-                <button [routerLink]="['/books', book.id]">
+                <button [routerLink]="['/bookDetails'] " [state]="{book:book}">
 
                     View
 

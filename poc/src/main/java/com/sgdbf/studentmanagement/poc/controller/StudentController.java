@@ -1,23 +1,12 @@
 package com.sgdbf.studentmanagement.poc.controller;
 
-import com.sgdbf.studentmanagement.poc.entity.Student;
-import com.sgdbf.studentmanagement.poc.entity.User;
-import com.sgdbf.studentmanagement.poc.enums.UserStatus;
-import com.sgdbf.studentmanagement.poc.repository.StudentRepository;
-import com.sgdbf.studentmanagement.poc.repository.UserRepository;
-import com.sgdbf.studentmanagement.poc.service.StudentService;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/students")
 @CrossOrigin(origins = "http://localhost:4200")
 public class StudentController {
-    private final StudentService studentService;
+  /*  private final StudentService studentService;
     private final StudentRepository studentRepository;
     private final UserRepository userRepository;
 
@@ -77,5 +66,5 @@ public class StudentController {
 
         studentService.updateStudent(id, student, authentication);
         return ResponseEntity.ok("Student updated");
-    }
+    }*/
 }

@@ -29,6 +29,40 @@ export const bookReducer = createReducer(
     error: error
   })),
 
-  
+
+  on(BookActions.deleteBookSuccess,
+    (state, { id }) => ({
+
+      ...state,
+
+      books: state.book.filter(
+        book => book.id !== id
+      )
+
+    })),
+
+  on(BookActions.deleteBookFailure,
+    (state, { error }) => ({
+
+      ...state,
+
+      error
+
+    })),
+
+  on(BookActions.updateBookSuccess,
+    (state, { book }) => ({
+
+      ...state,
+
+      books: state.book.map((b) =>
+
+        b.id === book.id
+          ? book
+          : b
+
+      )
+
+    })),
 );
 

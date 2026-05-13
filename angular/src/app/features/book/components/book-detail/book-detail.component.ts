@@ -8,5 +8,8 @@ import { Component } from '@angular/core';
   styleUrl: './book-detail.component.css'
 })
 export class BookDetailComponent {
-
+  book: any;
+  ngOnInit() {
+    this.book = history.state.book;
+  }
 }

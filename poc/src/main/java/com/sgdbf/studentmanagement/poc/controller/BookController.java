@@ -1,5 +1,7 @@
 package com.sgdbf.studentmanagement.poc.controller;
 
+import com.sgdbf.studentmanagement.poc.dto.BookRequestDto;
+import com.sgdbf.studentmanagement.poc.dto.BookResponseDto;
 import com.sgdbf.studentmanagement.poc.entity.Book;
 import com.sgdbf.studentmanagement.poc.service.BookService;
 import org.springframework.http.ResponseEntity;
@@ -21,26 +23,30 @@ public class BookController {
 
     @PreAuthorize("hasAnyRole('ADMIN','STUDENT','LIBRARIAN')")
     @GetMapping
-    public List<Book> getAllBooks() {
+    public List<BookResponseDto> getAllBooks() {
         return bookService.getAll();
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN','STUDENT','LIBRARIAN')")
     @GetMapping("/{id}")
-    public Book getBook(@PathVariable Long id) {
+    @PreAuthorize("hasAnyRole('ADMIN','STUDENT','LIBRARIAN')")
+    public BookResponseDto getBook(@PathVariable Long id) {
         return bookService.getById(id);
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN','LIBRARIAN')")
     @PostMapping
-    public Book addBook(@RequestBody Book book) {
-        return bookService.save(book);
+    @PreAuthorize("hasAnyRole('ADMIN','LIBRARIAN')")
+    public BookResponseDto addBook(
+            @RequestBody BookRequestDto requestDto) {
+        System.out.println("Add book called");
+        return bookService.save(requestDto);
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN','LIBRARIAN')")
     @PutMapping("/{id}")
-    public Book updateBook(@PathVariable Long id, @RequestBody Book book) {
-        return bookService.update(id, book);
+    @PreAuthorize("hasAnyRole('ADMIN','LIBRARIAN')")
+    public BookResponseDto updateBook(
+            @PathVariable Long id,
+            @RequestBody BookRequestDto requestDto) {
+        return bookService.update(id, requestDto);
     }
 
     @PreAuthorize("hasAnyRole('ADMIN','LIBRARIAN')")
@@ -69,7 +75,6 @@ public class BookController {
     public ResponseEntity<?> renewBook(@PathVariable Long id,
                                        Authentication authentication) {
         bookService.renewBook(id, authentication.getName());
-
         return ResponseEntity.ok("Book renewed successfully");
     }
 }

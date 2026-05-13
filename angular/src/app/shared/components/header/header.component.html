@@ -10,20 +10,23 @@
             <li><a routerLink="/fine">Fine</a></li>
             <li><a routerLink="/login">Login</a></li>
             <li><a routerLink="/signup">Signup</a></li>
+
+
+            @if(currentUser | async; as user){
+
+            <div class="profile-section" [routerLink]="['/profile']">
+
+                <!-- <img [src]="user.profileImage || 'assets/default-profile.png'" alt="profile"> -->
+
+                <span>
+                    {{ user.firstName }}
+                </span>
+
+            </div>
+
+            }
         </ul>
     </div>
 
-    @if(currentUser | async; as user){
 
-    <div class="profile-section" [routerLink]="['/profile']">
-
-        <!-- <img [src]="user.profileImage || 'assets/default-profile.png'" alt="profile"> -->
-
-        <span>
-            {{ user.firstName }}
-        </span>
-
-    </div>
-
-    }
 </nav>

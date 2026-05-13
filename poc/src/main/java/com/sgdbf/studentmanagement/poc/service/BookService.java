@@ -1,5 +1,7 @@
 package com.sgdbf.studentmanagement.poc.service;
 
+import com.sgdbf.studentmanagement.poc.dto.BookRequestDto;
+import com.sgdbf.studentmanagement.poc.dto.BookResponseDto;
 import com.sgdbf.studentmanagement.poc.dto.FineDTO;
 import com.sgdbf.studentmanagement.poc.entity.*;
 import com.sgdbf.studentmanagement.poc.enums.Role;
@@ -74,8 +76,6 @@ public class BookService {
     }
 
     public boolean canStudentBorrowNewBook(User user, String username) {
-
-        // ✅ Rule 1: Max 3 active books
         int activeBooks = borrowRepository.countByUserAndReturnDateIsNull(user);
 
         if (activeBooks >= 3) {
@@ -83,12 +83,10 @@ public class BookService {
             return false;
         }
 
-        // ✅ Rule 2: Fine check (use existing method)
         FineDTO fineData = fineService.getMyFines(username);
 
         double totalDue = fineData.getTotalAmount();
 
-        // ❌ Block if ANY fine pending
         if (totalDue > 0) {
             System.out.println("Pending fine: " + totalDue);
             return false;
@@ -105,36 +103,59 @@ public class BookService {
         bookRepository.save(book);
     }
 
-    public List<Book> getAll() {
-        return bookRepository.findAll();
+    public List<BookResponseDto> getAll() {
+
+        return bookRepository.findAll()
+                .stream()
+                .map(this::mapToDto)
+                .toList();
     }
 
 
-    public Book getById(Long id) {
-        return bookRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Book not found"));
+    public BookResponseDto getById(Long id) {
+
+        Book book = bookRepository.findById(id)
+                .orElseThrow(() ->
+                        new RuntimeException("Book not found"));
+
+        return mapToDto(book);
     }
 
 
-    public Book save(Book book) {
-        if (book.getQuantity() < 0) {
+    public BookResponseDto save(BookRequestDto requestDto) {
+
+        if (requestDto.getQuantity() < 0) {
             throw new RuntimeException("Invalid quantity");
         }
-        return bookRepository.save(book);
+
+        Book book = mapToEntity(
+                new Book(),
+                requestDto
+        );
+
+        Book savedBook = bookRepository.save(book);
+
+        return mapToDto(savedBook);
+
     }
 
+    public BookResponseDto update(
+            Long id,
+            BookRequestDto requestDto) {
 
-    public Book update(Long id, Book updatedBook) {
-        Book book = getById(id);
+        Book book = bookRepository.findById(id)
+                .orElseThrow(() ->
+                        new RuntimeException("Book not found"));
 
-        book.setTitle(updatedBook.getTitle());
-        book.setQuantity(updatedBook.getQuantity());
+        Book updatedBook = mapToEntity(book, requestDto);
 
-        return bookRepository.save(book);
+        updatedBook = bookRepository.save(updatedBook);
+
+        return mapToDto(updatedBook);
     }
 
     public void delete(Long id) {
-        Book book = getById(id);
+        Book book = bookRepository.findById(id).orElse(null);
         bookRepository.delete(book);
     }
 
@@ -150,17 +171,13 @@ public class BookService {
             throw new RuntimeException("Please clear the pending due: " + totalDue + " Rs");
         }
 
-        // ✅ Step 2: Fetch borrow record
         BorrowRecord record = getBorrowRecord(user, bookId);
 
-        // ✅ Step 3: Return book
         record.setReturnDate(LocalDate.now());
 
-        // ✅ Step 4: Increase quantity
         Book book = record.getBook();
         book.setQuantity(book.getQuantity() + 1);
 
-        // ✅ Step 5: Save
         borrowRepository.save(record);
         bookRepository.save(book);
     }
@@ -173,7 +190,7 @@ public class BookService {
 
         LocalDate today = LocalDate.now();
 
-        // ✅ Step 1: Check pending fines
+        //  Step 1: Check pending fines
         FineDTO fineData = fineService.getMyFines(userName);
         double totalDue = fineData.getTotalAmount();
 
@@ -181,17 +198,17 @@ public class BookService {
             throw new RuntimeException("Please pay pending fine: " + totalDue + " Rs");
         }
 
-        // ✅ Step 2: Prevent renewal if overdue
+        // Step 2: Prevent renewal if overdue
         if (today.isAfter(record.getDueDate())) {
             throw new RuntimeException("Cannot renew overdue book. Please return and clear fine first and your due is : " + totalDue);
         }
 
-        // ✅ Step 3: Renewal limit
+        //  Step 3: Renewal limit
         if (record.getRenewCount() >= 2) {
             throw new RuntimeException("Cannot renew more than 2 times");
         }
 
-        // ✅ Step 4: Extend due date
+        //  Step 4: Extend due date
         record.setDueDate(record.getDueDate().plusDays(7));
         record.setRenewCount(record.getRenewCount() + 1);
 
@@ -199,7 +216,41 @@ public class BookService {
     }
 
     public BorrowRecord getBorrowRecord(User user, Long bookId) {
+
+        Book book = bookRepository.findById(bookId)
+                .orElseThrow(() ->
+                        new RuntimeException("Book not found"));
+
         return borrowRepository
-                .findByUserAndBookAndReturnDateIsNull(user, getById(bookId));
+                .findByUserAndBookAndReturnDateIsNull(user, book);
+
+    }
+
+    private BookResponseDto mapToDto(Book book) {
+
+        BookResponseDto dto = new BookResponseDto();
+
+        dto.setId(book.getId());
+        dto.setTitle(book.getTitle());
+        dto.setAuthor(book.getAuthor());
+        dto.setCategory(book.getCategory());
+        dto.setDescription(book.getDescription());
+        dto.setAvailable(book.isAvailable());
+        dto.setQuantity(book.getQuantity());
+
+        return dto;
+    }
+
+    private Book mapToEntity(Book book, BookRequestDto requestDto) {
+
+        book.setTitle(requestDto.getTitle());
+        book.setAuthor(requestDto.getAuthor());
+        book.setCategory(requestDto.getCategory());
+        book.setDescription(requestDto.getDescription());
+        book.setAvailable(requestDto.isAvailable());
+        book.setQuantity(requestDto.getQuantity());
+
+        return book;
+
     }
 }
