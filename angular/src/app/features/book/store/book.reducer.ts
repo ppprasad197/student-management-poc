@@ -7,7 +7,8 @@ export const bookFeatureKey = 'book';
 export const initialState: BookState = {
   book: [],
   loading: false,
-  error: null
+  error: null,
+  myBorrowedBooks: [],
 };
 
 export const bookReducer = createReducer(
@@ -64,5 +65,99 @@ export const bookReducer = createReducer(
       )
 
     })),
+
+
+  on(BookActions.borrowBook, (state) => ({
+
+    ...state,
+
+    loading: true
+
+  })),
+
+  on(BookActions.borrowBookSuccess, (state) => ({
+
+    ...state,
+
+    loading: false
+
+  })),
+
+  on(BookActions.borrowBookFailure, (state, { error }) => ({
+
+    ...state,
+
+    loading: false,
+
+    error
+
+  })),
+
+
+  on(BookActions.returnBook, (state) => ({
+
+    ...state,
+
+    loading: true
+
+  })),
+
+  on(BookActions.returnBookSuccess, (state) => ({
+
+    ...state,
+
+    loading: false
+
+  })),
+
+  on(BookActions.returnBookFailure, (state, { error }) => ({
+
+    ...state,
+
+    loading: false,
+
+    error
+
+  })),
+
+  on(
+    BookActions.loadMyBorrowedBooksSuccess,
+
+    (state, { books }) => ({
+
+      ...state,
+
+      myBorrowedBooks: books
+
+    })
+
+  ),
+
+
+  on(BookActions.renewBook, (state) => ({
+
+    ...state,
+
+    loading: true
+
+  })),
+
+  on(BookActions.renewBookSuccess, (state) => ({
+
+    ...state,
+
+    loading: false
+
+  })),
+
+  on(BookActions.renewBookFailure, (state, { error }) => ({
+
+    ...state,
+
+    loading: false,
+
+    error
+
+  })),
 );
 

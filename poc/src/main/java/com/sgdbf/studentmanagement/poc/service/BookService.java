@@ -2,6 +2,7 @@ package com.sgdbf.studentmanagement.poc.service;
 
 import com.sgdbf.studentmanagement.poc.dto.BookRequestDto;
 import com.sgdbf.studentmanagement.poc.dto.BookResponseDto;
+import com.sgdbf.studentmanagement.poc.dto.BorrowRecordResponseDto;
 import com.sgdbf.studentmanagement.poc.dto.FineDTO;
 import com.sgdbf.studentmanagement.poc.entity.*;
 import com.sgdbf.studentmanagement.poc.enums.Role;
@@ -35,26 +36,48 @@ public class BookService {
         User user = getStudent(userName);
 
         Book book = bookRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Book not found"));
+                .orElseThrow(() ->
+                        new RuntimeException("Book not found"));
 
-        // ✅ Step 1: Check availability
+        boolean isAlreadyBorrowedByStudent =
+                borrowRepository
+                        .existsByBookAndUserAndReturnDateIsNull(
+                                book,
+                                user
+                        );
+
+        if (isAlreadyBorrowedByStudent) {
+
+            throw new RuntimeException(
+                    "Book is already borrowed"
+            );
+
+        }
+
         if (book.getQuantity() <= 0) {
-            throw new RuntimeException("Book is not available");
+
+            throw new RuntimeException(
+                    "Book is not available"
+            );
+
         }
 
-        // ✅ Step 2: Validate borrow rules FIRST
         if (!canStudentBorrowNewBook(user, userName)) {
-            throw new RuntimeException("You cannot borrow book");
+
+            throw new RuntimeException(
+                    "You cannot borrow book"
+            );
+
         }
 
-        // ✅ Step 3: Reduce quantity
         book.setQuantity(book.getQuantity() - 1);
-        bookRepository.save(book);
 
-        // ✅ Step 4: Create borrow record
+        bookRepository.save(book);
         createBorrowRecord(user, book);
 
-        System.out.println("Logged in user's username : " + userName);
+        System.out.println(
+                "Logged in user's username : " + userName
+        );
 
         return book;
     }
@@ -62,6 +85,7 @@ public class BookService {
     public void createBorrowRecord(User user, Book book) {
 
         BorrowRecord borrowRecord = new BorrowRecord();
+        borrowRecord.setUser(user);
         borrowRecord.setBook(book);
         borrowRecord.setIssueDate(LocalDate.now());
         borrowRecord.setDueDate(LocalDate.now().plusDays(7));
@@ -252,5 +276,44 @@ public class BookService {
 
         return book;
 
+    }
+
+    public List<BorrowRecordResponseDto> getMyBorrowedBooks(
+            String username) {
+
+        User user = getStudent(username);
+
+        List<BorrowRecord> records =
+                borrowRepository
+                        .findByUserAndReturnDateIsNull(user);
+
+        return records.stream()
+                .map(this::mapBorrowRecordToDto)
+                .toList();
+    }
+
+    private BorrowRecordResponseDto mapBorrowRecordToDto(
+            BorrowRecord record) {
+
+        BorrowRecordResponseDto dto =
+                new BorrowRecordResponseDto();
+
+        dto.setId(record.getId());
+
+        dto.setBookId(record.getBook().getId());
+
+        dto.setBookTitle(record.getBook().getTitle());
+
+        dto.setAuthor(record.getBook().getAuthor());
+
+        dto.setIssueDate(record.getIssueDate());
+
+        dto.setDueDate(record.getDueDate());
+
+        dto.setReturnDate(record.getReturnDate());
+
+        dto.setRenewCount(record.getRenewCount());
+
+        return dto;
     }
 }

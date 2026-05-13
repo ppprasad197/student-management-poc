@@ -35,6 +35,15 @@
 
 </div>
 
+<div class="top-actions">
+
+    <button routerLink="/myBorrowedBooks">
+
+        My Borrowed Books
+
+    </button>
+
+</div>
 
 <table>
 
@@ -72,7 +81,7 @@
 
             <td>
 
-                @if(book.available){
+                @if(book.quantity > 0){
 
                 <span>Available</span>
 
@@ -119,7 +128,7 @@
 
                 @if(user.role === 'STUDENT'){
 
-                @if(book.available){
+                @if( book.quantity>0){
 
                 <button (click)="borrowBook(book.id)">
 
@@ -150,5 +159,7 @@
         }
 
     </tbody>
+
+
 
 </table>

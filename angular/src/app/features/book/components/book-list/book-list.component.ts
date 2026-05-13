@@ -48,11 +48,9 @@ export class BookListComponent {
   }
 
   borrowBook(id: number) {
-
     this.store.dispatch(
       BookActions.borrowBook({ id })
     );
-
   }
 
   returnBook(id: number) {

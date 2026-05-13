@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Book } from '../models/book.model';
 import { returnBook } from '../store/book.actions';
+import { BorrowedBook } from '../models/borrowed-book.model';
 
 @Injectable({
   providedIn: 'root'
@@ -39,14 +40,25 @@ export class BookService {
   }
 
   borrowBook(id: number) {
-    return this.http.post(`${this.baseUrl}/borrow/${id}`, {});
+    return this.http.post<Book>(
+      `${this.baseUrl}/borrow/${id}`,
+      {}
+    );
+
   }
 
   returnBook(id: number) {
-    return this.http.post(`${this.baseUrl}/return/${id}`, {});
+    return this.http.post<Book>(`${this.baseUrl}/return/${id}`, {});
   }
 
   renewBook(id: number) {
-    return this.http.post(`${this.baseUrl}/renew/${id}`, {});
+    return this.http.post<Book>(`${this.baseUrl}/renew/${id}`, {});
+  }
+
+  getMyBorrowedBooks() {
+    return this.http.get<BorrowedBook[]>(
+      'http://localhost:8080/borrowRecord/myBorrowedBooks'
+    );
+
   }
 }

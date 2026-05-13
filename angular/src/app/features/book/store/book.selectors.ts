@@ -8,3 +8,11 @@ export const selectBooks = createSelector(
     (state) => state.book
 )
 
+export const selectMyBorrowedBooks =
+    createSelector(
+
+        selectBookState,
+
+        (state) => state.myBorrowedBooks
+
+    );

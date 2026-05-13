@@ -1,5 +1,6 @@
 import { createAction, createActionGroup, emptyProps, props } from '@ngrx/store';
 import { Book } from '../models/book.model';
+import { BorrowedBook } from '../models/borrowed-book.model';
 
 export const loadBooks = createAction(
   '[Book]Load Books'
@@ -65,14 +66,77 @@ export const borrowBook = createAction(
   props<{ id: number }>()
 );
 
+export const borrowBookSuccess = createAction(
+
+  '[Book] Borrow Book Success',
+
+  props<{ book: Book }>()
+
+);
+
+export const borrowBookFailure = createAction(
+
+  '[Book] Borrow Book Failure',
+
+  props<{ error: string }>()
+
+);
+
 export const returnBook = createAction(
   '[Book]Return Book',
   props<{ id: number }>()
 );
 
+export const returnBookSuccess = createAction(
+
+  '[Book] Return Book Success',
+
+  props<{ book: Book }>()
+
+);
+
+export const returnBookFailure = createAction(
+
+  '[Book] Return Book Failure',
+
+  props<{ error: string }>()
+
+);
+
 export const renewBook = createAction(
   '[Book]Renew Book',
   props<{ id: number }>()
+);
+
+export const renewBookSuccess = createAction(
+
+  '[Book] Renew Book Success',
+
+  props<{ book: Book }>()
+
+);
+
+export const renewBookFailure = createAction(
+
+  '[Book] Renew Book Failure',
+
+  props<{ error: string }>()
+
+);
+
+
+export const loadMyBorrowedBooks = createAction(
+  '[Book] Load My Borrowed Books'
+);
+
+export const loadMyBorrowedBooksSuccess = createAction(
+  '[Book] Load My Borrowed Books Success',
+  props<{ books: BorrowedBook[] }>()
+);
+
+export const loadMyBorrowedBooksFailure = createAction(
+  '[Book] Load My Borrowed Books Failure',
+  props<{ error: string }>()
 );
 
 

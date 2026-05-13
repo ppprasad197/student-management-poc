@@ -8,6 +8,8 @@ import { BookListComponent } from './features/book/components/book-list/book-lis
 import { ProfileComponent } from './shared/components/profile/profile.component';
 import { BookDetailComponent } from './features/book/components/book-detail/book-detail.component';
 import { BookFormComponent } from './features/book/components/book-form/book-form.component';
+import { BorrowBookComponent } from './features/book/components/borrow-book/borrow-book.component';
+import { MyBorrowBooksComponent } from './features/book/components/my-borrow-books/my-borrow-books.component';
 
 export const routes: Routes = [
     { path: "home", component: HomeComponent },
@@ -20,6 +22,8 @@ export const routes: Routes = [
     { path: 'profile', component: ProfileComponent },
     { path: 'bookDetails', component: BookDetailComponent },
     { path: 'add-book', component: BookFormComponent },
-    { path: 'update-book', component: BookFormComponent }
+    { path: 'update-book', component: BookFormComponent },
+    { path: "myBorrowedBooks", component: MyBorrowBooksComponent }
+
 
 ];

@@ -4,6 +4,7 @@ import { BookService } from '../services/book.service';
 import * as BookActions from '../store/book.actions';
 import { catchError, map, of, switchMap } from 'rxjs';
 import { Book } from '../models/book.model';
+import { BorrowedBook } from '../models/borrowed-book.model';
 
 
 @Injectable()
@@ -155,4 +156,197 @@ export class BookEffects {
 
   );
 
+
+  borrowBook = createEffect(() =>
+
+    this.actions.pipe(
+
+      ofType(BookActions.borrowBook),
+
+      switchMap(({ id }) =>
+
+        this.bookService.borrowBook(id).pipe(
+
+          map((book: Book) =>
+
+            BookActions.borrowBookSuccess({
+              book
+            })
+
+          ),
+
+          catchError((error) =>
+
+            of(
+              BookActions.borrowBookFailure({
+                error: error.error
+              })
+            )
+
+          )
+
+        )
+
+      )
+
+    )
+
+  );
+
+  borrowBookSuccess$ = createEffect(() =>
+
+    this.actions.pipe(
+
+      ofType(BookActions.borrowBookSuccess),
+
+      map(() =>
+
+        BookActions.loadBooks()
+
+      )
+
+    )
+
+  );
+
+  returnBook = createEffect(() =>
+
+    this.actions.pipe(
+
+      ofType(BookActions.returnBook),
+
+      switchMap(({ id }) =>
+
+        this.bookService.returnBook(id).pipe(
+
+          map((book: Book) =>
+
+            BookActions.returnBookSuccess({
+              book
+            })
+
+          ),
+
+          catchError((error) =>
+
+            of(
+              BookActions.returnBookFailure({
+                error: error.error
+              })
+            )
+
+          )
+
+        )
+
+      )
+
+    )
+
+  );
+
+  returnBookSuccess$ = createEffect(() =>
+
+    this.actions.pipe(
+
+      ofType(BookActions.returnBookSuccess),
+
+      map(() =>
+
+        BookActions.loadBooks()
+
+      )
+
+    )
+
+  );
+
+
+  loadMyBorrowedBooks = createEffect(() =>
+
+    this.actions.pipe(
+
+      ofType(BookActions.loadMyBorrowedBooks),
+
+      switchMap(() =>
+
+        this.bookService.getMyBorrowedBooks().pipe(
+
+          map((books: BorrowedBook[]) =>
+
+            BookActions.loadMyBorrowedBooksSuccess({
+              books
+            })
+
+          ),
+
+          catchError((error) =>
+
+            of(
+              BookActions.loadMyBorrowedBooksFailure({
+                error: error.message
+              })
+            )
+
+          )
+
+        )
+
+      )
+
+    )
+
+  );
+
+  renewBook = createEffect(() =>
+
+    this.actions.pipe(
+
+      ofType(BookActions.renewBook),
+
+      switchMap(({ id }) =>
+
+        this.bookService.renewBook(id).pipe(
+
+          map((book: Book) =>
+
+            BookActions.renewBookSuccess({
+              book
+            })
+
+          ),
+
+          catchError((error) =>
+
+            of(
+              BookActions.renewBookFailure({
+                error: error.error
+              })
+            )
+
+          )
+
+        )
+
+      )
+
+    )
+
+  );
+
+  renewBookSuccess$ = createEffect(() =>
+
+    this.actions.pipe(
+
+      ofType(BookActions.renewBookSuccess),
+
+      map(() =>
+
+        BookActions.loadMyBorrowedBooks()
+
+      )
+
+    )
+
+  );
 }
