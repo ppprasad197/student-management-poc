@@ -8,6 +8,40 @@ public class FineDTO {
     private int totalFines;
     private List<FineItem> fines;
 
+    public FineDTO(double totalAmount, int totalFines, List<FineItem> fines) {
+        this.totalAmount = totalAmount;
+        this.totalFines = totalFines;
+        this.fines = fines;
+    }
+
+    public FineDTO() {
+
+    }
+
+    public double getTotalAmount() {
+        return totalAmount;
+    }
+
+    public void setTotalAmount(double totalAmount) {
+        this.totalAmount = totalAmount;
+    }
+
+    public int getTotalFines() {
+        return totalFines;
+    }
+
+    public void setTotalFines(int totalFines) {
+        this.totalFines = totalFines;
+    }
+
+    public List<FineItem> getFines() {
+        return fines;
+    }
+
+    public void setFines(List<FineItem> fines) {
+        this.fines = fines;
+    }
+
     public static class FineItem {
         private Long borrowRecordId;
         private String bookName;
@@ -77,36 +111,5 @@ public class FineDTO {
         }
     }
 
-    public FineDTO() {
-    }
 
-    public FineDTO(double totalAmount, int totalFines, List<FineItem> fines) {
-        this.totalAmount = totalAmount;
-        this.totalFines = totalFines;
-        this.fines = fines;
-    }
-
-    public double getTotalAmount() {
-        return totalAmount;
-    }
-
-    public void setTotalAmount(double totalAmount) {
-        this.totalAmount = totalAmount;
-    }
-
-    public int getTotalFines() {
-        return totalFines;
-    }
-
-    public void setTotalFines(int totalFines) {
-        this.totalFines = totalFines;
-    }
-
-    public List<FineItem> getFines() {
-        return fines;
-    }
-
-    public void setFines(List<FineItem> fines) {
-        this.fines = fines;
-    }
 }

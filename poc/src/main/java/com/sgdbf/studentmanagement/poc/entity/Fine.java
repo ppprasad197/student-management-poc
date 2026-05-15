@@ -10,9 +10,6 @@ public class Fine {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-//    @ManyToOne
-//    private Student student;
-
     @ManyToOne
     private User user;
 

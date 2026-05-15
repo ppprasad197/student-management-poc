@@ -1,0 +1,106 @@
+<h2>My Fines</h2>
+
+@if(fines | async; as fineData){
+
+<h3>
+    Total Due :
+    ₹ {{ fineData.totalAmount }}
+</h3>
+
+@if(fineData.fines.length > 0){
+
+<table>
+
+    <thead>
+
+        <tr>
+
+            <th>Book</th>
+
+            <th>Due Date</th>
+
+            <th>Late Days</th>
+
+            <th>Fine</th>
+
+        </tr>
+
+    </thead>
+
+    <tbody>
+
+        @for(fine of fineData.fines; track fine.borrowRecordId){
+
+        <tr>
+
+            <td>
+                {{ fine.bookName }}
+            </td>
+
+            <td>
+                {{ fine.dueDate }}
+            </td>
+
+            <td>
+                {{ fine.daysLate }}
+            </td>
+
+            <td>
+                ₹ {{ fine.fineAmount }}
+            </td>
+
+        </tr>
+
+        }
+
+    </tbody>
+
+</table>
+
+<button (click)="payFine(fineData.totalAmount)">
+
+    Pay Full Fine
+
+</button>
+
+}
+
+@else {
+
+<p>
+    No Pending Fines
+</p>
+
+}
+
+}
+
+@if(summary | async; as summary){
+
+<div>
+
+    <h3>Summary</h3>
+
+    <p>
+        Total Fine :
+        ₹ {{ summary.totalFine }}
+    </p>
+
+    <p>
+        Paid :
+        ₹ {{ summary.paid }}
+    </p>
+
+    <p>
+        Remaining :
+        ₹ {{ summary.remaining }}
+    </p>
+
+    <p>
+        Paid Date :
+        {{summary.paidDate}}
+    </p>
+
+</div>
+
+}

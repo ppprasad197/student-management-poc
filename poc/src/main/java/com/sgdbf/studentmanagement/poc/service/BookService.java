@@ -187,7 +187,7 @@ public class BookService {
 
         User user = getStudent(userName);
 
-        // ✅ Step 1: Check fines FIRST
+        //  Step 1: Check fines FIRST
         FineDTO fineData = fineService.getMyFines(userName);
         double totalDue = fineData.getTotalAmount();
 

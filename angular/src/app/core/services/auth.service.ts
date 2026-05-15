@@ -29,8 +29,9 @@ export class AuthService {
         withCredentials: true
       }
     )
-
   }
+
+  
 
   signupUser(data: any) {
     return this.httpClient.post(
@@ -41,7 +42,6 @@ export class AuthService {
   }
 
   getCurrentUser(): Observable<User> {
-
     return this.httpClient.get<User>(
       `${this.baseUrl}/user/currentUser`,
       {
