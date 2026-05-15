@@ -1,21 +1,17 @@
 package com.sgdbf.studentmanagement.poc.dto;
 
-import java.time.LocalDate;
-
 public class FineSummaryDto {
     private double totalFine;
 
     private double paid;
 
     private double remaining;
+    
 
-    private LocalDate paidDate;
-
-    public FineSummaryDto(double totalFine, double paid, double remaining, LocalDate paidDate) {
+    public FineSummaryDto(double totalFine, double paid, double remaining) {
         this.totalFine = totalFine;
         this.paid = paid;
         this.remaining = remaining;
-        this.paidDate = paidDate;
     }
 
     public FineSummaryDto() {
@@ -44,13 +40,5 @@ public class FineSummaryDto {
 
     public void setRemaining(double remaining) {
         this.remaining = remaining;
-    }
-
-    public LocalDate getPaidDate() {
-        return paidDate;
-    }
-
-    public void setPaidDate(LocalDate paidDate) {
-        this.paidDate = paidDate;
     }
 }

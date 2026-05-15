@@ -18,7 +18,7 @@ export class AuthEffects {
   login = createEffect(() =>
     this.actions.pipe(
       ofType(AuthActions.login),
-      mergeMap((action) =>
+      switchMap((action) =>
         this.authService.login(action.username, action.password).pipe(
           map((response) => (
             AuthActions.loginSuccess({ user: response.username })
@@ -31,6 +31,30 @@ export class AuthEffects {
       )
     )
   );
+
+  logout = createEffect(() =>
+    this.actions.pipe(
+      ofType(AuthActions.logout),
+      switchMap(() =>
+        this.authService.logout().pipe(
+          map(() =>
+            AuthActions.logoutSuccess()
+          )
+        )
+      )
+    )
+  );
+
+  logoutSuccess = createEffect(() =>
+    this.actions.pipe(
+      ofType(AuthActions.logoutSuccess),
+      tap(() => {
+        this.router.navigate(['/login']);
+      })
+    ),
+    { dispatch: false }
+  );
+
 
   // loginSuccess = createEffect(
   //   () =>

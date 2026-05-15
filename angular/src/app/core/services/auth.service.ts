@@ -31,7 +31,16 @@ export class AuthService {
     )
   }
 
-  
+
+  logout() {
+    return this.httpClient.post(
+      `${this.baseUrl}/logout`, {},
+      {
+        withCredentials: true
+      }
+    );
+  }
+
 
   signupUser(data: any) {
     return this.httpClient.post(

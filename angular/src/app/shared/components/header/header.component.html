@@ -1,32 +1,71 @@
 <nav class="navbar">
-    <div class="logo">
-        <a routerLink="/home">Student and Library Management System</a>
-    </div>
-    <div class="navlinks">
-        <ul>
-            <li><a routerLink="/home">Home</a></li>
-            <li><a routerLink="/student">Student</a></li>
-            <li><a routerLink="/book">Book</a></li>
-            <li><a routerLink="/fine">Fine</a></li>
-            <li><a routerLink="/login">Login</a></li>
-            <li><a routerLink="/signup">Signup</a></li>
 
+    <div class="logo">
+
+        <a routerLink="/home">
+            Student and Library Management System
+        </a>
+
+    </div>
+
+    <div class="navlinks">
+
+        <ul>
+
+            <li>
+                <a routerLink="/home">Home</a>
+            </li>
+
+            <li>
+                <a routerLink="/student">Student</a>
+            </li>
+
+            <li>
+                <a routerLink="/book">Book</a>
+            </li>
+
+            <li>
+                <a routerLink="/fine">Fine</a>
+            </li>
+
+            @if(!(currentUser | async)){
+
+            <li>
+                <a routerLink="/login">Login</a>
+            </li>
+
+            <li>
+                <a routerLink="/signup">Signup</a>
+            </li>
+
+            }
 
             @if(currentUser | async; as user){
 
-            <div class="profile-section" [routerLink]="['/profile']">
+            <li class="profile-section">
 
-                <!-- <img [src]="user.profileImage || 'assets/default-profile.png'" alt="profile"> -->
+                <span [routerLink]="['/profile']">
 
-                <span>
                     {{ user.firstName }}
+
                 </span>
 
-            </div>
+            </li>
+
+            <li>
+
+                <a routerLink="/logout">
+
+                    Logout
+
+                </a>
+
+            </li>
 
             }
-        </ul>
-    </div>
 
+        </ul>
+
+    </div>
 
 </nav>

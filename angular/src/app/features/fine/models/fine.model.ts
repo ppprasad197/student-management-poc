@@ -31,9 +31,6 @@ export interface FineSummary {
     paid: number;
 
     remaining: number;
-
-    paidDate: string;
-
 }
 
 export interface FinePaymentRequest {
