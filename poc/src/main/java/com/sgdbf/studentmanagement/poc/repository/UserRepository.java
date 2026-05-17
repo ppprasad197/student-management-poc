@@ -1,5 +1,6 @@
 package com.sgdbf.studentmanagement.poc.repository;
 
+import com.sgdbf.studentmanagement.poc.dto.UserResponseDto;
 import com.sgdbf.studentmanagement.poc.entity.User;
 import com.sgdbf.studentmanagement.poc.enums.Role;
 import com.sgdbf.studentmanagement.poc.enums.UserStatus;
@@ -20,4 +21,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
     User findByUserNameAndRole(String userName, Role role);
 
     List<User> findAllByRole(Role role);
+
+    List<User> findByRoleNot(Role role);
 }

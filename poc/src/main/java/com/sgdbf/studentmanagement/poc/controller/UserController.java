@@ -24,13 +24,16 @@ public class UserController {
         this.userService = userService;
     }
 
-    @GetMapping
-    @PreAuthorize("hasAnyRole('ADMIN','LIBRARIAN')")
+    @GetMapping("/users")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<List<UserResponseDto>> getAllUsers() {
+        return ResponseEntity.ok(userService.getAllUsers());
+    }
 
-        return ResponseEntity.ok(
-                userService.getAllStudents()
-        );
+    @GetMapping("/students")
+    @PreAuthorize("hasAnyRole('ADMIN','LIBRARIAN')")
+    public ResponseEntity<List<UserResponseDto>> getAllStudents() {
+        return ResponseEntity.ok(userService.getAllStudents());
     }
 
     @PostMapping("/signup")
@@ -73,7 +76,6 @@ public class UserController {
             @RequestBody UserRequestDto requestDto
     ) {
         UserResponseDto response = userService.updateUser(id, requestDto);
-
         return ResponseEntity.ok(response);
     }
 

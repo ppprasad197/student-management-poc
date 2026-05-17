@@ -7,30 +7,22 @@ export const selectMyFines = createSelector(
     selectFineState, (state) => state.fines
 );
 
-export const selectFineSummary =
-    createSelector(
+export const selectFineSummary = createSelector(
+    selectFineState,
+    (state) => state.summary
+);
 
-        selectFineState,
+export const selectFineLoading = createSelector(
+    selectFineState,
+    (state) => state.loading
+);
 
-        (state) => state.summary
+export const selectFineError = createSelector(
+    selectFineState,
+    (state) => state.error
+);
 
-    );
-
-export const selectFineLoading =
-    createSelector(
-
-        selectFineState,
-
-        (state) => state.loading
-
-    );
-
-export const selectFineError =
-    createSelector(
-
-        selectFineState,
-
-        (state) => state.error
-
-    );
-
+export const selectAllStudentFines = createSelector(
+    selectFineState,
+    (state) => state.allStudentFines
+);

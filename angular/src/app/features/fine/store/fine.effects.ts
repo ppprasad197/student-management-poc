@@ -153,4 +153,28 @@ export class FineEffects {
     )
 
   );
+
+  loadAllStudentFines = createEffect(() =>
+    this.actions$.pipe(
+      ofType(FineActions.loadAllStudentFines),
+      switchMap(() =>
+        this.fineService.getAllStudentFines().pipe(
+          map((fines) =>
+            FineActions
+              .loadAllStudentFinesSuccess({
+                fines
+              })
+          ),
+          catchError((error) =>
+            of(
+              FineActions
+                .loadAllStudentFinesFailure({
+                  error: error.message
+                })
+            )
+          )
+        )
+      )
+    )
+  );
 }

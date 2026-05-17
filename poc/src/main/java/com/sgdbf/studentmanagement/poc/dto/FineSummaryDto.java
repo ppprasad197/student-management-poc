@@ -6,7 +6,6 @@ public class FineSummaryDto {
     private double paid;
 
     private double remaining;
-    
 
     public FineSummaryDto(double totalFine, double paid, double remaining) {
         this.totalFine = totalFine;

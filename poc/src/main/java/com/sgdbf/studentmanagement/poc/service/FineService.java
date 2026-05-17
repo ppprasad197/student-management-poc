@@ -1,5 +1,6 @@
 package com.sgdbf.studentmanagement.poc.service;
 
+import com.sgdbf.studentmanagement.poc.dto.AdminLibrarianFineResponseDto;
 import com.sgdbf.studentmanagement.poc.dto.FineDTO;
 import com.sgdbf.studentmanagement.poc.dto.FinePaymentResponseDTO;
 import com.sgdbf.studentmanagement.poc.dto.FineSummaryDto;
@@ -10,15 +11,12 @@ import com.sgdbf.studentmanagement.poc.enums.Role;
 import com.sgdbf.studentmanagement.poc.repository.BorrowRepository;
 import com.sgdbf.studentmanagement.poc.repository.FineRepository;
 import com.sgdbf.studentmanagement.poc.repository.UserRepository;
-import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class FineService {
@@ -388,6 +386,94 @@ public class FineService {
                         )
 
                 );
+    }
+
+    public List<AdminLibrarianFineResponseDto> getAllStudentFines() {
+
+        List<BorrowRecord> records =
+                borrowRepository.findAll();
+
+        List<AdminLibrarianFineResponseDto> response =
+                new ArrayList<>();
+
+        LocalDate today = LocalDate.now();
+
+        for (BorrowRecord record : records) {
+
+            if (record.getUser() == null)
+                continue;
+
+            LocalDate dueDate =
+                    record.getDueDate();
+
+            LocalDate returnDate =
+                    record.getReturnDate();
+
+            long daysLate = 0;
+
+            if (returnDate != null &&
+                    returnDate.isAfter(dueDate)) {
+
+                daysLate =
+                        ChronoUnit.DAYS.between(
+                                dueDate,
+                                returnDate
+                        );
+
+            } else if (returnDate == null &&
+                    today.isAfter(dueDate)) {
+
+                daysLate =
+                        ChronoUnit.DAYS.between(
+                                dueDate,
+                                today
+                        );
+
+            }
+
+            if (daysLate <= 0)
+                continue;
+
+            double fineAmount =
+                    daysLate * 10;
+
+            boolean paid =
+                    fineRepository
+                            .existsByBorrowRecord(record);
+
+            AdminLibrarianFineResponseDto dto =
+                    new AdminLibrarianFineResponseDto();
+
+            dto.setStudentId(
+                    record.getUser().getId()
+            );
+
+            dto.setStudentName(
+                    record.getUser().getFirstName()
+                            + " "
+                            + record.getUser().getLastName()
+            );
+
+            dto.setUserName(
+                    record.getUser().getUserName()
+            );
+
+            dto.setBookName(
+                    record.getBook().getTitle()
+            );
+
+            dto.setFineAmount(fineAmount);
+
+            dto.setPaid(paid);
+
+            dto.setDueDate(dueDate);
+
+            dto.setReturnDate(returnDate);
+
+            response.add(dto);
+
+        }
+        return response;
     }
 
 

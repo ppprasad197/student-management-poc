@@ -12,12 +12,10 @@ export class StudentService {
   constructor(private httpClient: HttpClient) { }
 
   getStudents(): Observable<Student[]> {
-    console.log("I am calling get all students api");
-    return this.httpClient.get<Student[]>(this.baseUrl, { withCredentials: true });
+    return this.httpClient.get<Student[]>(`${this.baseUrl}/students`, { withCredentials: true });
   }
 
   approveStudent(id: number) {
-    console.log("id form approve student : " + id)
     return this.httpClient.post(`${this.baseUrl}/approveUser/${id}`, {});
   }
 

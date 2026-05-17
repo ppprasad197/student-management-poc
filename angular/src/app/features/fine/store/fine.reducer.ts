@@ -9,7 +9,8 @@ export const initialState: FineState = {
   fines: null,
   summary: null,
   loading: false,
-  error: null
+  error: null,
+  allStudentFines: [],
 };
 
 export const fineReducer = createReducer(
@@ -26,38 +27,27 @@ export const fineReducer = createReducer(
     loading: false
   })),
 
-  on(
+  on(FineActions.loadFineSummarySuccess, (state, { summary }) => ({
+    ...state,
+    summary
+  })),
 
-    FineActions.loadFineSummarySuccess,
-
-    (state, { summary }) => ({
-
-      ...state,
-
-      summary
-
-    })
-
-  ),
-
-  on(
-
-    FineActions.payFineSuccess,
-
-    (state) => ({
-
-      ...state,
-
-      loading: false
-
-    })
-
-  ),
+  on(FineActions.payFineSuccess, (state) => ({
+    ...state,
+    loading: false
+  })),
 
   on(FineActions.loadMyFinesFailure, FineActions.loadFineSummaryFailure, (state, { error }) => ({
     ...state,
     error,
     loading: false
-  }))
+  })),
+
+  on(FineActions.loadAllStudentFinesSuccess, (state, { fines }) => ({
+    ...state,
+    allStudentFines: fines
+  })),
+
+
 );
 

@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { FinePaymentResponse, FineResponse, FineSummary } from '../models/fine.model';
 import { Observable } from 'rxjs';
+import { AdminFine } from '../../user/models/adminFine.model';
 
 @Injectable({
   providedIn: 'root'
@@ -42,5 +43,15 @@ export class FineService {
       { amount }
 
     );
+  }
+
+  getAllStudentFines() {
+
+    return this.http.get<AdminFine[]>(
+
+      `${this.baseUrl}/all`
+
+    );
+
   }
 }

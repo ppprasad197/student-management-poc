@@ -5,6 +5,7 @@ import * as FineActions from '../../store/fine.actions';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
+import * as AuthSelectors from '../../../../store/auth/auth.selectors';
 
 @Component({
   selector: 'app-fine',
@@ -24,6 +25,16 @@ export class FineComponent {
     FineSelectors.selectFineSummary
   );
 
+  allStudentFines$ =
+    this.store.select(
+      FineSelectors.selectAllStudentFines
+    );
+
+  currentUser =
+    this.store.select(
+      AuthSelectors.selectCurrentUser
+    );
+
   ngOnInit() {
     console.log("Fine actions dispatched");
     this.store.dispatch(
@@ -33,6 +44,31 @@ export class FineComponent {
     this.store.dispatch(
       FineActions.loadFineSummary()
     );
+
+    this.currentUser
+      .subscribe((user) => {
+        if (!user) return;
+        if (
+          user.role === 'ADMIN'
+          ||
+          user.role === 'LIBRARIAN'
+        ) {
+          this.store.dispatch(
+            FineActions.loadAllStudentFines()
+          );
+        }
+
+        else if (
+          user.role === 'STUDENT'
+        ) {
+          this.store.dispatch(
+            FineActions.loadMyFines()
+          );
+          this.store.dispatch(
+            FineActions.loadFineSummary()
+          );
+        }
+      });
   }
 
   payFine(amount: number) {
@@ -41,4 +77,6 @@ export class FineComponent {
       FineActions.payFine({ amount })
     );
   }
+
+
 }

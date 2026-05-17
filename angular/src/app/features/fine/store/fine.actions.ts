@@ -1,5 +1,6 @@
 import { createAction, createActionGroup, emptyProps, props } from '@ngrx/store';
 import { FinePaymentResponse, FineResponse, FineSummary } from '../models/fine.model';
+import { AdminFine } from '../../user/models/adminFine.model';
 
 export const loadMyFines = createAction(
   '[Fine]Load My Fines'
@@ -41,6 +42,20 @@ export const payFineSuccess = createAction(
 
 export const payFineFailure = createAction(
   '[Fine] Pay Fine Failure',
+  props<{ error: string }>()
+);
+
+export const loadAllStudentFines = createAction(
+  '[Fine] Load All Student Fines'
+);
+
+export const loadAllStudentFinesSuccess = createAction(
+  '[Fine] Load All Student Fines Success',
+  props<{ fines: AdminFine[] }>()
+);
+
+export const loadAllStudentFinesFailure = createAction(
+  '[Fine] Load All Student Fines Failure',
   props<{ error: string }>()
 );
 

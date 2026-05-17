@@ -170,4 +170,11 @@ public class UserService {
         User user = userRepository.findByUserName(name).orElseThrow(() -> new RuntimeException("User not found"));
         return mapToResponseDto(user);
     }
+
+    public List<UserResponseDto> getAllUsers() {
+        List<User> users = userRepository.findByRoleNot(Role.STUDENT);
+        return users.stream()
+                .map(this::mapToResponseDto)
+                .toList();
+    }
 }

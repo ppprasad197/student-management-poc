@@ -11,6 +11,7 @@ import { BookFormComponent } from './features/book/components/book-form/book-for
 import { BorrowBookComponent } from './features/book/components/borrow-book/borrow-book.component';
 import { MyBorrowBooksComponent } from './features/book/components/my-borrow-books/my-borrow-books.component';
 import { FineComponent } from './features/fine/components/fine/fine.component';
+import { LogoutComponent } from './shared/components/logout/logout.component';
 
 export const routes: Routes = [
     { path: "home", component: HomeComponent },
@@ -25,7 +26,8 @@ export const routes: Routes = [
     { path: 'add-book', component: BookFormComponent },
     { path: 'update-book', component: BookFormComponent },
     { path: "myBorrowedBooks", component: MyBorrowBooksComponent },
-    { path: "fine", component: FineComponent }
+    { path: "fine", component: FineComponent },
+    { path: "logout", component: LogoutComponent }
 
 
 ];
