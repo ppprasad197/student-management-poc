@@ -14,11 +14,13 @@ import { BookEffects } from './features/book/store/book.effects';
 import { bookReducer } from './features/book/store/book.reducer';
 import { FineEffects } from './features/fine/store/fine.effects';
 import { fineReducer } from './features/fine/store/fine.reducer';
+import { userReducer } from './features/user/store/user.reducer';
+import { UserEffects } from './features/user/store/user.effects';
 
 export const appConfig: ApplicationConfig = {
   providers: [provideZoneChangeDetection({ eventCoalescing: true }), provideRouter(routes),
-  provideStore({ auth: authReducer, students: studentReducer, books: bookReducer, fines: fineReducer }),
-  provideEffects([AuthEffects, StudentEffects, BookEffects,FineEffects]),
+  provideStore({ auth: authReducer, students: studentReducer, books: bookReducer, fines: fineReducer, users: userReducer }),
+  provideEffects([AuthEffects, StudentEffects, BookEffects, FineEffects, UserEffects]),
   provideHttpClient(withInterceptors([authInterceptor])),
   ]
 };

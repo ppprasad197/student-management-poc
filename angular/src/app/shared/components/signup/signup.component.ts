@@ -5,6 +5,8 @@ import { first } from 'rxjs';
 import * as AuthActions from '../../../store/auth/auth.actions';
 import * as StudentActions from '../../../features/student/store/student.actions';
 import { Router } from '@angular/router';
+import * as UserActions from '../../../features/user/store/user.actions';
+
 @Component({
   selector: 'app-signup',
   standalone: true,
@@ -16,8 +18,9 @@ export class SignupComponent {
   constructor(private store: Store, private router: Router) { }
 
   isUpdateMode: boolean = false;
-
+  isUserUpdate: boolean = false;
   studentId!: number;
+  userId!: number;
 
   signupData = {
     firstName: '',
@@ -25,38 +28,57 @@ export class SignupComponent {
     userName: '',
     email: '',
     password: '',
-    role: ''
+    role: '',
   };
 
   ngOnInit(): void {
-
     const student = history.state.student;
-
     if (student && student.id) {
-
       this.isUpdateMode = true;
-
       this.studentId = student.id;
-
       this.signupData = {
-
         firstName: student.firstName,
         lastName: student.lastName,
         userName: student.userName,
         email: student.email,
         password: '',
-        role: student.role
+        role: student.role,
+      };
+    }
+
+    // USER UPDATE
+
+    const user = history.state.user;
+
+    if (user && user.id) {
+
+      this.isUpdateMode = true;
+
+      this.isUserUpdate = true;
+
+      this.userId = user.id;
+
+      this.signupData = {
+
+        firstName: user.firstName,
+
+        lastName: user.lastName,
+
+        userName: user.userName,
+
+        email: user.email,
+
+        password: '',
+
+        role: user.role
 
       };
 
     }
-
   }
 
   signup() {
-
     if (this.isUpdateMode) {
-
       this.store.dispatch(
         StudentActions.updateStudent({
           id: this.studentId,
@@ -71,4 +93,7 @@ export class SignupComponent {
       );
     }
   }
+
+
+
 }

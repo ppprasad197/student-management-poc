@@ -1,7 +1,19 @@
 <div class="signup-container">
     <form class="signup-form" (ngSubmit)="signup()">
         <h2>
-            {{ isUpdateMode ? 'Update Student' : 'Create Account' }}
+
+            @if(isUpdateMode){
+
+            {{ isUserUpdate ? 'Update User' : 'Update Student' }}
+
+            }
+
+            @else {
+
+            Create Account
+
+            }
+
         </h2>
         <div class="form-row">
             <div class="input-group">
