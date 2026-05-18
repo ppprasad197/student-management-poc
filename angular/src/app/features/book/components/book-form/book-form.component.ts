@@ -15,83 +15,50 @@ import { Book } from '../../models/book.model';
 })
 export class BookFormComponent {
   isUpdateMode = false;
-
   bookId!: number;
 
   bookData: Book = {
-
     id: 0,
-
     title: '',
-
     author: '',
-
     category: '',
-
     description: '',
-
     quantity: 0,
-
     available: true
-
   };
 
   private book = history.state.book;
 
-  constructor(
-    private store: Store,
-    private router: Router
-  ) { }
+  constructor(private store: Store, private router: Router) { }
 
   ngOnInit() {
-
     if (this.book) {
-
       this.isUpdateMode = true;
-
       this.bookId = this.book.id;
-
       this.bookData = {
-
         id: this.book.id,
-
         title: this.book.title,
-
         author: this.book.author,
-
         category: this.book.category,
-
         description: this.book.description,
-
         quantity: this.book.quantity,
-
         available: this.book.available
-
       };
     }
   }
 
   submitBook() {
-
     if (this.isUpdateMode) {
-
       this.store.dispatch(
-
         BookActions.updateBook({
-
           id: this.bookId,
-
           book: this.bookData
-
         })
       );
     }
-
     else {
       this.store.dispatch(
-
         BookActions.addBook({
-
           book: this.bookData
         })
       );

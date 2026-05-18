@@ -5,5 +5,5 @@ export interface User {
     userName: string;
     email: string;
     role: string;
-    // userStatus: string;
+    userStatus: 'PENDING'|'APPROVED';
 }

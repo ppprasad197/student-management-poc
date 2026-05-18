@@ -17,7 +17,7 @@ import { RouterLink } from '@angular/router';
   styleUrl: './user.component.css'
 })
 export class UserComponent {
-  users: Observable<User[]>;
+  users: Observable<User[]>;  
 
   constructor(private store: Store) {
     this.users = this.store.select(UserSelectors.selectUsers);

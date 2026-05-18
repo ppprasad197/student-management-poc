@@ -43,9 +43,8 @@ public class BookController {
 
     @PutMapping("/{id}")
     @PreAuthorize("hasAnyRole('ADMIN','LIBRARIAN')")
-    public BookResponseDto updateBook(
-            @PathVariable Long id,
-            @RequestBody BookRequestDto requestDto) {
+    public BookResponseDto updateBook(@PathVariable Long id, @RequestBody BookRequestDto requestDto) {
+        System.out.println("Update book called : " + requestDto.getQuantity());
         return bookService.update(id, requestDto);
     }
 

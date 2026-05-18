@@ -1,165 +1,76 @@
-<!-- <h2>Book List</h2>
-
-@if(loading$ | async){
-
-<p>Loading books...</p>
-
-} -->
-
-<!-- @if(error$ | async; as error){
-
-<p>{{ error }}</p>
-
-} -->
-
 <div class="book-header">
-
     <h2>Book List</h2>
-
     @if(currentUser | async; as user){
-
-    @if(
-    user.role === 'ADMIN'
-    || user.role === 'LIBRARIAN'
-    ){
-
-    <button class="add-book-btn" [routerLink]="['/add-book']">
-
+    @if(user.role === 'ADMIN'|| user.role === 'LIBRARIAN'){
+    <button class="add-book-btn" [routerLink]="['/addBook']">
         Add Book
-
     </button>
-
     }
-
+    <div class="top-actions">
+        @if(user.role==='STUDENT'){
+        <button routerLink="/myBorrowedBooks">
+            My Borrowed Books
+        </button>
+        }
+    </div>
     }
-
-</div>
-
-<div class="top-actions">
-
-    <button routerLink="/myBorrowedBooks">
-
-        My Borrowed Books
-
-    </button>
-
 </div>
 
 <table>
-
     <thead>
-
         <tr>
-
             <th>Title</th>
-
             <th>Author</th>
-
             <th>Category</th>
-
             <th>Status</th>
-
             <th>Quantity</th>
-
             <th>Actions</th>
-
         </tr>
-
     </thead>
-
     <tbody>
 
-        @for(book of books$ | async; track book.id){
-
+        @for(book of books | async; track book.id){
         <tr>
-
             <td>{{ book.title }}</td>
-
             <td>{{ book.author }}</td>
-
             <td>{{ book.category }}</td>
-
             <td>
-
                 @if(book.quantity > 0){
-
                 <span>Available</span>
-
                 }
-
                 @else {
-
                 <span>Not Available</span>
-
                 }
-
             </td>
-
             <td>{{ book.quantity }}</td>
-
             <td>
-
                 <button [routerLink]="['/bookDetails'] " [state]="{book:book}">
-
                     View
-
                 </button>
-
                 @if(currentUser | async; as user){
-
-                @if(
-                user.role === 'ADMIN' || user.role === 'LIBRARIAN'
-                ){
-
-                <button [routerLink]="['/update-book']" [state]="{ book: book }">
-
+                @if(user.role === 'ADMIN' || user.role === 'LIBRARIAN'){
+                <button [routerLink]="['/updateBook']" [state]="{ book: book }">
                     Update
-
                 </button>
-
                 <button (click)="deleteBook(book.id)">
-
                     Delete
-
                 </button>
-
                 }
-
-
                 @if(user.role === 'STUDENT'){
-
                 @if( book.quantity>0){
-
                 <button (click)="borrowBook(book.id)">
-
                     Borrow
-
                 </button>
-
                 }
-
                 @else {
-
                 <button (click)="returnBook(book.id)">
-
                     Return
-
                 </button>
-
                 }
-
                 }
-
                 }
-
             </td>
-
         </tr>
-
         }
-
     </tbody>
-
-
-
 </table>

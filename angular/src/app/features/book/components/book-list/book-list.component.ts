@@ -20,7 +20,7 @@ export class BookListComponent {
 
   private store = inject(Store);
 
-  books$ =
+  books =
     this.store.select(BookSelectors.selectBooks);
 
 
@@ -54,11 +54,9 @@ export class BookListComponent {
   }
 
   returnBook(id: number) {
-
     this.store.dispatch(
       BookActions.returnBook({ id })
     );
-
   }
 
   currentUser =

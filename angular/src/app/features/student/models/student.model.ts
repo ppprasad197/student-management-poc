@@ -3,7 +3,7 @@ export interface Student {
     firstName: string;
     lastName: string;
     email: string;
-    username: string;
+    userName: string;
     studentId: string;
     userStatus: 'PENDING' | 'APPROVED'
 }

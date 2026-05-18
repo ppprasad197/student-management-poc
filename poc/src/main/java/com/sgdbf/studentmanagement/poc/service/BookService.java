@@ -163,15 +163,15 @@ public class BookService {
 
     }
 
-    public BookResponseDto update(
-            Long id,
-            BookRequestDto requestDto) {
+    public BookResponseDto update(Long id, BookRequestDto requestDto) {
 
         Book book = bookRepository.findById(id)
                 .orElseThrow(() ->
                         new RuntimeException("Book not found"));
 
         Book updatedBook = mapToEntity(book, requestDto);
+
+        System.out.println("Updated book quantity: " + updatedBook.getQuantity());
 
         updatedBook = bookRepository.save(updatedBook);
 

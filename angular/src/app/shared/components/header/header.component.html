@@ -1,159 +1,79 @@
 <nav class="navbar">
-
     <div class="logo">
-
         <a routerLink="/home">
-
             Student and Library Management System
-
         </a>
-
+        <img src="assets/logo.jpg" alt="Logo" routerLink="/home">
     </div>
-
     <div class="navlinks">
-
         <ul>
-
             <li>
-
                 <a routerLink="/home">
-
                     Home
-
                 </a>
-
             </li>
-
             <li>
-
                 <a routerLink="/book">
-
                     Books
-
                 </a>
-
             </li>
-
             @if(currentUser | async; as user){
-
-            <!-- ADMIN / LIBRARIAN -->
-
-            @if(
-            user.role === 'ADMIN'
-            ||
-            user.role === 'LIBRARIAN'
-            ){
-
+            @if(user.role === 'ADMIN'||user.role === 'LIBRARIAN'){
             <li>
-
                 <a routerLink="/student">
-
                     Students
-
                 </a>
-
             </li>
-
             <li>
-
                 <a routerLink="/users">
-
                     Users
-
                 </a>
-
             </li>
-
             <li>
-
                 <a routerLink="/fine">
-
                     Fine
-
                 </a>
-
             </li>
-
             }
 
-            <!-- STUDENT -->
 
             @if(user.role === 'STUDENT'){
-
             <li>
-
                 <a routerLink="/myBorrowedBooks">
-
                     My Library
-
                 </a>
-
             </li>
-
             <li>
-
                 <a routerLink="/fine">
-
                     My Fine
-
                 </a>
-
             </li>
-
             }
-
             }
-
             @if(!(currentUser | async)){
-
             <li>
-
                 <a routerLink="/login">
-
                     Login
-
                 </a>
-
             </li>
-
             <li>
-
                 <a routerLink="/signup">
-
                     Signup
-
                 </a>
-
             </li>
-
             }
-
             @if(currentUser | async; as user){
-
             <li class="profile-section">
-
                 <span [routerLink]="['/profile']">
-
                     {{ user.firstName }}
-
                 </span>
-
             </li>
-
             <li>
-
                 <a routerLink="/logout">
-
                     Logout
-
                 </a>
-
             </li>
-
             }
-
         </ul>
-
     </div>
-
 </nav>

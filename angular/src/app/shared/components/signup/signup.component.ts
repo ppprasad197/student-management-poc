@@ -49,31 +49,17 @@ export class SignupComponent {
     // USER UPDATE
 
     const user = history.state.user;
-
     if (user && user.id) {
-
-      this.isUpdateMode = true;
-
       this.isUserUpdate = true;
-
       this.userId = user.id;
-
       this.signupData = {
-
         firstName: user.firstName,
-
         lastName: user.lastName,
-
         userName: user.userName,
-
         email: user.email,
-
         password: '',
-
         role: user.role
-
       };
-
     }
   }
 
@@ -85,7 +71,14 @@ export class SignupComponent {
           student: this.signupData
         })
       );
-    } else {
+    } else if (this.isUserUpdate) {
+      this.store.dispatch(UserActions.updateUser({
+        id: this.userId,
+        user: this.signupData
+      }));
+    }
+
+    else {
       this.store.dispatch(
         AuthActions.signUp({
           data: this.signupData
@@ -93,7 +86,5 @@ export class SignupComponent {
       );
     }
   }
-
-
 
 }

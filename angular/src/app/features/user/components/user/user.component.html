@@ -79,7 +79,7 @@
 
                 </button>
 
-                @if(user.userStatus !== 'APPROVED'){
+                @if(user.userStatus === 'PENDING'){
 
                 <button (click)="approveUser(user.id)">
 

@@ -18,7 +18,7 @@ export class StudentListComponent {
 
   students = this.store.select(
     selectStudentState.selectStudents
-  );
+  );  
 
   ngOnInit(): void {
     this.store.dispatch(
@@ -36,11 +36,9 @@ export class StudentListComponent {
     const confirmed = window.confirm(
       'Are you sure you want to delete this student??'
     );
-
     if (confirmed) {
       this.store.dispatch(StudentActions.deleteStudent({ id }));;
     }
-
   }
 
 }

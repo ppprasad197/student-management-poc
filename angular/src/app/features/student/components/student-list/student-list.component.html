@@ -1,10 +1,15 @@
+<h2>Students</h2>
 <table>
-
   <thead>
     <tr>
       <th>Name</th>
+
       <th>Email</th>
+
+      <th>Username</th>
+
       <th>Status</th>
+
       <th>Actions</th>
     </tr>
   </thead>
@@ -21,6 +26,7 @@
       </td>
 
       <td>{{ student.email }}</td>
+      <td>{{student.userName}}</td>
 
       <td>{{ student.userStatus }}</td>
 
@@ -39,7 +45,6 @@
         </button>
 
         @if(student.userStatus === 'PENDING'){
-
         <button (click)="approveStudent(student.id)">
           Approve
         </button>

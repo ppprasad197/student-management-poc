@@ -24,11 +24,7 @@ export class BookService {
     );
   }
 
-  updateBook(
-    id: number,
-    book: Partial<Book>
-  ) {
-
+  updateBook(id: number, book: Partial<Book>) {
     return this.http.put<Book>(
       `${this.baseUrl}/${id}`,
       book
@@ -44,7 +40,6 @@ export class BookService {
       `${this.baseUrl}/borrow/${id}`,
       {}
     );
-
   }
 
   returnBook(id: number) {
@@ -59,6 +54,5 @@ export class BookService {
     return this.http.get<BorrowedBook[]>(
       'http://localhost:8080/borrowRecord/myBorrowedBooks'
     );
-
   }
 }
