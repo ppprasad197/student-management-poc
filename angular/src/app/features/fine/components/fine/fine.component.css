@@ -1,0 +1,85 @@
+/* table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    font-family: Arial, sans-serif;
+    background-color: #ffffff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+thead {
+    background-color: #1e293b;
+    color: white;
+}
+
+th {
+    padding: 12px;
+    text-align: left;
+    font-size: 14px;
+    letter-spacing: 0.5px;
+}
+
+td {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+    font-size: 14px;
+} */
+
+/* Headings */
+h2,
+h3 {
+    text-align: center;
+    margin: 15px 0;
+    color: #1e293b;
+}
+
+/* Table */
+table {
+    width: 80%;
+    margin: 20px auto;
+    border-collapse: collapse;
+}
+
+/* Header */
+thead {
+    background-color: #1e293b;
+    color: white;
+}
+
+thead th {
+    padding: 10px;
+    text-align: center;
+}
+
+/* Body */
+tbody td {
+    padding: 10px;
+    text-align: center;
+    border-bottom: 1px solid #ccc;
+}
+
+/* Hover */
+tbody tr:hover {
+    background-color: #f1f5f9;
+}
+
+/* Button */
+button {
+    display: block;
+    margin: 20px auto;
+    padding: 8px 14px;
+    background-color: #1e293b;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #334155;
+}
+
+/* Text (for "No Pending Fines") */
+p {
+    text-align: center;
+    color: #333;
+}

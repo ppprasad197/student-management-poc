@@ -55,55 +55,29 @@ export class AuthEffects {
     { dispatch: false }
   );
 
-
-  // loginSuccess = createEffect(
-  //   () =>
-  //     this.actions.pipe(
-  //       ofType(AuthActions.loginSuccess),
-  //       tap(() => {
-  //         this.router.navigate(['/home']);
-  //       })
-  //     ),
-  //   { dispatch: false }
-  // );
-
-  loginSuccess = createEffect(
-    () =>
-      this.actions.pipe(
-
-        ofType(AuthActions.loginSuccess),
-
-        tap(() => {
-
-          this.store.dispatch(
-            AuthActions.getCurrentUser()
-          );
-
-        }),
-
-        tap(() => {
-
-          this.router.navigate(['/home']);
-
-        })
-
-      ),
+  loginSuccess = createEffect(() =>
+    this.actions.pipe(
+      ofType(AuthActions.loginSuccess),
+      tap(() => {
+        this.store.dispatch(
+          AuthActions.getCurrentUser()
+        );
+      }),
+      tap(() => {
+        this.router.navigate(['/home']);
+      })
+    ),
     { dispatch: false }
   );
 
   signup = createEffect(() =>
     this.actions.pipe(
-
       ofType(AuthActions.signUp),
-
       switchMap(({ data }) =>
-
         this.authService.signupUser(data).pipe(
-
           map((response) =>
             AuthActions.signupSuccess({ response })
           ),
-
           catchError((error) =>
             of(
               AuthActions.signupFailure({
@@ -111,7 +85,6 @@ export class AuthEffects {
               })
             )
           )
-
         )
       )
     )
@@ -121,45 +94,31 @@ export class AuthEffects {
     this.actions.pipe(
       ofType(AuthActions.signupSuccess),
       tap(() => {
-        this.router.navigate(['/student']);
+        this.router.navigate(['/home']);
       })
     ),
     { dispatch: false }
   );
 
   getCurrentUser = createEffect(() =>
-
     this.actions.pipe(
-
       ofType(AuthActions.getCurrentUser),
-
       switchMap(() =>
-
         this.authService.getCurrentUser().pipe(
-
           map((user) =>
-
             AuthActions.getCurrentUserSuccess({
               user
             })
-
           ),
-
           catchError((error) =>
-
             of(
               AuthActions.getCurrentUserFailure({
                 error: error.message
               })
             )
-
           )
-
         )
-
       )
-
     )
-
   );
 }

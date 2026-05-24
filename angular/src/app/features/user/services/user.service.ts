@@ -17,9 +17,13 @@ export class UserService {
   }
 
   approveUser(id: number) {
-    return this.http.post<User>(
+    return this.http.post(
       `${this.baseUrl}/approveUser/${id}`,
-      {}
+      {},
+      {
+        withCredentials: true,
+        responseType: 'text'
+      }
     );
   }
 

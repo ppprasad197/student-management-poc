@@ -1,12 +1,13 @@
-import { Component } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Component, inject } from '@angular/core';
+import { first, Observable } from 'rxjs';
 import { User } from '../../models/user.model';
 import { Store } from '@ngrx/store';
 import * as UserSelectors from '../../store/user.selectors';
 import * as UserActions from '../../store/user.actions';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
+import * as selectStudentState from '../../../student/store/student.selectors';
 
 
 @Component({
@@ -17,11 +18,11 @@ import { RouterLink } from '@angular/router';
   styleUrl: './user.component.css'
 })
 export class UserComponent {
-  users: Observable<User[]>;  
 
-  constructor(private store: Store) {
-    this.users = this.store.select(UserSelectors.selectUsers);
-  }
+  private store = inject(Store);
+  private router = inject(Router);
+
+  users = this.store.select(UserSelectors.selectUsers);
 
   ngOnInit() {
     this.store.dispatch(UserActions.loadUsers());
@@ -29,6 +30,13 @@ export class UserComponent {
 
   approveUser(id: number) {
     this.store.dispatch(UserActions.approveUser({ id }));
+    this.store.select(UserSelectors.selectUserSuccessMessage)
+      .pipe(first())
+      .subscribe(message => {
+        if (message) {
+          alert(message);
+        }
+      });
   }
 
   deleteUser(id: number) {
@@ -38,7 +46,13 @@ export class UserComponent {
     if (confirmed) {
       this.store.dispatch(
         UserActions.deleteUser({ id })
-      );
+      ); this.store.select(UserSelectors.selectUserSuccessMessage)
+        .pipe(first())
+        .subscribe(message => {
+          if (message) {
+            alert(message);
+          }
+        });
     }
   }
 }

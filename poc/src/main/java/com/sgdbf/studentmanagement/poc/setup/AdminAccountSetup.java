@@ -1,13 +1,11 @@
 package com.sgdbf.studentmanagement.poc.setup;
 
-import com.sgdbf.studentmanagement.poc.entity.Student;
 import com.sgdbf.studentmanagement.poc.entity.User;
 import com.sgdbf.studentmanagement.poc.enums.Role;
 import com.sgdbf.studentmanagement.poc.enums.UserStatus;
 import com.sgdbf.studentmanagement.poc.repository.UserRepository;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
-import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
@@ -33,7 +31,7 @@ public class AdminAccountSetup implements ApplicationRunner {
     @Override
     public void run(ApplicationArguments args) throws Exception {
         if (userRepository.findByUserName("admin").isEmpty()) {
-            User admin = new User(1L, "admin", "admin", "admin@gmail.com", "admin", passwordEncoder.encode("admin123"), Role.ADMIN, UserStatus.APPROVED, null);
+            User admin = new User(1L, "admin", "admin", "admin@gmail.com", "admin", passwordEncoder.encode("admin123"), Role.ADMIN, UserStatus.APPROVED);
             admin.setUserStatus(UserStatus.APPROVED);
             userRepository.save(admin);
         }

@@ -64,9 +64,7 @@ public class UserService {
     }
 
     public List<UserResponseDto> findByUserStatus(UserStatus userStatus) {
-
         List<User> users = userRepository.findByUserStatus(userStatus);
-
         return users.stream()
                 .map(this::mapToResponseDto)
                 .toList();

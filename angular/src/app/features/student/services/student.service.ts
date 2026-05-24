@@ -16,12 +16,24 @@ export class StudentService {
   }
 
   approveStudent(id: number) {
-    return this.httpClient.post(`${this.baseUrl}/approveUser/${id}`, {});
+    return this.httpClient.post(
+      `${this.baseUrl}/approveUser/${id}`,
+      {},
+      {
+        withCredentials: true,
+        responseType: 'text'
+      }
+    );
   }
 
   deleteStudent(id: number) {
+    console.log("Deleting student with id : " + id);
     return this.httpClient.delete(
-      `${this.baseUrl}/delete/${id}`
+      `${this.baseUrl}/delete/${id}`,
+      {
+        withCredentials: true,
+        responseType: 'text'
+      }
     );
   }
 

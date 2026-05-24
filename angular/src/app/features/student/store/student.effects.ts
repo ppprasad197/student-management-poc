@@ -3,7 +3,7 @@ import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { Action } from 'rxjs/internal/scheduler/Action';
 import { StudentService } from '../services/student.service';
 import * as StudentActions from './student.actions';
-import { catchError, map, of, switchMap } from 'rxjs';
+import { catchError, delay, map, of, switchMap, tap } from 'rxjs';
 import * as AuthActions from '../../../store/auth/auth.actions';
 
 
@@ -29,64 +29,47 @@ export class StudentEffects {
         ))
     ));
 
-
-  approveUser = createEffect(() =>
+  approveStudent = createEffect(() =>
     this.actions.pipe(
       ofType(StudentActions.approveStudent),
       switchMap(({ id }) =>
         this.studentService.approveStudent(id).pipe(
-          map(() =>
-            StudentActions.approveStudentSuccess()
-          ),
-
+          map(() => {
+            return StudentActions.approveStudentSuccess({ id });
+          }),
           catchError((error) =>
-            of(StudentActions.approveStudentFailure({
-              error: error.message
-            })))
+            of(
+              StudentActions.approveStudentFailure({
+                error: error.message
+              })
+            )
+          )
         )
-      )
-    )
-  );
-
-  approveStudentSuccess$ = createEffect(() =>
-    this.actions.pipe(
-
-      ofType(StudentActions.approveStudentSuccess),
-
-      map(() =>
-        StudentActions.loadStudents()
       )
     )
   );
 
   updateStudent = createEffect(() =>
-
     this.actions.pipe(
-
       ofType(StudentActions.updateStudent),
-
       switchMap(({ id, student }) =>
-
-        this.studentService.updateStudent(id, student).pipe(
-
+        this.studentService.updateStudent(
+          id,
+          student
+        ).pipe(
           map(() =>
-            StudentActions.loadStudents()
+            StudentActions.updateStudentSuccess()
           ),
-
           catchError((error) =>
             of(
-              StudentActions.loadStudentsFailure({
+              StudentActions.updateStudentFailure({
                 error: error.message
               })
             )
           )
-
         )
-
       )
-
     )
-
   );
 
   deleteStudent = createEffect(() =>
@@ -95,17 +78,28 @@ export class StudentEffects {
       switchMap(({ id }) =>
         this.studentService.deleteStudent(id).pipe(
           map(() =>
-            StudentActions.loadStudents()
+            StudentActions.deleteStudentSuccess()
           ),
-
           catchError((error) =>
-            of(StudentActions.loadStudentsFailure({
-              error: error.message
-            })))
-
+            of(
+              StudentActions.deleteStudentFailure({
+                error: error.message
+              })
+            )
+          )
         )
       )
     )
   );
 
+  reloadStudents = createEffect(() =>
+    this.actions.pipe(
+      ofType(
+        StudentActions.approveStudentSuccess,
+        StudentActions.deleteStudentSuccess,
+        StudentActions.updateStudentSuccess
+      ),
+      map(() => StudentActions.loadStudents())
+    )
+  );
 }

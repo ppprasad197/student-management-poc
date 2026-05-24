@@ -1,0 +1,72 @@
+/* Page layout */
+body {
+    background-color: #f1f5f9;
+}
+
+/* Title */
+h2 {
+    text-align: center;
+    margin: 20px 0;
+    color: #1e293b;
+}
+
+/* Center container */
+table {
+    width: 80%;
+    margin: 40px auto;   /* 🔥 this centers the table */
+    border-collapse: collapse;
+    background-color: #ffffff;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+/* Header */
+thead {
+    background-color: #1e293b;
+    color: #fff;
+}
+
+thead th {
+    padding: 12px;
+    text-align: center;
+}
+
+/* Rows */
+tbody td {
+    padding: 12px;
+    text-align: center; /* 🔥 center content */
+    border-bottom: 1px solid #ddd;
+}
+
+/* Hover */
+tbody tr:hover {
+    background-color: #f8fafc;
+}
+
+/* Buttons */
+button {
+    padding: 6px 12px;
+    margin: 2px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    background-color: #1e293b;
+    color: white;
+}
+
+button:hover {
+    background-color: #334155;
+}
+
+button:disabled {
+    background-color: #94a3b8;
+    cursor: not-allowed;
+}
+
+/* ✅ Mobile */
+@media (max-width: 768px) {
+    table {
+        width: 95%;
+    }
+}

@@ -22,7 +22,12 @@ export const approveUser = createAction(
 
 export const approveUserSuccess = createAction(
   '[User] Approve User Success',
-  props<{ user: User }>()
+  props<{ id: number }>()
+);
+
+export const approveUserFailure = createAction(
+  '[User] Approve User Failure',
+  props<{ error: string }>()
 );
 
 export const deleteUser = createAction(
@@ -35,12 +40,25 @@ export const deleteUserSuccess = createAction(
   props<{ id: number }>()
 );
 
+export const deleteUserFailure = createAction(
+  '[User] Delete User Failure',
+  props<{ error: string }>()
+);
+
 export const updateUser = createAction(
   '[User] Update User',
   props<{ id: number, user: Partial<User> }>()
 );
 
 export const updateUserSuccess = createAction(
-  '[User] Update User Success',
-  props<{ user: User }>()
+  '[User] Update User Success'
 );
+
+export const updateUserFailure = createAction(
+  '[User] Update User Failure',
+  props<{ error: string }>()
+);
+
+export const clearMessages = createAction(
+  '[User] Clear Messages'
+);  

@@ -22,11 +22,12 @@ export const approveStudent = createAction(
 );
 
 export const approveStudentSuccess = createAction(
-  '[Student]Approve Student Success',
+  '[Student] Approve Student Success',
+  props<{ id: number }>()
 );
 
 export const approveStudentFailure = createAction(
-  '[Student]Approve Student Failure',
+  '[Student] Approve Student Failure',
   props<{ error: string }>()
 );
 
@@ -43,4 +44,26 @@ export const updateStudent = createAction(
 export const getStudent = createAction(
   '[Student]Get Student',
   props<{ id: number }>()
+);
+
+export const deleteStudentSuccess = createAction(
+  '[Student]Delete Student Success'
+);
+
+export const deleteStudentFailure = createAction(
+  '[Student]Delete Student Failure',
+  props<{ error: string }>()
+);
+
+export const updateStudentSuccess = createAction(
+  '[Student]Update Student Success'
+);
+
+export const updateStudentFailure = createAction(
+  '[Student]Update Student Failure',
+  props<{ error: string }>()
+);
+
+export const clearMessages = createAction(
+  '[Student] Clear Messages'
 );

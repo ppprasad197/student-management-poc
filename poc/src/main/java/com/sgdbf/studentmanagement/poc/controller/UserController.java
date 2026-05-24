@@ -71,10 +71,7 @@ public class UserController {
 
     @PutMapping("/{id}")
     @PreAuthorize("hasAnyRole('ADMIN','LIBRARIAN')")
-    public ResponseEntity<UserResponseDto> updateUser(
-            @PathVariable Long id,
-            @RequestBody UserRequestDto requestDto
-    ) {
+    public ResponseEntity<UserResponseDto> updateUser(@PathVariable Long id, @RequestBody UserRequestDto requestDto) {
         UserResponseDto response = userService.updateUser(id, requestDto);
         return ResponseEntity.ok(response);
     }

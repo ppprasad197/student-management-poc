@@ -33,15 +33,10 @@ public class User {
     @Enumerated(EnumType.STRING)
     private UserStatus userStatus;
 
-//    @OneToOne
-//    @JoinColumn(name = "student_id")
-//    @JsonIgnore
-//    private Student student;
-
     public User() {
     }
 
-    public User(Long id, String firstName, String lastName, String email, String userName, String password, Role role, UserStatus userStatus, Student student) {
+    public User(Long id, String firstName, String lastName, String email, String userName, String password, Role role, UserStatus userStatus) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -49,6 +44,9 @@ public class User {
         this.userName = userName;
         this.password = password;
         this.role = role;
+    }
+
+    public User(long l, String admin, String admin1, String mail, String admin2, String admin123, Role role, UserStatus userStatus) {
     }
 
     public Long getId() {
@@ -82,14 +80,6 @@ public class User {
     public void setRole(Role role) {
         this.role = role;
     }
-
-//    public Student getStudent() {
-//        return student;
-//    }
-
-//    public void setStudent(Student student) {
-//        this.student = student;
-//    }
 
     public String getFirstName() {
         return firstName;

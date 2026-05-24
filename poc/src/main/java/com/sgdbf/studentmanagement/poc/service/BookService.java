@@ -184,9 +184,7 @@ public class BookService {
     }
 
     public void returnBook(Long bookId, String userName) {
-
         User user = getStudent(userName);
-
         //  Step 1: Check fines FIRST
         FineDTO fineData = fineService.getMyFines(userName);
         double totalDue = fineData.getTotalAmount();
@@ -196,12 +194,9 @@ public class BookService {
         }
 
         BorrowRecord record = getBorrowRecord(user, bookId);
-
         record.setReturnDate(LocalDate.now());
-
         Book book = record.getBook();
         book.setQuantity(book.getQuantity() + 1);
-
         borrowRepository.save(record);
         bookRepository.save(book);
     }

@@ -1,3 +1,4 @@
+/* 
 .navbar {
     display: flex;
     justify-content: space-between;
@@ -5,6 +6,7 @@
     background-color: #1e293b;
     padding: 12px 24px;
     color: white;
+    box-sizing: border-box;
 }
 
 .logo {
@@ -24,14 +26,12 @@
     color: #3498db;
 }
 
-
 .logo img {
     width: 40px;
     height: 40px;
     object-fit: cover;
     border-radius: 50%;
 }
-
 
 .navlinks ul {
     list-style: none;
@@ -52,4 +52,125 @@
 .profile-section:hover {
     color: #38bdf8;
     cursor: pointer;
+} */
+
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
+
+.header {
+    width: 100%;
+    background-color: #1e293b;
+}
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 30px;
+    color: #fff;
+}
+
+.logo {
+    display: flex;
+    align-items: center flex-start;
+    gap: 10px;
+    cursor: pointer;
+}
+
+.logo a {
+    color: #fff;
+    text-decoration: none;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.logo img {
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+    cursor: pointer;
+    border-radius: 50%;
+    margin-right: 40px;
+}
+
+.navlinks ul {
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.navlinks ul li a,
+.profile-section span {
+    color: #fff;
+    text-decoration: none;
+    /* font-size: 15px; */
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.navlinks ul li a:hover,
+.profile-section span:hover {
+    color: #38bdf8;
+}
+
+
+/* .profile-section span {
+    font-weight: 600;
+} */
+
+
+/* @media (max-width: 992px) {
+    .navbar {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .navlinks {
+        width: 100%;
+    }
+
+    .navlinks ul {
+        flex-wrap: wrap;
+        justify-content: flex-start;
+        gap: 15px;
+    }
+} */
+/* 
+@media (max-width: 576px) {
+       .navbar {
+        /* flex-direction: column; */
+/* align-items: flex-start;
+        gap: 10px;
+    } */
+
+/* .logo a {
+        font-size: 14px;
+    }
+
+    .logo img {
+        width: 30px;
+        height: 30px;
+    }
+
+    .navlinks ul {
+        /* flex-direction: column; */
+/* align-items: flex-start; */
+/* width: 100%;
+        gap: 10px;
+    } */
+
+/* .navlinks ul li {
+        width: 100%;
+    } */
+
+/* .navlinks ul li a {
+        display: block;
+        width: 100%;
+    } */
+/* } */

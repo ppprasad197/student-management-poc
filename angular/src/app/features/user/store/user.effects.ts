@@ -2,7 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { UserService } from '../services/user.service';
 import * as UserActions from '../store/user.actions';
-import { catchError, map, of, switchMap } from 'rxjs';
+import { catchError, map, of, switchMap, tap } from 'rxjs';
 
 @Injectable()
 export class UserEffects {
@@ -12,111 +12,69 @@ export class UserEffects {
   ) { }
 
   loadUsers = createEffect(() =>
-
     this.actions.pipe(
-
       ofType(UserActions.loadUsers),
-
       switchMap(() =>
-
         this.userService.getAllUsers().pipe(
-
           map((users) =>
-
             UserActions.loadUsersSuccess({
               users
             })
-
           ),
-
           catchError((error) =>
-
             of(
               UserActions.loadUsersFailure({
                 error: error.message
               })
             )
-
           )
-
         )
-
       )
-
     )
-
   );
 
   approveUser = createEffect(() =>
-
     this.actions.pipe(
-
       ofType(UserActions.approveUser),
-
       switchMap(({ id }) =>
-
         this.userService.approveUser(id).pipe(
-
-          map((user) =>
-
+          map(() =>
             UserActions.approveUserSuccess({
-              user
+              id
             })
-
           ),
-
           catchError((error) =>
-
             of(
               UserActions.loadUsersFailure({
                 error: error.message
               })
             )
-
           )
-
         )
-
       )
-
     )
-
   );
 
   deleteUser = createEffect(() =>
-
     this.actions.pipe(
-
       ofType(UserActions.deleteUser),
-
       switchMap(({ id }) =>
-
         this.userService.deleteUser(id).pipe(
-
           map(() =>
-
             UserActions.deleteUserSuccess({
               id
             })
-
           ),
-
           catchError((error) =>
-
             of(
               UserActions.loadUsersFailure({
                 error: error.message
               })
             )
-
           )
-
         )
-
       )
-
     )
-
   );
 
   updateUser = createEffect(() =>
@@ -127,10 +85,9 @@ export class UserEffects {
           id,
           user
         ).pipe(
-          map((updatedUser) =>
-            UserActions.updateUserSuccess({
-              user: updatedUser
-            })
+          map(() => {
+            return UserActions.updateUserSuccess()
+          }
           ),
           catchError((error) =>
             of(
@@ -143,4 +100,18 @@ export class UserEffects {
       )
     )
   );
+
+  reloadUsers = createEffect(() =>
+    this.actions.pipe(
+      ofType(
+        UserActions.approveUserSuccess,
+        UserActions.deleteUserSuccess,
+        UserActions.updateUserSuccess
+      ),
+      map(() =>
+        UserActions.loadUsers()
+      )
+    )
+  );
+
 }

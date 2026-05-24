@@ -1,89 +1,47 @@
 <div class="book-form-container">
-
     <form class="book-form" (ngSubmit)="submitBook()">
-
         <h2>
-
             @if(isUpdateMode){
-
             <span>Update Book</span>
-
             }
-
             @else {
-
             <span>Add Book</span>
-
             }
-
         </h2>
-
         <div class="input-group">
-
             <label>Title</label>
-
             <input type="text" name="title" [(ngModel)]="bookData.title" required>
-
         </div>
-
         <div class="input-group">
-
             <label>Author</label>
-
             <input type="text" name="author" [(ngModel)]="bookData.author" required>
-
         </div>
-
         <div class="input-group">
-
             <label>Category</label>
-
             <input type="text" name="category" [(ngModel)]="bookData.category" required>
-
         </div>
-
         <div class="input-group">
-
             <label>Quantity</label>
-
             <input type="number" name="quantity" [(ngModel)]="bookData.quantity" required>
-
         </div>
-
         <div class="input-group">
-
             <label>Status</label>
-
             <select name="available" [(ngModel)]="bookData.available">
-
                 <option [ngValue]="true">
                     Available
                 </option>
-
                 <option [ngValue]="false">
                     Not Available
                 </option>
-
             </select>
-
         </div>
-
         <button type="submit">
-
             @if(isUpdateMode){
-
             <span>Update Book</span>
-
             }
-
             @else {
-
             <span>Add Book</span>
-
             }
-
         </button>
-
     </form>
-
 </div>

@@ -1,66 +1,34 @@
 <h2>My Borrowed Books</h2>
-
 <table>
-
     <thead>
-
         <tr>
-
             <th>Book</th>
-
             <th>Author</th>
-
             <th>Issue Date</th>
-
             <th>Due Date</th>
-
             <th>Renew Count</th>
-
             <th>Return Date</th>
-
             <th>Actions</th>
-
         </tr>
-
     </thead>
-
     <tbody>
-
         @for(book of borrowedBooks$ | async; track book.id){
-
         <tr>
-
             <td>{{ book.bookTitle }}</td>
-
             <td>{{ book.author }}</td>
-
             <td>{{ book.issueDate }}</td>
-
             <td>{{ book.dueDate }}</td>
-
             <td>{{ book.renewCount }}</td>
-
             <td>{{ book.returnDate }}</td>
-
             <td>
-
                 <button (click)="renewBook(book.bookId)" [disabled]="book.renewCount >= 2">
-
                     Renew
-
                 </button>
                 <button (click)="returnBook(book.bookId)">
-
                     Return
-
                 </button>
-
             </td>
-
         </tr>
-
         }
-
     </tbody>
-
 </table>

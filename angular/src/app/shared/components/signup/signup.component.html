@@ -43,7 +43,16 @@
         }
 
         <button type="submit" class="signup-btn">
-            {{ isUpdateMode ? 'Update Student' : 'Sign Up' }}
+            @if(isUserUpdate){
+            <span>Update User</span>
+            }
+            @else if(isUpdateMode){
+            <span>Update Student</span>
+            }
+            @else {
+            <span>Sign Up</span>
+            }
         </button>
+
     </form>
 </div>

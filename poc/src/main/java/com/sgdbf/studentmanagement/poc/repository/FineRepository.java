@@ -2,7 +2,6 @@ package com.sgdbf.studentmanagement.poc.repository;
 
 import com.sgdbf.studentmanagement.poc.entity.BorrowRecord;
 import com.sgdbf.studentmanagement.poc.entity.Fine;
-import com.sgdbf.studentmanagement.poc.entity.Student;
 import com.sgdbf.studentmanagement.poc.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
