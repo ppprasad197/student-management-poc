@@ -290,8 +290,7 @@ public class BookService {
     private BorrowRecordResponseDto mapBorrowRecordToDto(
             BorrowRecord record) {
 
-        BorrowRecordResponseDto dto =
-                new BorrowRecordResponseDto();
+        BorrowRecordResponseDto dto =new BorrowRecordResponseDto();
 
         dto.setId(record.getId());
 

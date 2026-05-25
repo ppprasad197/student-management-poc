@@ -15,6 +15,7 @@ import { UserComponent } from './features/user/components/user/user.component';
 import { UserDetailsComponent } from './features/user/components/user-details/user-details.component';
 
 export const routes: Routes = [
+    { path: "", component: HomeComponent },
     { path: "home", component: HomeComponent },
     { path: "signup", component: SignupComponent },
     { path: "login", component: LoginComponent },

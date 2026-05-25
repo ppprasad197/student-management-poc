@@ -1,39 +1,31 @@
-<h2>Book Details</h2>
-
-@if(book){
-
-<div>
-
-    <p>
-        <strong>Book Title :</strong>
-        {{ book.title }}
-    </p>
-
-    <p>
-        <strong>Author :</strong>
-        {{ book.author }}
-    </p>
-
-    <p>
-        <strong>Category :</strong>
-        {{ book.category }}
-    </p>
-
-    <p>
-        <strong>Description :</strong>
-        {{ book.description }}
-    </p>
-
-    <p>
-        <strong>Available :</strong>
-        {{ book.available }}
-    </p>
-
-    <p>
-        <strong>Quantity :</strong>
-        {{ book.quantity }}
-    </p>
-
+<div class="details-container">
+    <h2>Book Details</h2>
+    @if(book){
+    <div>
+        <p>
+            <strong>Book Title :</strong>
+            {{ book.title }}
+        </p>
+        <p>
+            <strong>Author :</strong>
+            {{ book.author }}
+        </p>
+        <p>
+            <strong>Category :</strong>
+            {{ book.category }}
+        </p>
+        <p>
+            <strong>Description :</strong>
+            {{ book.description }}
+        </p>
+        <p>
+            <strong>Available :</strong>
+            {{ book.available }}
+        </p>
+        <p>
+            <strong>Quantity :</strong>
+            {{ book.quantity }}
+        </p>
+    </div>
+    }
 </div>
-
-}

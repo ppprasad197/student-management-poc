@@ -1,20 +1,25 @@
 <div class="book-header">
     <h2>Book List</h2>
+
     @if(currentUser | async; as user){
-    @if(user.role === 'ADMIN'|| user.role === 'LIBRARIAN'){
-    <button class="add-book-btn" [routerLink]="['/addBook']">
-        Add Book
-    </button>
-    }
-    <div class="top-actions">
+    <div class="right-actions">
+
+        @if(user.role === 'ADMIN' || user.role === 'LIBRARIAN'){
+        <button class="add-book-btn" [routerLink]="['/addBook']">
+            Add Book
+        </button>
+        }
+
         @if(user.role==='STUDENT'){
         <button routerLink="/myBorrowedBooks">
             My Borrowed Books
         </button>
         }
+
     </div>
     }
 </div>
+
 
 <table>
     <thead>

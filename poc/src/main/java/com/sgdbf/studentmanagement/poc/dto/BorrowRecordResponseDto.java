@@ -19,10 +19,21 @@ public class BorrowRecordResponseDto {
 
     private int renewCount;
 
+    private Long studentId;
+
+
     public BorrowRecordResponseDto() {
     }
 
-    public BorrowRecordResponseDto(Long id, Long bookId, String bookTitle, String author, LocalDate issueDate, LocalDate dueDate, LocalDate returnDate, int renewCount) {
+    public Long getStudentId() {
+        return studentId;
+    }
+
+    public void setStudentId(Long studentId) {
+        this.studentId = studentId;
+    }
+
+    public BorrowRecordResponseDto(Long id, Long bookId, String bookTitle, String author, LocalDate issueDate, LocalDate dueDate, LocalDate returnDate, int renewCount, Long studentId) {
         this.id = id;
         this.bookId = bookId;
         this.bookTitle = bookTitle;
@@ -31,6 +42,7 @@ public class BorrowRecordResponseDto {
         this.dueDate = dueDate;
         this.returnDate = returnDate;
         this.renewCount = renewCount;
+        this.studentId = studentId;
     }
 
     public Long getId() {
