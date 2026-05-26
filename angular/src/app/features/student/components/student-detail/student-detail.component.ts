@@ -13,11 +13,8 @@ import { RouterLink, RouterModule } from '@angular/router';
   styleUrl: './student-detail.component.css'
 })
 export class StudentDetailComponent {
-
   student: any;
-
   ngOnInit(): void {
     this.student = history.state.student;
   }
-
 }

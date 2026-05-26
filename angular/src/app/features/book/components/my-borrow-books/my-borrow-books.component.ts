@@ -5,6 +5,7 @@ import { Store } from '@ngrx/store';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
+import { first } from 'rxjs';
 
 @Component({
   selector: 'app-my-borrow-books',
@@ -22,26 +23,54 @@ export class MyBorrowBooksComponent {
   );
 
   ngOnInit() {
-
     this.store.dispatch(
       BookActions.loadMyBorrowedBooks()
     );
-
   }
 
   returnBook(id: number) {
-
     this.store.dispatch(
       BookActions.returnBook({ id })
     );
+    this.store.select(
+      BookSelectors.selectBookSuccessMessage
+    )
+      .pipe(first())
+      .subscribe(message => {
+        if (message) {
+          alert(message);
+        }
+      });
 
+    this.store.select(
+      BookSelectors.selectBookError
+    ).pipe(first())
+      .subscribe(error => {
+        if (error) {
+          alert(error);
+        }
+      });
   }
 
   renewBook(id: number) {
-
     this.store.dispatch(
       BookActions.renewBook({ id })
-    );
+    ); this.store.select(
+      BookSelectors.selectBookSuccessMessage
+    ).pipe(first())
+      .subscribe(message => {
+        if (message) {
+          alert(message);
+        }
+      });
 
+    this.store.select(
+      BookSelectors.selectBookError
+    ).pipe(first())
+      .subscribe(error => {
+        if (error) {
+          alert(error);
+        }
+      });
   }
 }

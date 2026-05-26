@@ -13,6 +13,7 @@ import { FineComponent } from './features/fine/components/fine/fine.component';
 import { LogoutComponent } from './shared/components/logout/logout.component';
 import { UserComponent } from './features/user/components/user/user.component';
 import { UserDetailsComponent } from './features/user/components/user-details/user-details.component';
+import { StudentBorrowHistoryComponent } from './features/student/components/student-borrow-history/student-borrow-history.component';
 
 export const routes: Routes = [
     { path: "", component: HomeComponent },
@@ -32,5 +33,6 @@ export const routes: Routes = [
     { path: "logout", component: LogoutComponent },
     { path: 'users', component: UserComponent },
     { path: 'userDetails', component: UserDetailsComponent },
-    { path: 'updateUser', component: SignupComponent }
+    { path: 'updateUser', component: SignupComponent },
+    { path: 'studentBorrowHistory', component: StudentBorrowHistoryComponent }
 ];

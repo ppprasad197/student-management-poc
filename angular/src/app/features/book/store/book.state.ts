@@ -6,4 +6,6 @@ export interface BookState {
     loading: boolean;
     error: string | null;
     myBorrowedBooks: BorrowedBook[];
+    borrowedBooks: BorrowedBook[];
+    successMessage: string | null;
 }

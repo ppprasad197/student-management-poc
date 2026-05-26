@@ -2,13 +2,6 @@ import { createAction, createActionGroup, emptyProps, props } from '@ngrx/store'
 import { User } from '../../core/models/user.model';
 
 
-export const AuthActions = createActionGroup({
-  source: 'Auth',
-  events: {
-    'Load Auths': emptyProps(),
-  }
-});
-
 export const login = createAction(
   '[Auth] Login',
   props<{ username: string, password: string }>()
@@ -16,11 +9,8 @@ export const login = createAction(
 
 
 export const loginSuccess = createAction(
-
   '[Auth] Login Success',
-
   props<{ user: string }>()
-
 );
 
 export const loginFailure = createAction(
@@ -38,9 +28,7 @@ export const logoutSuccess = createAction(
 
 export const signUp = createAction(
   '[Auth] Signup',
-  props<{
-    data: any;
-  }>()
+  props<{data: any;}>()
 );
 
 export const signupSuccess = createAction(
@@ -53,17 +41,13 @@ export const signupFailure = createAction(
   props<{ error: any }>()
 );
 
-
 export const getCurrentUser = createAction(
   '[Auth] Get Current User'
 );
 
 export const getCurrentUserSuccess = createAction(
-
   '[Auth] Get Current User Success',
-
   props<{ user: User }>()
-
 );
 
 

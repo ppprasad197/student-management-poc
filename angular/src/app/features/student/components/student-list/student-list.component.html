@@ -34,6 +34,11 @@
           Approve
         </button>
         }
+        @if(hasBorrowedBooks(student.id)){
+        <button [routerLink]="['/studentBorrowHistory']" [state]="{ student: student }">
+          Borrowed Books
+        </button>
+        }
       </td>
     </tr>
     }

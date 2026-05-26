@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core';
 import * as BookActions from '../../store/book.actions';
-import { Observable } from 'rxjs';
+import { first, Observable } from 'rxjs';
 import { Book } from '../../models/book.model';
 import { Store } from '@ngrx/store';
 import * as BookSelectors from '../../store/book.selectors';
@@ -25,11 +25,9 @@ export class BookListComponent {
 
 
   ngOnInit(): void {
-
     this.store.dispatch(
       BookActions.loadBooks()
     );
-
   }
 
   deleteBook(id: number) {
@@ -51,12 +49,49 @@ export class BookListComponent {
     this.store.dispatch(
       BookActions.borrowBook({ id })
     );
+
+     this.store.select(
+    BookSelectors.selectBookSuccessMessage
+  )
+  .pipe(first())
+  .subscribe(message => {
+    if(message){
+      alert(message);
+    }
+  });
+  this.store.select(
+    BookSelectors.selectBookError
+  )
+  .pipe(first())
+  .subscribe(error => {
+    if(error){
+      alert(error);
+    }
+  });
   }
 
   returnBook(id: number) {
     this.store.dispatch(
       BookActions.returnBook({ id })
     );
+     this.store.select(
+    BookSelectors.selectBookSuccessMessage
+  )
+  .pipe(first())
+  .subscribe(message => {
+    if(message){
+      alert(message);
+    }
+  });
+  this.store.select(
+    BookSelectors.selectBookError
+  )
+  .pipe(first())
+  .subscribe(error => {
+    if(error){
+      alert(error);
+    }
+  });
   }
 
   currentUser =

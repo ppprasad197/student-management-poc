@@ -1,11 +1,14 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 import * as selectStudentState from '../../store/student.selectors';
+import * as selectBookState from '../../../book/store/book.selectors';
 import * as StudentSelector from '../../store/student.selectors';
 import * as StudentActions from '../../store/student.actions';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { first } from 'rxjs';
+import * as BookActions from '../../../book/store/book.actions';
+import { BorrowedBook } from '../../../book/models/borrowed-book.model';
 
 @Component({
   selector: 'app-student-list',
@@ -18,14 +21,23 @@ export class StudentListComponent {
   private store = inject(Store);
   private router = inject(Router);
 
+  borrowedBooks: BorrowedBook[] = [];
+
   students = this.store.select(
     selectStudentState.selectStudents
   );
 
+  borrowedBooks$ = this.store.select(
+    selectBookState.selectBorrowedBooks
+  );
+
   ngOnInit(): void {
-    this.store.dispatch(
-      StudentActions.loadStudents()
-    );    
+    this.store.dispatch(StudentActions.loadStudents());
+    this.store.dispatch(BookActions.loadBorrowedBooks());
+    this.borrowedBooks$.subscribe(data => {
+      this.borrowedBooks = data;
+      console.log(this.borrowedBooks);
+    });
   }
 
   approveStudent(id: number) {
@@ -56,4 +68,11 @@ export class StudentListComponent {
         }
       });
   }
+
+  hasBorrowedBooks(studentId: number): boolean {
+    return this.borrowedBooks.some(
+      book => book.studentId === studentId
+    );
+  }
+
 }

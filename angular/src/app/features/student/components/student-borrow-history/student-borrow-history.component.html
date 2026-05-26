@@ -1,0 +1,44 @@
+<h2>Borrowed Books</h2>
+<table>
+    <thead>
+        <tr>
+            <th>Book Title</th>
+            <th>Author</th>
+            <th>Issue Date</th>
+            <th>Due Date</th>
+            <th>Return Date</th>
+            <th>Renew Count</th>
+        </tr>
+    </thead>
+    <tbody>
+        @for(book of borrowedBooks ; track book.id){
+        <tr>
+            <td>
+                {{ book.bookTitle }}
+            </td>
+            <td>
+                {{ book.author }}
+            </td>
+            <td>
+                {{ book.issueDate }}
+            </td>
+            <td>
+                {{ book.dueDate }}
+            </td>
+            <td>
+                @if(book.returnDate){
+                {{ book.returnDate }}
+                }
+                @else {
+                <span class="not-returned">
+                    Not Returned
+                </span>
+                }
+            </td>
+            <td>
+                {{ book.renewCount }}
+            </td>
+        </tr>
+        }
+    </tbody>
+</table>

@@ -67,19 +67,14 @@ export const borrowBook = createAction(
 );
 
 export const borrowBookSuccess = createAction(
-
   '[Book] Borrow Book Success',
-
   props<{ book: Book }>()
 
 );
 
 export const borrowBookFailure = createAction(
-
   '[Book] Borrow Book Failure',
-
   props<{ error: string }>()
-
 );
 
 export const returnBook = createAction(
@@ -88,19 +83,13 @@ export const returnBook = createAction(
 );
 
 export const returnBookSuccess = createAction(
-
   '[Book] Return Book Success',
-
-  props<{ book: Book }>()
-
+  props<{ message: string }>()
 );
 
 export const returnBookFailure = createAction(
-
   '[Book] Return Book Failure',
-
   props<{ error: string }>()
-
 );
 
 export const renewBook = createAction(
@@ -109,19 +98,13 @@ export const renewBook = createAction(
 );
 
 export const renewBookSuccess = createAction(
-
   '[Book] Renew Book Success',
-
-  props<{ book: Book }>()
-
+  props<{ message: string }>()
 );
 
 export const renewBookFailure = createAction(
-
   '[Book] Renew Book Failure',
-
   props<{ error: string }>()
-
 );
 
 
@@ -136,6 +119,20 @@ export const loadMyBorrowedBooksSuccess = createAction(
 
 export const loadMyBorrowedBooksFailure = createAction(
   '[Book] Load My Borrowed Books Failure',
+  props<{ error: string }>()
+);
+
+export const loadBorrowedBooks = createAction(
+  '[Borrow] Load Borrowed Books'
+);
+
+export const loadBorrowedBooksSuccess = createAction(
+  '[Borrow] Load Borrowed Books Success',
+  props<{ books: BorrowedBook[] }>()
+);
+
+export const loadBorrowedBooksFailure = createAction(
+  '[Borrow] Load Borrowed Books Failure',
   props<{ error: string }>()
 );
 

@@ -42,17 +42,47 @@ export class BookService {
     );
   }
 
-  returnBook(id: number) {
-    return this.http.post<Book>(`${this.baseUrl}/return/${id}`, {});
-  }
+ returnBook(id: number) {
 
-  renewBook(id: number) {
-    return this.http.post<Book>(`${this.baseUrl}/renew/${id}`, {});
-  }
+  return this.http.post(
+
+    `${this.baseUrl}/return/${id}`,
+
+    {},
+
+    {
+      responseType: 'text'
+    }
+
+  );
+
+}
+
+renewBook(id: number) {
+
+  return this.http.post(
+
+    `${this.baseUrl}/renew/${id}`,
+
+    {},
+
+    {
+      responseType: 'text'
+    }
+
+  );
+
+}
 
   getMyBorrowedBooks() {
     return this.http.get<BorrowedBook[]>(
       'http://localhost:8080/borrowRecord/myBorrowedBooks'
+    );
+  }
+
+  getAllBorrowedBooksByStudents() {
+    return this.http.get<any[]>(
+      'http://localhost:8080/borrowRecord/getAllBorrowedBooksByStudents'
     );
   }
 }

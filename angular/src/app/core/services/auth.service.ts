@@ -36,7 +36,8 @@ export class AuthService {
     return this.httpClient.post(
       `${this.baseUrl}/logout`, {},
       {
-        withCredentials: true
+        withCredentials: true,
+        responseType: 'text'
       }
     );
   }

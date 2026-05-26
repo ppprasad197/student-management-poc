@@ -37,8 +37,10 @@ export class AuthEffects {
       ofType(AuthActions.logout),
       switchMap(() =>
         this.authService.logout().pipe(
-          map(() =>
-            AuthActions.logoutSuccess()
+          map(() => {
+            console.log("logout success");
+           return AuthActions.logoutSuccess();
+          }
           )
         )
       )
@@ -49,6 +51,7 @@ export class AuthEffects {
     this.actions.pipe(
       ofType(AuthActions.logoutSuccess),
       tap(() => {
+        console.log("Successfull now rendering to login page");
         this.router.navigate(['/login']);
       })
     ),

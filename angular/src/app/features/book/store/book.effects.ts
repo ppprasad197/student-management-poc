@@ -75,7 +75,7 @@ export class BookEffects {
     )
   );
 
-  addBookSuccess$ = createEffect(() =>
+  addBookSuccess = createEffect(() =>
     this.actions.pipe(
       ofType(BookActions.addBookSuccess),
       map(() =>
@@ -143,9 +143,9 @@ export class BookEffects {
       ofType(BookActions.returnBook),
       switchMap(({ id }) =>
         this.bookService.returnBook(id).pipe(
-          map((book: Book) =>
+          map((message:string) =>
             BookActions.returnBookSuccess({
-              book
+              message
             })
           ),
           catchError((error) =>
@@ -168,7 +168,6 @@ export class BookEffects {
       )
     )
   );
-
 
   loadMyBorrowedBooks = createEffect(() =>
     this.actions.pipe(
@@ -197,9 +196,9 @@ export class BookEffects {
       ofType(BookActions.renewBook),
       switchMap(({ id }) =>
         this.bookService.renewBook(id).pipe(
-          map((book: Book) =>
+          map((message:string) =>
             BookActions.renewBookSuccess({
-              book
+              message
             })
           ),
           catchError((error) =>
@@ -219,6 +218,30 @@ export class BookEffects {
       ofType(BookActions.renewBookSuccess),
       map(() =>
         BookActions.loadMyBorrowedBooks()
+      )
+    )
+  );
+
+  loadBorrowedBooks = createEffect(() =>
+    this.actions.pipe(
+      ofType(BookActions.loadBorrowedBooks),
+      switchMap(() =>
+        this.bookService
+          .getAllBorrowedBooksByStudents()
+          .pipe(
+            map((books) =>
+              BookActions.loadBorrowedBooksSuccess({
+                books
+              })
+            ),
+            catchError((error) =>
+              of(
+                BookActions.loadBorrowedBooksFailure({
+                  error: error.message
+                })
+              )
+            )
+          )
       )
     )
   );

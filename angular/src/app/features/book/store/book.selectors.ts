@@ -10,9 +10,24 @@ export const selectBooks = createSelector(
 
 export const selectMyBorrowedBooks =
     createSelector(
-
         selectBookState,
-
         (state) => state.myBorrowedBooks
+    );
 
+export const selectBorrowedBooks =
+    createSelector(
+        selectBookState,
+        (state) => state.borrowedBooks
+    );
+
+export const selectBookSuccessMessage =
+    createSelector(
+        selectBookState,
+        (state) => state.successMessage
+    );
+
+export const selectBookError =
+    createSelector(
+        selectBookState,
+        (state) => state.error
     );

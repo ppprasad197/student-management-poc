@@ -14,4 +14,6 @@ export interface BorrowedBook {
     returnDate: string;
 
     renewCount: number;
+
+    studentId: number;
 }
