@@ -313,85 +313,61 @@ public class FineService {
         return fine;
     }
 
-    private void validatePaymentAmount(
-            double amount) {
+    private void validatePaymentAmount(double amount) {
 
         if (amount <= 0) {
-
             throw new RuntimeException(
                     "Invalid amount"
             );
         }
     }
 
-    private void validatePendingFines(
-            FineDTO fineDTO) {
+    private void validatePendingFines(FineDTO fineDTO) {
 
         if (fineDTO.getFines().isEmpty()) {
-
             throw new RuntimeException(
                     "No pending fines"
             );
         }
     }
 
-    private void validateFullPayment(
-            double amount,
-            double totalDue) {
-
+    private void validateFullPayment(double amount,double totalDue) {
         if (amount != totalDue) {
-
             throw new RuntimeException(
-
                     "You must pay full fine. Total due: "
                             + totalDue
             );
         }
     }
 
-    private User getStudent(
-            String username) {
-
+    private User getStudent(String username) {
         return userRepository
-                .findByUserNameAndRole(
-                        username,
-                        Role.STUDENT
-                );
+                .findByUserNameAndRole(username,Role.STUDENT);
     }
 
-    private User getUser(
-            String username) {
-
+    private User getUser(String username) {
         return userRepository
                 .findByUserName(username)
                 .orElseThrow(() ->
-
                         new RuntimeException(
                                 "User not found"
                         )
-
                 );
     }
 
-    private BorrowRecord getBorrowRecord(
-            Long borrowRecordId) {
-
+    private BorrowRecord getBorrowRecord(Long borrowRecordId) {
         return borrowRepository
                 .findById(borrowRecordId)
-
                 .orElseThrow(() ->
-
                         new RuntimeException(
                                 "Borrow record not found"
                         )
-
                 );
     }
 
     public List<AdminLibrarianFineResponseDto> getAllStudentFines() {
 
-        List<BorrowRecord> records =
-                borrowRepository.findAll();
+        List<BorrowRecord> records = borrowRepository.findAll();
 
         List<AdminLibrarianFineResponseDto> response =
                 new ArrayList<>();
@@ -414,21 +390,11 @@ public class FineService {
             if (returnDate != null &&
                     returnDate.isAfter(dueDate)) {
 
-                daysLate =
-                        ChronoUnit.DAYS.between(
-                                dueDate,
-                                returnDate
-                        );
+                daysLate =ChronoUnit.DAYS.between(dueDate,returnDate);
 
             } else if (returnDate == null &&
                     today.isAfter(dueDate)) {
-
-                daysLate =
-                        ChronoUnit.DAYS.between(
-                                dueDate,
-                                today
-                        );
-
+                daysLate =ChronoUnit.DAYS.between(dueDate,today);
             }
 
             if (daysLate <= 0)
@@ -471,7 +437,6 @@ public class FineService {
             dto.setReturnDate(returnDate);
 
             response.add(dto);
-
         }
         return response;
     }

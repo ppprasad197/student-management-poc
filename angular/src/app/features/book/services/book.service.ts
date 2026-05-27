@@ -35,44 +35,41 @@ export class BookService {
     return this.http.delete(`${this.baseUrl}/${id}`);
   }
 
-  borrowBook(id: number) {
-    return this.http.post<Book>(
-      `${this.baseUrl}/borrow/${id}`,
-      {}
+ borrowBook(id: number) {
+
+  return this.http.post(
+
+    `${this.baseUrl}/borrow/${id}`,
+
+    {},
+
+    {
+      responseType: 'text'
+    }
+
+  );
+
+}
+
+  returnBook(id: number) {
+    return this.http.post(
+      `${this.baseUrl}/return/${id}`,
+      {},
+      {
+        responseType: 'text'
+      }
     );
   }
 
- returnBook(id: number) {
-
-  return this.http.post(
-
-    `${this.baseUrl}/return/${id}`,
-
-    {},
-
-    {
-      responseType: 'text'
-    }
-
-  );
-
-}
-
-renewBook(id: number) {
-
-  return this.http.post(
-
-    `${this.baseUrl}/renew/${id}`,
-
-    {},
-
-    {
-      responseType: 'text'
-    }
-
-  );
-
-}
+  renewBook(id: number) {
+    return this.http.post(
+      `${this.baseUrl}/renew/${id}`,
+      {},
+      {
+        responseType: 'text'
+      }
+    );
+  }
 
   getMyBorrowedBooks() {
     return this.http.get<BorrowedBook[]>(

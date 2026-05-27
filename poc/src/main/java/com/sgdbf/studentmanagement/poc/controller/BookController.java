@@ -71,8 +71,7 @@ public class BookController {
 
     @PostMapping("/renew/{id}")
     @PreAuthorize("hasRole('STUDENT')")
-    public ResponseEntity<?> renewBook(@PathVariable Long id,
-                                       Authentication authentication) {
+    public ResponseEntity<?> renewBook(@PathVariable Long id,Authentication authentication) {
         bookService.renewBook(id, authentication.getName());
         return ResponseEntity.ok("Book renewed successfully");
     }

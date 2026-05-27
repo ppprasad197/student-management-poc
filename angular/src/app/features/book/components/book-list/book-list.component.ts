@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core';
 import * as BookActions from '../../store/book.actions';
-import { first, Observable } from 'rxjs';
+import { filter, first, Observable } from 'rxjs';
 import { Book } from '../../models/book.model';
 import { Store } from '@ngrx/store';
 import * as BookSelectors from '../../store/book.selectors';
@@ -22,7 +22,6 @@ export class BookListComponent {
 
   books =
     this.store.select(BookSelectors.selectBooks);
-
 
   ngOnInit(): void {
     this.store.dispatch(
@@ -47,51 +46,58 @@ export class BookListComponent {
 
   borrowBook(id: number) {
     this.store.dispatch(
+      BookActions.clearBookMessages()
+    );
+
+    this.store.dispatch(
       BookActions.borrowBook({ id })
     );
 
-     this.store.select(
-    BookSelectors.selectBookSuccessMessage
-  )
-  .pipe(first())
-  .subscribe(message => {
-    if(message){
-      alert(message);
-    }
-  });
-  this.store.select(
-    BookSelectors.selectBookError
-  )
-  .pipe(first())
-  .subscribe(error => {
-    if(error){
-      alert(error);
-    }
-  });
+    this.store.select(
+      BookSelectors.selectBookSuccessMessage
+    )
+      .pipe(
+        filter(message => !!message),
+        first()
+      )
+      .subscribe(message => {
+        alert(message);
+      });
+
+    this.store.select(
+      BookSelectors.selectBookError
+    )
+      .pipe(
+        filter(error => !!error),
+        first()
+      )
+      .subscribe(error => {
+        alert(error);
+      });
   }
 
   returnBook(id: number) {
     this.store.dispatch(
       BookActions.returnBook({ id })
     );
-     this.store.select(
-    BookSelectors.selectBookSuccessMessage
-  )
-  .pipe(first())
-  .subscribe(message => {
-    if(message){
-      alert(message);
-    }
-  });
-  this.store.select(
-    BookSelectors.selectBookError
-  )
-  .pipe(first())
-  .subscribe(error => {
-    if(error){
-      alert(error);
-    }
-  });
+    this.store.select(
+      BookSelectors.selectBookSuccessMessage
+    )
+      .pipe(first())
+      .subscribe(message => {
+        if (message) {
+          alert(message);
+        }
+      });
+    this.store.select(
+      BookSelectors.selectBookError
+    )
+      .pipe(first())
+      .subscribe(error => {
+        if (error) {
+          alert(error);
+        }
+      });
   }
 
   currentUser =

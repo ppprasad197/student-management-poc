@@ -22,8 +22,6 @@ public class FineController {
     @PostMapping("/pay")
     public ResponseEntity<FinePaymentResponseDTO> payFine(@RequestBody FinePaymentRequestDTO request,
                                                           Authentication authentication) {
-
-        System.out.println("Inside payFine method : " + request.toString());
         return ResponseEntity.ok(
                 fineService.payFine(
                         request.getAmount(),
@@ -45,8 +43,7 @@ public class FineController {
 
     @PreAuthorize("hasRole('STUDENT')")
     @GetMapping("/summary")
-    public ResponseEntity<FineSummaryDto> getSummary(
-            Authentication authentication) {
+    public ResponseEntity<FineSummaryDto> getSummary(Authentication authentication) {
         return ResponseEntity.ok(
                 fineService.getFineSummary(
                         authentication.getName()
@@ -56,9 +53,7 @@ public class FineController {
 
     @PreAuthorize("hasAnyRole('ADMIN','LIBRARIAN')")
     @GetMapping("/all")
-    public ResponseEntity<List<AdminLibrarianFineResponseDto>>
-    getAllStudentFines() {
-
+    public ResponseEntity<List<AdminLibrarianFineResponseDto>> getAllStudentFines() {
         return ResponseEntity.ok(
                 fineService.getAllStudentFines()
         );

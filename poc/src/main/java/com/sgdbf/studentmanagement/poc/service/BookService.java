@@ -213,14 +213,14 @@ public class BookService {
         FineDTO fineData = fineService.getMyFines(userName);
         double totalDue = fineData.getTotalAmount();
 
-        if (totalDue > 0) {
+        if (totalDue > 0 && today.isAfter(record.getDueDate())) {
             throw new RuntimeException("Please pay pending fine: " + totalDue + " Rs");
         }
 
         // Step 2: Prevent renewal if overdue
-        if (today.isAfter(record.getDueDate())) {
-            throw new RuntimeException("Cannot renew overdue book. Please return and clear fine first and your due is : " + totalDue);
-        }
+//        if (today.isAfter(record.getDueDate())) {
+//            throw new RuntimeException("Cannot renew overdue book. Please return and clear fine first and your due is : " + totalDue);
+//        }
 
         //  Step 3: Renewal limit
         if (record.getRenewCount() >= 2) {
@@ -290,7 +290,7 @@ public class BookService {
     private BorrowRecordResponseDto mapBorrowRecordToDto(
             BorrowRecord record) {
 
-        BorrowRecordResponseDto dto =new BorrowRecordResponseDto();
+        BorrowRecordResponseDto dto = new BorrowRecordResponseDto();
 
         dto.setId(record.getId());
 

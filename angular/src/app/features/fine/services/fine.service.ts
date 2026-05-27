@@ -11,9 +11,7 @@ export class FineService {
   private baseUrl =
     'http://localhost:8080/fine';
 
-  constructor(
-    private http: HttpClient
-  ) { }
+  constructor(private http: HttpClient) { }
 
   getMyFines():
     Observable<FineResponse> {
@@ -23,35 +21,22 @@ export class FineService {
     );
   }
 
-  getSummary():
-    Observable<FineSummary> {
-
+  getSummary():Observable<FineSummary> {
     return this.http.get<FineSummary>(
       `${this.baseUrl}/summary`
     );
   }
 
-  payFine(amount: number):
-    Observable<FinePaymentResponse> {
-
-    console.log("pay fine called and total fine is : " + amount);
-
+  payFine(amount: number):Observable<FinePaymentResponse> {
     return this.http.post<FinePaymentResponse>(
-
       `${this.baseUrl}/pay`,
-
       { amount }
-
     );
   }
 
   getAllStudentFines() {
-
     return this.http.get<AdminFine[]>(
-
       `${this.baseUrl}/all`
-
     );
-
   }
 }

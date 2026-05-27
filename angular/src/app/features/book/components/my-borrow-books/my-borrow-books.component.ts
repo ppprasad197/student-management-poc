@@ -5,7 +5,7 @@ import { Store } from '@ngrx/store';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
-import { first } from 'rxjs';
+import { filter, first } from 'rxjs';
 
 @Component({
   selector: 'app-my-borrow-books',
@@ -29,48 +29,68 @@ export class MyBorrowBooksComponent {
   }
 
   returnBook(id: number) {
+
+    this.store.dispatch(
+      BookActions.clearBookMessages()
+    );
+
     this.store.dispatch(
       BookActions.returnBook({ id })
     );
+
     this.store.select(
       BookSelectors.selectBookSuccessMessage
     )
-      .pipe(first())
+      .pipe(
+        filter(message => !!message),
+        first()
+      )
       .subscribe(message => {
-        if (message) {
-          alert(message);
-        }
+        alert(message);
       });
 
     this.store.select(
       BookSelectors.selectBookError
-    ).pipe(first())
+    )
+      .pipe(
+        filter(error => !!error),
+        first()
+      )
       .subscribe(error => {
-        if (error) {
-          alert(error);
-        }
+        alert(error);
       });
   }
 
   renewBook(id: number) {
+
+    this.store.dispatch(
+      BookActions.clearBookMessages()
+    );
+
     this.store.dispatch(
       BookActions.renewBook({ id })
-    ); this.store.select(
+    );
+
+    this.store.select(
       BookSelectors.selectBookSuccessMessage
-    ).pipe(first())
+    )
+      .pipe(
+        filter(message => !!message),
+        first()
+      )
       .subscribe(message => {
-        if (message) {
-          alert(message);
-        }
+        alert(message);
       });
 
     this.store.select(
       BookSelectors.selectBookError
-    ).pipe(first())
+    )
+      .pipe(
+        filter(error => !!error),
+        first()
+      )
       .subscribe(error => {
-        if (error) {
-          alert(error);
-        }
+        alert(error);
       });
   }
 }

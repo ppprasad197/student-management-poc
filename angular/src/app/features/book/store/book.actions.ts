@@ -68,7 +68,7 @@ export const borrowBook = createAction(
 
 export const borrowBookSuccess = createAction(
   '[Book] Borrow Book Success',
-  props<{ book: Book }>()
+  props<{ message: string }>()
 
 );
 
@@ -136,5 +136,7 @@ export const loadBorrowedBooksFailure = createAction(
   props<{ error: string }>()
 );
 
-
+export const clearBookMessages = createAction(
+  '[Book] Clear Messages'
+);
 

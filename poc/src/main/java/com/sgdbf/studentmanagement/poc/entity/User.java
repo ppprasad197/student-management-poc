@@ -44,6 +44,7 @@ public class User {
         this.userName = userName;
         this.password = password;
         this.role = role;
+        this.userStatus = userStatus;
     }
 
     public User(long l, String admin, String admin1, String mail, String admin2, String admin123, Role role, UserStatus userStatus) {

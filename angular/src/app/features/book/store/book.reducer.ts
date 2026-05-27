@@ -66,7 +66,7 @@ export const bookReducer = createReducer(
   on(BookActions.borrowBookSuccess, (state) => ({
     ...state,
     loading: false,
-    successMessage:"Book borrowed successfully"
+    successMessage: "Book borrowed successfully"
   })),
 
   on(BookActions.borrowBookFailure, (state, { error }) => ({
@@ -84,7 +84,7 @@ export const bookReducer = createReducer(
   on(BookActions.returnBookSuccess, (state) => ({
     ...state,
     loading: false,
-    successMessage:"Book returned successfully"
+    successMessage: "Book returned successfully"
   })),
 
   on(BookActions.returnBookFailure, (state, { error }) => ({
@@ -100,7 +100,6 @@ export const bookReducer = createReducer(
       myBorrowedBooks: books
     })
   ),
-
 
   on(BookActions.renewBook, (state) => ({
     ...state,
@@ -135,6 +134,12 @@ export const bookReducer = createReducer(
     ...state,
     error,
     loading: false
-  }))
+  })),
+
+  on(BookActions.clearBookMessages, (state) => ({
+    ...state,
+    successMessage: null,
+    error: null
+  })),
 );
 

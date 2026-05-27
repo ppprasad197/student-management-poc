@@ -112,9 +112,9 @@ export class BookEffects {
       ofType(BookActions.borrowBook),
       switchMap(({ id }) =>
         this.bookService.borrowBook(id).pipe(
-          map((book: Book) =>
+          map((message: string) =>
             BookActions.borrowBookSuccess({
-              book
+              message
             })
           ),
           catchError((error) =>
@@ -143,7 +143,7 @@ export class BookEffects {
       ofType(BookActions.returnBook),
       switchMap(({ id }) =>
         this.bookService.returnBook(id).pipe(
-          map((message:string) =>
+          map((message: string) =>
             BookActions.returnBookSuccess({
               message
             })
@@ -164,7 +164,7 @@ export class BookEffects {
     this.actions.pipe(
       ofType(BookActions.returnBookSuccess),
       map(() =>
-        BookActions.loadBooks()
+        BookActions.loadMyBorrowedBooks()
       )
     )
   );
@@ -196,7 +196,7 @@ export class BookEffects {
       ofType(BookActions.renewBook),
       switchMap(({ id }) =>
         this.bookService.renewBook(id).pipe(
-          map((message:string) =>
+          map((message: string) =>
             BookActions.renewBookSuccess({
               message
             })
