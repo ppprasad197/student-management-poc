@@ -28,12 +28,12 @@ export const logoutSuccess = createAction(
 
 export const signUp = createAction(
   '[Auth] Signup',
-  props<{data: any;}>()
+  props<{ data: any; }>()
 );
 
 export const signupSuccess = createAction(
   '[Auth]Signup Success',
-  props<{ response: any }>()
+  props<{ response: any, message: string }>()
 );
 
 export const signupFailure = createAction(
@@ -55,3 +55,7 @@ export const getCurrentUserFailure = createAction(
   '[Auth] Get Current User Failure',
   props<{ error: string }>()
 );
+
+export const clearAuthMessages = createAction(
+  '[Auth] Clear Messages'
+)

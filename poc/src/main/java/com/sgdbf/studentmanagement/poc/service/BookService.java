@@ -217,20 +217,17 @@ public class BookService {
             throw new RuntimeException("Please pay pending fine: " + totalDue + " Rs");
         }
 
-        // Step 2: Prevent renewal if overdue
-//        if (today.isAfter(record.getDueDate())) {
-//            throw new RuntimeException("Cannot renew overdue book. Please return and clear fine first and your due is : " + totalDue);
-//        }
-
-        //  Step 3: Renewal limit
         if (record.getRenewCount() >= 2) {
             throw new RuntimeException("Cannot renew more than 2 times");
         }
 
-        //  Step 4: Extend due date
-        record.setDueDate(record.getDueDate().plusDays(7));
+        if (today.isAfter(record.getDueDate())) {
+            record.setIssueDate(today);
+            record.setDueDate(today.plusDays(7));
+        }else {
+            record.setDueDate(record.getDueDate().plusDays(7));
+        }
         record.setRenewCount(record.getRenewCount() + 1);
-
         borrowRepository.save(record);
     }
 

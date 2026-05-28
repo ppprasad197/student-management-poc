@@ -6,39 +6,26 @@ import { User } from '../../core/models/user.model';
 export const authFeatureKey = 'auth';
 
 export const initialState: AuthState = {
-
   username: null,
   user: null,
-
   loading: false,
-
-  error: null
-
+  error: null,
+  successMessage: null
 };
 
 export const authReducer = createReducer(
-
   initialState,
-
   on(AuthActions.login, (state) => ({
-
     ...state,
-
     loading: true,
-
     error: null
   })),
 
   on(AuthActions.loginSuccess, (state, { user }) => ({
-
     ...state,
-
     username: user,
-
     loading: false,
-
     error: null
-
   })),
 
   on(AuthActions.logout, (state) => ({
@@ -47,49 +34,41 @@ export const authReducer = createReducer(
   })),
 
   on(AuthActions.loginFailure, (state, { error }) => ({
-
     ...state,
-
     loading: false,
-
     error
   })),
 
 
   on(AuthActions.signUp, (state) => ({
-
     ...state,
-
     loading: true,
-
     error: null
   })),
 
-  on(AuthActions.signupSuccess, (state) => ({
-
+  on(AuthActions.signupSuccess, (state, { message }) => ({
     ...state,
-
     loading: false,
-
-    error: null
+    error: null,
+    successMessage: message
   })),
 
   on(AuthActions.signupFailure, (state, { error }) => ({
-
     ...state,
-
     loading: false,
-
     error
   })),
 
   on(AuthActions.getCurrentUserSuccess,
     (state, { user }) => ({
-
       ...state,
-
       user
+    })),
 
-    }))
+  on(AuthActions.clearAuthMessages, (state) => ({
+    ...state,
+    error: null,
+    successMessage: null
+  }))
 );
 

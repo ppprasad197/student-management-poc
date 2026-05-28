@@ -331,7 +331,7 @@ public class FineService {
         }
     }
 
-    private void validateFullPayment(double amount,double totalDue) {
+    private void validateFullPayment(double amount, double totalDue) {
         if (amount != totalDue) {
             throw new RuntimeException(
                     "You must pay full fine. Total due: "
@@ -342,7 +342,7 @@ public class FineService {
 
     private User getStudent(String username) {
         return userRepository
-                .findByUserNameAndRole(username,Role.STUDENT);
+                .findByUserNameAndRole(username, Role.STUDENT);
     }
 
     private User getUser(String username) {
@@ -365,18 +365,130 @@ public class FineService {
                 );
     }
 
-    public List<AdminLibrarianFineResponseDto> getAllStudentFines() {
+//    public List<AdminLibrarianFineResponseDto> getAllStudentFines() {
+//
+//        List<BorrowRecord> records = borrowRepository.findAll();
+//
+//        List<AdminLibrarianFineResponseDto> response =
+//                new ArrayList<>();
+//
+//        LocalDate today = LocalDate.now();
+//
+//        for (BorrowRecord record : records) {
+//
+//            if (record.getUser() == null)
+//                continue;
+//
+//            LocalDate dueDate =
+//                    record.getDueDate();
+//
+//            LocalDate returnDate =
+//                    record.getReturnDate();
+//
+//            long daysLate = 0;
+//
+//            if (returnDate != null &&
+//                    returnDate.isAfter(dueDate)) {
+//
+//                daysLate =ChronoUnit.DAYS.between(dueDate,returnDate);
+//
+//            } else if (returnDate == null &&
+//                    today.isAfter(dueDate)) {
+//                daysLate =ChronoUnit.DAYS.between(dueDate,today);
+//            }
+//
+//            if (daysLate <= 0)
+//                continue;
+//
+//            double fineAmount =
+//                    daysLate * 10;
+//
+//            boolean paid =
+//                    fineRepository
+//                            .existsByBorrowRecord(record);
+//
+//            AdminLibrarianFineResponseDto dto =
+//                    new AdminLibrarianFineResponseDto();
+//
+//            dto.setStudentId(
+//                    record.getUser().getId()
+//            );
+//
+//            dto.setStudentName(
+//                    record.getUser().getFirstName()
+//                            + " "
+//                            + record.getUser().getLastName()
+//            );
+//
+//            dto.setUserName(
+//                    record.getUser().getUserName()
+//            );
+//
+//            dto.setBookName(
+//                    record.getBook().getTitle()
+//            );
+//
+//            dto.setFineAmount(fineAmount);
+//
+//            dto.setPaid(paid);
+//
+//            dto.setDueDate(dueDate);
+//
+//            dto.setReturnDate(returnDate);
+//
+//            response.add(dto);
+//        }
+//        return response;
+//    }
 
-        List<BorrowRecord> records = borrowRepository.findAll();
+    public List<AdminLibrarianFineResponseDto> getAllStudentFines() {
 
         List<AdminLibrarianFineResponseDto> response =
                 new ArrayList<>();
 
         LocalDate today = LocalDate.now();
 
+        // =====================================================
+        // STEP 1 -> Existing paid/generated fines
+        // =====================================================
+
+        List<Fine> fines = fineRepository.findAll();
+
+        for (Fine fine : fines) {
+
+            BorrowRecord record =
+                    fine.getBorrowRecord();
+
+            if (record == null ||
+                    record.getUser() == null)
+                continue;
+
+            response.add(
+                    mapToFineDto(
+                            record,
+                            fine.getAmount(),
+                            fine.isPaid()
+                    )
+            );
+        }
+
+        // =====================================================
+        // STEP 2 -> Current unpaid overdue fines
+        // =====================================================
+
+        List<BorrowRecord> records =
+                borrowRepository.findAll();
+
         for (BorrowRecord record : records) {
 
             if (record.getUser() == null)
+                continue;
+
+            // Skip already generated fines
+            boolean fineExists =
+                    fineRepository.existsByBorrowRecord(record);
+
+            if (fineExists)
                 continue;
 
             LocalDate dueDate =
@@ -387,14 +499,26 @@ public class FineService {
 
             long daysLate = 0;
 
+            // Returned late
             if (returnDate != null &&
                     returnDate.isAfter(dueDate)) {
 
-                daysLate =ChronoUnit.DAYS.between(dueDate,returnDate);
+                daysLate =
+                        ChronoUnit.DAYS.between(
+                                dueDate,
+                                returnDate
+                        );
+            }
 
-            } else if (returnDate == null &&
+            // Still overdue
+            else if (returnDate == null &&
                     today.isAfter(dueDate)) {
-                daysLate =ChronoUnit.DAYS.between(dueDate,today);
+
+                daysLate =
+                        ChronoUnit.DAYS.between(
+                                dueDate,
+                                today
+                        );
             }
 
             if (daysLate <= 0)
@@ -403,44 +527,63 @@ public class FineService {
             double fineAmount =
                     daysLate * 10;
 
-            boolean paid =
-                    fineRepository
-                            .existsByBorrowRecord(record);
-
-            AdminLibrarianFineResponseDto dto =
-                    new AdminLibrarianFineResponseDto();
-
-            dto.setStudentId(
-                    record.getUser().getId()
+            response.add(
+                    mapToFineDto(
+                            record,
+                            fineAmount,
+                            false
+                    )
             );
-
-            dto.setStudentName(
-                    record.getUser().getFirstName()
-                            + " "
-                            + record.getUser().getLastName()
-            );
-
-            dto.setUserName(
-                    record.getUser().getUserName()
-            );
-
-            dto.setBookName(
-                    record.getBook().getTitle()
-            );
-
-            dto.setFineAmount(fineAmount);
-
-            dto.setPaid(paid);
-
-            dto.setDueDate(dueDate);
-
-            dto.setReturnDate(returnDate);
-
-            response.add(dto);
         }
+
         return response;
     }
 
+    private AdminLibrarianFineResponseDto mapToFineDto(
+            BorrowRecord record,
+            double fineAmount,
+            boolean paid
+    ) {
+
+        AdminLibrarianFineResponseDto dto =
+                new AdminLibrarianFineResponseDto();
+
+        dto.setStudentId(
+                record.getUser().getId()
+        );
+
+        dto.setStudentName(
+                record.getUser().getFirstName()
+                        + " "
+                        + record.getUser().getLastName()
+        );
+
+        dto.setUserName(
+                record.getUser().getUserName()
+        );
+
+        dto.setBookName(
+                record.getBook().getTitle()
+        );
+
+        dto.setFineAmount(
+                fineAmount
+        );
+
+        dto.setPaid(
+                paid
+        );
+
+        dto.setDueDate(
+                record.getDueDate()
+        );
+
+        dto.setReturnDate(
+                record.getReturnDate()
+        );
+
+        return dto;
+    }
 
 //    public void generateFineIfLate(List<BorrowRecord> record) {
 //

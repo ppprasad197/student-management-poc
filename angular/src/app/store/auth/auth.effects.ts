@@ -39,7 +39,7 @@ export class AuthEffects {
         this.authService.logout().pipe(
           map(() => {
             console.log("logout success");
-           return AuthActions.logoutSuccess();
+            return AuthActions.logoutSuccess();
           }
           )
         )
@@ -79,7 +79,7 @@ export class AuthEffects {
       switchMap(({ data }) =>
         this.authService.signupUser(data).pipe(
           map((response) =>
-            AuthActions.signupSuccess({ response })
+            AuthActions.signupSuccess({ response, message: "User sign up successfull" })
           ),
           catchError((error) =>
             of(

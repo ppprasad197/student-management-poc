@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
-import { first } from 'rxjs';
+import { filter, first } from 'rxjs';
 import * as AuthActions from '../../../store/auth/auth.actions';
 import * as StudentActions from '../../../features/student/store/student.actions';
 import { Router } from '@angular/router';
@@ -9,6 +9,7 @@ import * as UserActions from '../../../features/user/store/user.actions';
 import { selectError } from '../../../store/auth/auth.selectors';
 import { selectStudentSuccessMessage } from '../../../features/student/store/student.selectors';
 import { selectUserSuccessMessage } from '../../../features/user/store/user.selectors';
+import * as AuthSelectors from '../../../store/auth/auth.selectors';
 
 
 @Component({
@@ -113,6 +114,28 @@ export class SignupComponent {
           data: this.signupData
         })
       );
+
+      this.store.select(
+        AuthSelectors.selectSuccessMessage
+      )
+        .pipe(
+          filter(message => !!message),
+          first()
+        )
+        .subscribe(message => {
+          alert(message);
+        });
+
+      this.store.select(
+        AuthSelectors.selectError
+      )
+        .pipe(
+          filter(error => !!error),
+          first()
+        )
+        .subscribe(error => {
+          alert(error);
+        });
     }
   }
 }
