@@ -27,6 +27,22 @@
 }
 
 
+.description-row {
+    display: flex;
+    align-items: flex-end
+}
+
+.description-row strong {
+    min-width: 120px;
+}
+
+.description-row span {
+    display: block;
+    max-width: 100%;
+    line-height: 1.5;
+}
+
+
 @media (max-width: 600px) {
     .details-container {
         margin: 20px;

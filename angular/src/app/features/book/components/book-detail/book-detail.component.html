@@ -14,13 +14,17 @@
             <strong>Category :</strong>
             {{ book.category }}
         </p>
-        <p>
+        <!-- <p class="description-row">
             <strong>Description :</strong>
             {{ book.description }}
-        </p>
+        </p> -->
         <p>
             <strong>Available :</strong>
-            {{ book.available }}
+            @if (book.available === true) {
+            Available
+            } @else {
+            Not Available
+            }
         </p>
         <p>
             <strong>Quantity :</strong>
