@@ -37,11 +37,56 @@ export class BookListComponent {
       this.store.dispatch(
         BookActions.deleteBook({ id })
       );
+      this.store.select(
+        BookSelectors.selectBookSuccessMessage
+      )
+        .pipe(
+          filter(message => !!message),
+          first()
+        )
+        .subscribe(message => {
+          alert(message);
+        });
+
+      this.store.select(
+        BookSelectors.selectBookError
+      )
+        .pipe(
+          filter(error => !!error),
+          first()
+        )
+        .subscribe(error => {
+          alert(error);
+        });
     }
   }
 
   updateBook(id: number, book: Book) {
     this.store.dispatch(BookActions.updateBook({ id, book }));
+
+    this.store.dispatch(BookActions.clearBookMessages());
+
+    this.store.select(
+      BookSelectors.selectBookSuccessMessage
+    )
+      .pipe(
+        filter(message => !!message),
+        first()
+      )
+      .subscribe(message => {
+        alert(message);
+      });
+
+    this.store.select(
+      BookSelectors.selectBookError
+    )
+      .pipe(
+        filter(error => !!error),
+        first()
+      )
+      .subscribe(error => {
+        alert(error);
+      });
   }
 
   borrowBook(id: number) {
@@ -76,29 +121,29 @@ export class BookListComponent {
       });
   }
 
-  returnBook(id: number) {
-    this.store.dispatch(
-      BookActions.returnBook({ id })
-    );
-    this.store.select(
-      BookSelectors.selectBookSuccessMessage
-    )
-      .pipe(first())
-      .subscribe(message => {
-        if (message) {
-          alert(message);
-        }
-      });
-    this.store.select(
-      BookSelectors.selectBookError
-    )
-      .pipe(first())
-      .subscribe(error => {
-        if (error) {
-          alert(error);
-        }
-      });
-  }
+  // returnBook(id: number) {
+  //   this.store.dispatch(
+  //     BookActions.returnBook({ id })
+  //   );
+  //   this.store.select(
+  //     BookSelectors.selectBookSuccessMessage
+  //   )
+  //     .pipe(first())
+  //     .subscribe(message => {
+  //       if (message) {
+  //         alert(message);
+  //       }
+  //     });
+  //   this.store.select(
+  //     BookSelectors.selectBookError
+  //   )
+  //     .pipe(first())
+  //     .subscribe(error => {
+  //       if (error) {
+  //         alert(error);
+  //       }
+  //     });
+  // }
 
   currentUser =
     this.store.select(

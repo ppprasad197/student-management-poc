@@ -38,7 +38,7 @@ export const updateBook = createAction(
 
 export const updateBookSuccess = createAction(
   '[Book] Update Book Success',
-  props<{ book: Book }>()
+  props<{ book: Book; message: string }>()
 );
 
 export const updateBookFailure = createAction(
@@ -53,7 +53,7 @@ export const deleteBook = createAction(
 
 export const deleteBookSuccess = createAction(
   '[Book] Delete Book Success',
-  props<{ id: number }>()
+  props<{ id: number; message: string }>()
 );
 
 export const deleteBookFailure = createAction(
@@ -69,7 +69,6 @@ export const borrowBook = createAction(
 export const borrowBookSuccess = createAction(
   '[Book] Borrow Book Success',
   props<{ message: string }>()
-
 );
 
 export const borrowBookFailure = createAction(

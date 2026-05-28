@@ -34,11 +34,12 @@ export const bookReducer = createReducer(
 
 
   on(BookActions.deleteBookSuccess,
-    (state, { id }) => ({
+    (state, { id, message }) => ({
       ...state,
       books: state.book.filter(
         book => book.id !== id
-      )
+      ),
+      successMessage: message
     })),
 
   on(BookActions.deleteBookFailure,
@@ -48,15 +49,16 @@ export const bookReducer = createReducer(
     })),
 
   on(BookActions.updateBookSuccess,
-    (state, { book }) => ({
+    (state, { book, message }) => ({
       ...state,
-      books: state.book.map((b) =>
+      book: state.book.map((b) =>
         b.id === book.id
           ? book
           : b
-      )
+      ),
+      successMessage: message,
+      error: null
     })),
-
 
   on(BookActions.borrowBook, (state) => ({
     ...state,
@@ -117,7 +119,6 @@ export const bookReducer = createReducer(
     loading: false,
     error
   })),
-
 
   on(BookActions.loadBorrowedBooks, (state) => ({
     ...state,

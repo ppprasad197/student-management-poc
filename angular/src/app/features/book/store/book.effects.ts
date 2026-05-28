@@ -38,7 +38,7 @@ export class BookEffects {
       switchMap(({ id }) =>
         this.bookService.deleteBook(id).pipe(
           map(() =>
-            BookActions.deleteBookSuccess({ id })
+            BookActions.deleteBookSuccess({ id, message: "Book deleted successfully" })
           ),
           catchError((error) =>
             of(
@@ -52,6 +52,14 @@ export class BookEffects {
     )
   );
 
+  deleteBookSuccess = createEffect(() =>
+    this.actions.pipe(
+      ofType(BookActions.deleteBookSuccess),
+      map(() =>
+        BookActions.loadBooks()
+      )
+    )
+  );
 
   addBook = createEffect(() =>
     this.actions.pipe(
@@ -91,7 +99,8 @@ export class BookEffects {
         this.bookService.updateBook(id, book).pipe(
           map((updatedBook: Book) =>
             BookActions.updateBookSuccess({
-              book: updatedBook
+              book: updatedBook,
+              message: "Book updated successfully"
             })
           ),
           catchError((error) =>
