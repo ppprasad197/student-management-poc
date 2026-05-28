@@ -1,18 +1,38 @@
-<!-- @if(user$ | async; as user){
+<div class="details-container">
 
-<div class="profile-container">
+    <h2>My Profile</h2>
 
-    <img [src]="user.profileImage || 'assets/default-profile.png'">
+    @if(currentUser$ | async; as user){
 
-    <h2>
-        {{ user.firstName }}
-        {{ user.lastName }}
-    </h2>
+    <div>
 
-    <p>Email : {{ user.email }}</p>
+        <p>
+            <strong>First Name :</strong>
+            {{ user.firstName }}
+        </p>
 
-    <p>Role : {{ user.role }}</p>
+        <p>
+            <strong>Last Name :</strong>
+            {{ user.lastName }}
+        </p>
+
+        <p>
+            <strong>Email :</strong>
+            {{ user.email }}
+        </p>
+
+        <p>
+            <strong>Username :</strong>
+            {{ user.userName }}
+        </p>
+
+        <p>
+            <strong>Role :</strong>
+            {{ user.role }}
+        </p>
+
+    </div>
+
+    }
 
 </div>
-
-} -->

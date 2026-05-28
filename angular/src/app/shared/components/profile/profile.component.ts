@@ -16,7 +16,7 @@ export class ProfileComponent {
 
   private store = inject(Store);
 
-  user$ = this.store.select(
-    AuthSelectors.selectUser
+  currentUser$ = this.store.select(
+    AuthSelectors.selectCurrentUser
   );
 }

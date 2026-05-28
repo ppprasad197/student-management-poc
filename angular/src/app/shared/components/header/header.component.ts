@@ -15,9 +15,24 @@ import * as AuthSelectors from '../../../store/auth/auth.selectors';
 })
 export class HeaderComponent {
 
+  showProfileMenu = false;
+
   private store = inject(Store);
   currentUser =
     this.store.select(
       AuthSelectors.selectCurrentUser
     );
+
+  toggleProfileMenu(event: Event) {
+    event.stopPropagation();
+    this.showProfileMenu =
+      !this.showProfileMenu;
+  }
+
+  ngOnInit() {
+    document.addEventListener(
+      'click',
+      () => { this.showProfileMenu = false }
+    );
+  }
 }

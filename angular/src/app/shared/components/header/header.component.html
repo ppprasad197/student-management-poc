@@ -18,8 +18,9 @@
                         Books
                     </a>
                 </li>
+
                 @if(currentUser | async; as user){
-                @if(user.role === 'ADMIN'||user.role === 'LIBRARIAN'){
+                @if(user.role === 'ADMIN' || user.role === 'LIBRARIAN'){
                 <li>
                     <a routerLink="/student">
                         Students
@@ -38,6 +39,7 @@
                     </a>
                 </li>
                 }
+
                 @if(user.role === 'STUDENT'){
                 <li>
                     <a routerLink="/myBorrowedBooks">
@@ -51,6 +53,7 @@
                 </li>
                 }
                 }
+
                 @if(!(currentUser | async)){
                 <li>
                     <a routerLink="/login">
@@ -63,16 +66,32 @@
                     </a>
                 </li>
                 }
+
                 @if(currentUser | async; as user){
                 <li class="profile-section">
-                    <span [routerLink]="['/profile']">
+                    <div class="profile-trigger" (click)="toggleProfileMenu($event)">
                         {{ user.firstName }}
-                    </span>
-                </li>
-                <li>
-                    <a routerLink="/logout">
-                        Logout
-                    </a>
+                    </div>
+
+                    @if(showProfileMenu){
+                    <div class="profile-dropdown">
+                        <p>
+                            <strong>
+                                {{ user.firstName }}
+                                {{ user.lastName }}
+                            </strong>
+                        </p>
+                        <p>{{ user.email }}</p>
+                        <p>{{ user.role }}</p>
+                        <hr>
+                        <button [routerLink]="['/profile']">
+                            My Profile
+                        </button>
+                        <button [routerLink]="['/logout']">
+                            Logout
+                        </button>
+                    </div>
+                    }
                 </li>
                 }
             </ul>
