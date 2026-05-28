@@ -7,10 +7,8 @@ export interface LoginRequest {
 
 export interface AuthState {
     user: User | null;
-
     username: string | null;
-
     loading: boolean;
-
     error: string | null;
+    successMessage: string | null;
 } 

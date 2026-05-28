@@ -6,4 +6,5 @@ export interface SignupRequest {
     email: string;
     role: string;
     studentId: string;
+    successMessage: string | null;
 }
