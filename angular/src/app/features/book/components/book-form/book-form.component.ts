@@ -5,6 +5,9 @@ import * as BookActions from '../../store/book.actions';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Book } from '../../models/book.model';
+import { filter, first } from 'rxjs';
+import * as BookSelectors from '../../store/book.selectors';
+
 
 @Component({
   selector: 'app-book-form',
@@ -55,6 +58,28 @@ export class BookFormComponent {
           book: this.bookData
         })
       );
+
+      this.store.select(
+        BookSelectors.selectBookSuccessMessage
+      )
+        .pipe(
+          filter(message => !!message),
+          first()
+        )
+        .subscribe(message => {
+          alert(message);
+        });
+
+      this.store.select(
+        BookSelectors.selectBookError
+      )
+        .pipe(
+          filter(error => !!error),
+          first()
+        )
+        .subscribe(error => {
+          alert(error);
+        });
     }
     else {
       this.store.dispatch(
@@ -62,6 +87,27 @@ export class BookFormComponent {
           book: this.bookData
         })
       );
+      this.store.select(
+        BookSelectors.selectBookSuccessMessage
+      )
+        .pipe(
+          filter(message => !!message),
+          first()
+        )
+        .subscribe(message => {
+          alert(message);
+        });
+
+      this.store.select(
+        BookSelectors.selectBookError
+      )
+        .pipe(
+          filter(error => !!error),
+          first()
+        )
+        .subscribe(error => {
+          alert(error);
+        });
     }
     this.router.navigate(['/book']);
   }
