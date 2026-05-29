@@ -135,3 +135,8 @@ td span:contains("Not Available") {
     background-color: #fdecea;
     color: #e74c3c;
 }
+
+.not-available {
+    color: red;
+    font-weight: bolder;
+}

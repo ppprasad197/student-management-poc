@@ -68,7 +68,8 @@ export class BookEffects {
         this.bookService.addBook(book).pipe(
           map((savedBook: Book) =>
             BookActions.addBookSuccess({
-              book: savedBook
+              book: savedBook,
+              message: "Book added successfully"
             })
           ),
           catchError((error) =>

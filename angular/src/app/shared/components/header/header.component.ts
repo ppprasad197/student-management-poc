@@ -3,7 +3,6 @@ import { Component, inject } from '@angular/core';
 import { RouterLink, RouterModule } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
-
 import * as AuthSelectors from '../../../store/auth/auth.selectors';
 
 @Component({

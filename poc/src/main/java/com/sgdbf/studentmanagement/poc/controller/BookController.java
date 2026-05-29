@@ -4,6 +4,7 @@ import com.sgdbf.studentmanagement.poc.dto.BookRequestDto;
 import com.sgdbf.studentmanagement.poc.dto.BookResponseDto;
 import com.sgdbf.studentmanagement.poc.entity.Book;
 import com.sgdbf.studentmanagement.poc.service.BookService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -35,15 +36,13 @@ public class BookController {
 
     @PostMapping
     @PreAuthorize("hasAnyRole('ADMIN','LIBRARIAN')")
-    public BookResponseDto addBook(
-            @RequestBody BookRequestDto requestDto) {
-        System.out.println("Add book called");
+    public BookResponseDto addBook(@Valid @RequestBody BookRequestDto requestDto) {
         return bookService.save(requestDto);
     }
 
     @PutMapping("/{id}")
     @PreAuthorize("hasAnyRole('ADMIN','LIBRARIAN')")
-    public BookResponseDto updateBook(@PathVariable Long id, @RequestBody BookRequestDto requestDto) {
+    public BookResponseDto updateBook(@PathVariable Long id, @Valid @RequestBody BookRequestDto requestDto) {
         System.out.println("Update book called : " + requestDto.getQuantity());
         return bookService.update(id, requestDto);
     }
@@ -71,7 +70,7 @@ public class BookController {
 
     @PostMapping("/renew/{id}")
     @PreAuthorize("hasRole('STUDENT')")
-    public ResponseEntity<?> renewBook(@PathVariable Long id,Authentication authentication) {
+    public ResponseEntity<?> renewBook(@PathVariable Long id, Authentication authentication) {
         bookService.renewBook(id, authentication.getName());
         return ResponseEntity.ok("Book renewed successfully");
     }

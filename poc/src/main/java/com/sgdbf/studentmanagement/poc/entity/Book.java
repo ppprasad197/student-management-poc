@@ -1,20 +1,33 @@
 package com.sgdbf.studentmanagement.poc.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.annotation.Nullable;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
 
 @Entity
 public class Book {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
+
+    @NotBlank(message = "Title required")
+    @Column(nullable = false)
     String title;
+
+    @NotBlank(message = "Author required")
+    @Column(nullable = false)
     private String author;
+
     private String category;
     private String description;
+
+
+    @Column(nullable = false)
     private boolean available;
+
+    @Min(value = 1, message = "Quantity should be At least 1")
+    @Column(nullable = false)
     int quantity;
 
     public Book() {

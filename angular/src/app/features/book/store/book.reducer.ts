@@ -1,6 +1,7 @@
 import { createReducer, on } from '@ngrx/store';
 import * as BookActions from './book.actions';
 import { BookState } from './book.state';
+import { state } from '@angular/animations';
 
 export const bookFeatureKey = 'book';
 
@@ -142,5 +143,16 @@ export const bookReducer = createReducer(
     successMessage: null,
     error: null
   })),
+
+  on(BookActions.addBookSuccess, (state, { message }) => ({
+    ...state,
+    successMessage: message,
+    error: null
+  })),
+
+  on(BookActions.addBookFailure, (state, { error }) => ({
+    ...state,
+    error
+  }))
 );
 

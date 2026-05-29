@@ -44,7 +44,7 @@
                 <span>Available</span>
                 }
                 @else {
-                <span>Not Available</span>
+                <span class="not-available">Not Available</span>
                 }
             </td>
             <td>{{ book.quantity }}</td>
@@ -67,11 +67,7 @@
                     Borrow
                 </button>
                 }
-                <!-- @else {
-                <button (click)="returnBook(book.id)">
-                    Return
-                </button>
-                } -->
+
                 }
                 }
             </td>

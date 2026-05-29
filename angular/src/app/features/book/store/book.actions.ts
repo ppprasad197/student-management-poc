@@ -23,7 +23,7 @@ export const addBook = createAction(
 
 export const addBookSuccess = createAction(
   '[Book] Add Book Success',
-  props<{ book: Book }>()
+  props<{ book: Book; message:string}>()
 );
 
 export const addBookFailure = createAction(

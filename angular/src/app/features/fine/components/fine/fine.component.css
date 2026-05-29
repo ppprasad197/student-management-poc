@@ -83,3 +83,8 @@ p {
     text-align: center;
     color: #333;
 }
+
+.pending {
+    color: red;
+    font-weight: bolder;
+}

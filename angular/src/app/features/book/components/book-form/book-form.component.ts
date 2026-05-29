@@ -59,6 +59,8 @@ export class BookFormComponent {
         })
       );
 
+
+
       this.store.select(
         BookSelectors.selectBookSuccessMessage
       )
@@ -68,6 +70,9 @@ export class BookFormComponent {
         )
         .subscribe(message => {
           alert(message);
+          this.store.dispatch(
+            BookActions.clearBookMessages()
+          )
         });
 
       this.store.select(
@@ -79,6 +84,9 @@ export class BookFormComponent {
         )
         .subscribe(error => {
           alert(error);
+          this.store.dispatch(
+            BookActions.clearBookMessages()
+          )
         });
     }
     else {
@@ -87,6 +95,8 @@ export class BookFormComponent {
           book: this.bookData
         })
       );
+
+
       this.store.select(
         BookSelectors.selectBookSuccessMessage
       )
@@ -96,6 +106,9 @@ export class BookFormComponent {
         )
         .subscribe(message => {
           alert(message);
+          this.store.dispatch(
+            BookActions.clearBookMessages()
+          )
         });
 
       this.store.select(
@@ -107,6 +120,9 @@ export class BookFormComponent {
         )
         .subscribe(error => {
           alert(error);
+          this.store.dispatch(
+            BookActions.clearBookMessages()
+          )
         });
     }
     this.router.navigate(['/book']);
