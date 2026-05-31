@@ -24,9 +24,11 @@
         </p>
 
         <div class="action-buttons">
+            @if(user.role!=='STUDENT'){
             <button [routerLink]="['/signup']" [state]="{ user: user, isProfileUpdate: true }">
                 Update Profile
             </button>
+            }
         </div>
     </div>
     }
