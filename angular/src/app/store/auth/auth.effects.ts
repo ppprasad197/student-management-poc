@@ -18,15 +18,28 @@ export class AuthEffects {
   login = createEffect(() =>
     this.actions.pipe(
       ofType(AuthActions.login),
-      switchMap((action) =>
-        this.authService.login(action.username, action.password).pipe(
-          map((response) => (
-            AuthActions.loginSuccess({ user: response.username })
+      switchMap(({ username, password }) =>
+        this.authService.login(username, password).pipe(
+          map((response) =>
+            AuthActions.loginSuccess({
+              user: response.username,
+              message: 'Login Successful'
+            })
           ),
-            catchError(() =>
-              of(AuthActions.loginFailure({ error: 'Invalid credentials' }))
-            )
-          )
+          catchError((error) => {
+            console.log(error);
+            console.log(error.error);
+
+            return of(
+              AuthActions.loginFailure({
+                error:
+                  error.error?.error ||
+                  error.error?.message ||
+                  error.message ||
+                  'Invalid credentials'
+              })
+            );
+          })
         )
       )
     )
@@ -65,8 +78,7 @@ export class AuthEffects {
         this.store.dispatch(
           AuthActions.getCurrentUser()
         );
-      }),
-      tap(() => {
+
         this.router.navigate(['/home']);
       })
     ),
@@ -123,5 +135,23 @@ export class AuthEffects {
         )
       )
     )
+  );
+
+  loginSuccessAlert = createEffect(
+    () =>
+      this.actions.pipe(
+        ofType(AuthActions.loginSuccess),
+        tap(({ message }) => alert(message))
+      ),
+    { dispatch: false }
+  );
+
+  loginFailureAlert = createEffect(
+    () =>
+      this.actions.pipe(
+        ofType(AuthActions.loginFailure),
+        tap(({ error }) => alert(error))
+      ),
+    { dispatch: false }
   );
 }

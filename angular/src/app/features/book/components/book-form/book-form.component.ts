@@ -59,8 +59,6 @@ export class BookFormComponent {
         })
       );
 
-
-
       this.store.select(
         BookSelectors.selectBookSuccessMessage
       )

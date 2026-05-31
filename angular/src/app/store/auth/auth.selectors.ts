@@ -24,11 +24,11 @@ export const selectCurrentUser = createSelector(
 );
 
 export const selectSuccessMessage = createSelector(
-    selectAuthState,
-    (state) => state.successMessage
+  selectAuthState,
+  (state) => state.successMessage
 );
 
 export const selectErrorMessage = createSelector(
-    selectAuthState,
-    (state) => state.error
-)
+  selectAuthState,
+  (state) => state.error
+);

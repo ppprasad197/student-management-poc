@@ -91,6 +91,7 @@ export class MyBorrowBooksComponent {
       )
       .subscribe(error => {
         alert(error);
+        console.log("Error is : " + error)
       });
   }
 }

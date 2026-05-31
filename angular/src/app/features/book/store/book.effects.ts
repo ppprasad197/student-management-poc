@@ -25,7 +25,7 @@ export class BookEffects {
           catchError((error) =>
             of(
               BookActions.loadBookFailure({
-                error: error.message
+                error: error.error || error.message
               })
             ))
         ))
@@ -43,7 +43,7 @@ export class BookEffects {
           catchError((error) =>
             of(
               BookActions.deleteBookFailure({
-                error: error.message
+                error: error.error || error.message
               })
             )
           )
@@ -75,7 +75,7 @@ export class BookEffects {
           catchError((error) =>
             of(
               BookActions.addBookFailure({
-                error: error.message
+                error: error.error || error.message
               })
             )
           )
@@ -107,7 +107,7 @@ export class BookEffects {
           catchError((error) =>
             of(
               BookActions.updateBookFailure({
-                error: error.message
+               error: error.error || error.message
               })
             )
           )
@@ -130,7 +130,7 @@ export class BookEffects {
           catchError((error) =>
             of(
               BookActions.borrowBookFailure({
-                error: error.error
+                error: error.error || error.message
               })
             )
           )
@@ -161,7 +161,7 @@ export class BookEffects {
           catchError((error) =>
             of(
               BookActions.returnBookFailure({
-                error: error.error
+                error: error.error || error.message
               })
             )
           )
@@ -192,7 +192,7 @@ export class BookEffects {
           catchError((error) =>
             of(
               BookActions.loadMyBorrowedBooksFailure({
-                error: error.message
+                error: error.error || error.message
               })
             )
           )
@@ -214,7 +214,7 @@ export class BookEffects {
           catchError((error) =>
             of(
               BookActions.renewBookFailure({
-                error: error.error
+                error: error.error || error.message
               })
             )
           )
@@ -247,7 +247,7 @@ export class BookEffects {
             catchError((error) =>
               of(
                 BookActions.loadBorrowedBooksFailure({
-                  error: error.message
+                  error: error.error || error.message
                 })
               )
             )

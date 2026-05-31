@@ -8,7 +8,7 @@ import { Router } from '@angular/router';
 import * as UserActions from '../../../features/user/store/user.actions';
 import { selectError } from '../../../store/auth/auth.selectors';
 import { selectStudentSuccessMessage } from '../../../features/student/store/student.selectors';
-import { selectUserSuccessMessage } from '../../../features/user/store/user.selectors';
+import { selectUserState, selectUserSuccessMessage } from '../../../features/user/store/user.selectors';
 import * as AuthSelectors from '../../../store/auth/auth.selectors';
 
 
@@ -84,9 +84,21 @@ export class SignupComponent {
         .subscribe(message => {
           if (message) {
             alert(message);
+            this.store.dispatch(StudentActions.clearMessages());
             this.router.navigate(['/student']);
           }
         });
+
+      this.store.select(selectError)
+        .pipe(first())
+        .subscribe(message => {
+          if (message) {
+            alert(message);
+            this.store.dispatch(StudentActions.clearMessages());
+            // this.router.navigate(['/student']);
+          }
+        });
+
     }
 
     // UPDATE USER
@@ -102,7 +114,17 @@ export class SignupComponent {
         .subscribe(message => {
           if (message) {
             alert(message);
+            this.store.dispatch(UserActions.clearMessages());
             this.router.navigate(['/users']);
+          }
+        });
+         this.store.select(selectError)
+        .pipe(first())
+        .subscribe(message => {
+          if (message) {
+            alert(message);
+            this.store.dispatch(UserActions.clearMessages());
+            // this.router.navigate(['/users']);
           }
         });
     }
@@ -124,6 +146,8 @@ export class SignupComponent {
         )
         .subscribe(message => {
           alert(message);
+          this.store.dispatch(AuthActions.clearAuthMessages());
+          this.router.navigate(['/home']);
         });
 
       this.store.select(

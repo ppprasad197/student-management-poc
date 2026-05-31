@@ -4,6 +4,8 @@ import * as selectAuthState from '../../../store/auth/auth.selectors';
 import * as AuthActions from '../../../store/auth/auth.actions';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { filter, first } from 'rxjs';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -15,15 +17,12 @@ import { CommonModule } from '@angular/common';
 export class LoginComponent {
 
   private store = inject(Store);
+  private router = inject(Router);
 
-  username = ''
-  password = ''
-
-  error = this.store.select(selectAuthState.selectError)
+  username = '';
+  password = '';
 
   login() {
-    console.log(this.username)
-    console.log(this.password)
     this.store.dispatch(
       AuthActions.login({
         username: this.username,
@@ -31,6 +30,4 @@ export class LoginComponent {
       })
     );
   }
-
-
 }
