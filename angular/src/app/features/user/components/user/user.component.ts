@@ -30,13 +30,6 @@ export class UserComponent {
 
   approveUser(id: number) {
     this.store.dispatch(UserActions.approveUser({ id }));
-    this.store.select(UserSelectors.selectUserSuccessMessage)
-      .pipe(first())
-      .subscribe(message => {
-        if (message) {
-          alert(message);
-        }
-      });
   }
 
   deleteUser(id: number) {
@@ -46,13 +39,7 @@ export class UserComponent {
     if (confirmed) {
       this.store.dispatch(
         UserActions.deleteUser({ id })
-      ); this.store.select(UserSelectors.selectUserSuccessMessage)
-        .pipe(first())
-        .subscribe(message => {
-          if (message) {
-            alert(message);
-          }
-        });
+      ); 
     }
   }
 }

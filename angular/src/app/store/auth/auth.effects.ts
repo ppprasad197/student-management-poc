@@ -93,13 +93,19 @@ export class AuthEffects {
           map((response) =>
             AuthActions.signupSuccess({ response, message: "User sign up successfull" })
           ),
-          catchError((error) =>
-            of(
+          catchError((error) => {
+            console.log('SIGNUP FAILURE FIRED');
+
+            return of(
               AuthActions.signupFailure({
-                error: error.message
+                error:
+                  error.error?.message ||
+                  error.error ||
+                  error.message ||
+                  'Signup failed'
               })
-            )
-          )
+            );
+          })
         )
       )
     )
@@ -151,6 +157,24 @@ export class AuthEffects {
       this.actions.pipe(
         ofType(AuthActions.loginFailure),
         tap(({ error }) => alert(error))
+      ),
+    { dispatch: false }
+  );
+
+  signupSuccessAlert = createEffect(
+    () =>
+      this.actions.pipe(
+        ofType(AuthActions.signupSuccess),
+        tap(({ message }) => alert(message))
+      ),
+    { dispatch: false }
+  );
+
+  signupFailureAlert = createEffect(
+    () =>
+      this.actions.pipe(
+        ofType(AuthActions.signupFailure),
+        tap(({ error }) => { alert(error); console.log("Signup error : " + error) }),
       ),
     { dispatch: false }
   );

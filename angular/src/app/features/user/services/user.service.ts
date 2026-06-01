@@ -29,7 +29,10 @@ export class UserService {
 
   deleteUser(id: number) {
     return this.http.delete(
-      `${this.baseUrl}/delete/${id}`
+      `${this.baseUrl}/delete/${id}`,
+      {
+        responseType: 'text'
+      }
     );
   }
 

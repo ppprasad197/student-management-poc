@@ -23,20 +23,8 @@ export const studentReducer = createReducer(
     ...state,
     loading: false,
     students: students,
-    successMessage: 'Student updated successfully'
   })),
 
-  on(StudentActions.loadStudentsFailure, (state, { error }) => ({
-    ...state,
-    loading: false,
-    error
-  })),
-
-  on(StudentActions.loadStudentsSuccess, (state, { students }) => ({
-    ...state,
-    students: [...students],
-    loading: false
-  })),
 
   on(StudentActions.deleteStudentSuccess, (state) => ({
     ...state,
@@ -71,24 +59,25 @@ export const studentReducer = createReducer(
   })),
 
   on(StudentActions.approveStudentFailure, (state, { error }) => ({
-
     ...state,
-
     error,
-
     successMessage: null
-
   })),
 
   on(StudentActions.clearMessages, (state) => ({
-
     ...state,
-
     successMessage: null,
-
     error: null
-
   })),
+  
+  on(
+    StudentActions.updateStudentSuccess,
+    (state, { message }) => ({
+      ...state,
+      successMessage: message,
+      error: null
+    })
+  )
 
 );
 

@@ -56,7 +56,8 @@ export const deleteStudentFailure = createAction(
 );
 
 export const updateStudentSuccess = createAction(
-  '[Student]Update Student Success'
+  '[Student]Update Student Success',
+  props<{ message: string }>()
 );
 
 export const updateStudentFailure = createAction(

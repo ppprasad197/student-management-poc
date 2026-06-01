@@ -5,6 +5,7 @@ import { StudentService } from '../services/student.service';
 import * as StudentActions from './student.actions';
 import { catchError, delay, map, of, switchMap, tap } from 'rxjs';
 import * as AuthActions from '../../../store/auth/auth.actions';
+import { Router } from '@angular/router';
 
 
 @Injectable()
@@ -12,7 +13,7 @@ export class StudentEffects {
 
   private actions = inject(Actions);
 
-  constructor(private studentService: StudentService) { }
+  constructor(private studentService: StudentService, private router: Router) { }
 
   loadStudents = createEffect(() =>
     this.actions.pipe(
@@ -58,7 +59,9 @@ export class StudentEffects {
           student
         ).pipe(
           map(() =>
-            StudentActions.updateStudentSuccess()
+            StudentActions.updateStudentSuccess({
+              message: "Student updated successfully"
+            }),
           ),
           catchError((error) =>
             of(
@@ -101,5 +104,58 @@ export class StudentEffects {
       ),
       map(() => StudentActions.loadStudents())
     )
+  );
+
+  approveStudentSuccessAlert = createEffect(
+    () =>
+      this.actions.pipe(
+        ofType(StudentActions.approveStudentSuccess),
+        tap(() => alert('Student Approved Successfully'))
+      ),
+    { dispatch: false }
+  );
+
+  deleteStudentSuccessAlert = createEffect(
+    () =>
+      this.actions.pipe(
+        ofType(StudentActions.deleteStudentSuccess),
+        tap(() => alert('Student Deleted Successfully'))
+      ),
+    { dispatch: false }
+  );
+
+  updateStudentSuccessAlert = createEffect(
+    () =>
+      this.actions.pipe(
+        ofType(StudentActions.updateStudentSuccess),
+        tap(({ message }) => { alert(message), this.router.navigate(['/student']); })
+      ),
+    { dispatch: false }
+  );
+  approveStudentFailureAlert = createEffect(
+    () =>
+      this.actions.pipe(
+        ofType(StudentActions.approveStudentFailure),
+        tap(({ error }) => alert(error))
+      ),
+    { dispatch: false }
+  );
+
+  deleteStudentFailureAlert = createEffect(
+    () =>
+      this.actions.pipe(
+        ofType(StudentActions.deleteStudentFailure),
+        tap(({ error }) => alert(error))
+      ),
+    { dispatch: false }
+  );
+
+  updateStudentFailureAlert = createEffect(
+    () =>
+      this.actions.pipe(
+        ofType(StudentActions.updateStudentFailure),
+        tap(({ error }) => alert(error))
+      ),
+    { dispatch: false }
   );
 }

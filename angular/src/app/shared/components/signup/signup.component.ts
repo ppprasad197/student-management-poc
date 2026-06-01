@@ -10,7 +10,8 @@ import { selectError } from '../../../store/auth/auth.selectors';
 import { selectStudentSuccessMessage } from '../../../features/student/store/student.selectors';
 import { selectUserState, selectUserSuccessMessage } from '../../../features/user/store/user.selectors';
 import * as AuthSelectors from '../../../store/auth/auth.selectors';
-
+import * as UserSelectors from '../../../features/user/store/user.selectors';
+import * as StudentSelectors from '../../../features/student/store/student.selectors';
 
 @Component({
   selector: 'app-signup',
@@ -76,29 +77,9 @@ export class SignupComponent {
       this.store.dispatch(
         StudentActions.updateStudent({
           id: this.studentId,
-          student: this.signupData
+          student: { ...this.signupData }
         })
       );
-      this.store.select(selectStudentSuccessMessage)
-        .pipe(first())
-        .subscribe(message => {
-          if (message) {
-            alert(message);
-            this.store.dispatch(StudentActions.clearMessages());
-            this.router.navigate(['/student']);
-          }
-        });
-
-      this.store.select(selectError)
-        .pipe(first())
-        .subscribe(message => {
-          if (message) {
-            alert(message);
-            this.store.dispatch(StudentActions.clearMessages());
-            // this.router.navigate(['/student']);
-          }
-        });
-
     }
 
     // UPDATE USER
@@ -106,60 +87,20 @@ export class SignupComponent {
       this.store.dispatch(
         UserActions.updateUser({
           id: this.userId,
-          user: this.signupData
+          user: { ...this.signupData }
         })
       );
-      this.store.select(selectUserSuccessMessage)
-        .pipe(first())
-        .subscribe(message => {
-          if (message) {
-            alert(message);
-            this.store.dispatch(UserActions.clearMessages());
-            this.router.navigate(['/users']);
-          }
-        });
-         this.store.select(selectError)
-        .pipe(first())
-        .subscribe(message => {
-          if (message) {
-            alert(message);
-            this.store.dispatch(UserActions.clearMessages());
-            // this.router.navigate(['/users']);
-          }
-        });
     }
 
     // SIGNUP
     else {
+      console.log('Frozen?', Object.isFrozen(this.signupData));
       this.store.dispatch(
         AuthActions.signUp({
-          data: this.signupData
+          data: { ...this.signupData }
         })
       );
 
-      this.store.select(
-        AuthSelectors.selectSuccessMessage
-      )
-        .pipe(
-          filter(message => !!message),
-          first()
-        )
-        .subscribe(message => {
-          alert(message);
-          this.store.dispatch(AuthActions.clearAuthMessages());
-          this.router.navigate(['/home']);
-        });
-
-      this.store.select(
-        AuthSelectors.selectError
-      )
-        .pipe(
-          filter(error => !!error),
-          first()
-        )
-        .subscribe(error => {
-          alert(error);
-        });
     }
   }
 }

@@ -3,13 +3,12 @@ import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { UserService } from '../services/user.service';
 import * as UserActions from '../store/user.actions';
 import { catchError, map, of, switchMap, tap } from 'rxjs';
+import { Route, Router } from '@angular/router';
 
 @Injectable()
 export class UserEffects {
   private actions = inject(Actions);
-  constructor(
-    private userService: UserService
-  ) { }
+  constructor(private userService: UserService, private router: Router) { }
 
   loadUsers = createEffect(() =>
     this.actions.pipe(
@@ -45,7 +44,7 @@ export class UserEffects {
           ),
           catchError((error) =>
             of(
-              UserActions.loadUsersFailure({
+              UserActions.approveUserFailure({
                 error: error.message
               })
             )
@@ -67,7 +66,7 @@ export class UserEffects {
           ),
           catchError((error) =>
             of(
-              UserActions.loadUsersFailure({
+              UserActions.deleteUserFailure({
                 error: error.message
               })
             )
@@ -86,12 +85,14 @@ export class UserEffects {
           user
         ).pipe(
           map(() => {
-            return UserActions.updateUserSuccess()
+            return UserActions.updateUserSuccess({
+              message: "User updated successfully"
+            })
           }
           ),
           catchError((error) =>
             of(
-              UserActions.loadUsersFailure({
+              UserActions.updateUserFailure({
                 error: error.message
               })
             )
@@ -112,6 +113,69 @@ export class UserEffects {
         UserActions.loadUsers()
       )
     )
+  );
+
+  approveUserSuccessAlert = createEffect(
+    () =>
+      this.actions.pipe(
+        ofType(UserActions.approveUserSuccess),
+        tap(() => alert('User Approved Successfully'))
+      ),
+    { dispatch: false }
+  );
+
+  deleteUserSuccessAlert = createEffect(
+    () =>
+      this.actions.pipe(
+        ofType(UserActions.deleteUserSuccess),
+        tap(() => alert('User Deleted Successfully'))
+      ),
+    { dispatch: false }
+  );
+
+  updateUserSuccessAlert = createEffect(
+    () =>
+      this.actions.pipe(
+        ofType(UserActions.updateUserSuccess),
+        tap(() => {
+          alert('User Updated Successfully');
+          this.router.navigate(['/users']);
+        })
+      ),
+    { dispatch: false }
+  );
+
+  approveUserFailureAlert = createEffect(
+    () =>
+      this.actions.pipe(
+        ofType(UserActions.approveUserFailure),
+        tap(({ error }) =>
+          alert(error || 'Failed to approve user')
+        )
+      ),
+    { dispatch: false }
+  );
+
+  deleteUserFailureAlert = createEffect(
+    () =>
+      this.actions.pipe(
+        ofType(UserActions.deleteUserFailure),
+        tap(({ error }) =>
+          alert(error || 'Failed to delete user')
+        )
+      ),
+    { dispatch: false }
+  );
+
+  updateUserFailureAlert = createEffect(
+    () =>
+      this.actions.pipe(
+        ofType(UserActions.updateUserFailure),
+        tap(({ error }) =>
+          alert(error || 'Failed to update user')
+        )
+      ),
+    { dispatch: false }
   );
 
 }

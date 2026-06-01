@@ -51,7 +51,8 @@ export const updateUser = createAction(
 );
 
 export const updateUserSuccess = createAction(
-  '[User] Update User Success'
+  '[User] Update User Success',
+  props<{message:string}>()
 );
 
 export const updateUserFailure = createAction(
