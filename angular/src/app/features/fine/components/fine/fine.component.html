@@ -3,10 +3,6 @@
 @if(user.role === 'STUDENT'){
 <h2>My Fines</h2>
 @if(fines | async; as fineData){
-<h3>
-    Total Due :
-    ₹ {{ fineData.totalAmount }}
-</h3>
 
 @if(fineData.fines.length > 0){
 <table>
@@ -44,26 +40,23 @@
 }
 
 @else {
-<p>
+<p class="paid-status">
     No Pending Fines
-</p>}}
+</p>}
 
 @if(summary | async; as summary){
 <div>
     <h3>Summary</h3>
-    <p>
-        Total Fine :
-        ₹ {{ summary.totalFine }}
-    </p>
+    <h3 [class.pending-fine]="fineData.totalAmount>0">
+        Total Due:
+        ₹ {{ fineData.totalAmount }}
+    </h3>
     <p>
         Paid :
         ₹ {{ summary.paid }}
     </p>
-    <p>
-        Remaining :
-        ₹ {{ summary.remaining }}
-    </p>
 </div>
+}
 }
 }
 
@@ -81,11 +74,12 @@
             <th>Fine</th>
             <th>Status</th>
             <th>Due Date</th>
+            <th>Paid Date</th>
         </tr>
     </thead>
     <tbody>
 
-        @for(fine of allStudentFines$ | async;track fine.studentId){
+        @for(fine of allStudentFines | async;track fine.studentId){
         <tr>
             <td>
                 {{ fine.studentName }}
@@ -113,6 +107,9 @@
             </td>
             <td>
                 {{ fine.dueDate }}
+            </td>
+            <td>
+                {{ fine.paidDate }}
             </td>
         </tr>
         }

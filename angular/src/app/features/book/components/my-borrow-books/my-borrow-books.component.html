@@ -7,7 +7,6 @@
             <th>Issue Date</th>
             <th>Due Date</th>
             <th>Renew Count</th>
-            <th>Return Date</th>
             <th>Actions</th>
         </tr>
     </thead>
@@ -19,7 +18,7 @@
             <td>{{ book.issueDate }}</td>
             <td>{{ book.dueDate }}</td>
             <td>{{ book.renewCount }}</td>
-            <td>{{ book.returnDate }}</td>
+            
             <td>
                 <button (click)="renewBook(book.bookId)" [disabled]="book.renewCount >= 2">
                     Renew

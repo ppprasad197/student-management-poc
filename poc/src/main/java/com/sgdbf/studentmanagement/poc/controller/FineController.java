@@ -57,7 +57,6 @@ public class FineController {
         return ResponseEntity.ok(
                 fineService.getAllStudentFines()
         );
-
     }
 }
 

@@ -16,4 +16,5 @@ export interface AdminFine {
 
     returnDate: string;
 
+    paidDate: string
 }

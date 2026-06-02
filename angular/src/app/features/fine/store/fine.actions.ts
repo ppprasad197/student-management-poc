@@ -11,6 +11,7 @@ export const loadMyFinesSuccess = createAction(
   props<{ fines: FineResponse }>()
 );
 
+
 export const loadMyFinesFailure = createAction(
   '[Fine]Load My Fines Failure',
   props<{ error: string }>()
@@ -39,6 +40,7 @@ export const payFineSuccess = createAction(
   '[Fine] Pay Fine Success',
   props<{ response: FinePaymentResponse }>()
 );
+
 
 export const payFineFailure = createAction(
   '[Fine] Pay Fine Failure',

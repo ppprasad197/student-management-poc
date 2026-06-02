@@ -84,7 +84,18 @@ p {
     color: #333;
 }
 
+.pending-fine {
+    color: red;
+    font-weight: bold;
+}
+
+.paid-status {
+    color: green;
+    font-weight: bold;
+    font-size: 18px;
+}
+
 .pending {
     color: red;
-    font-weight: bolder;
+    font-weight: bold;
 }

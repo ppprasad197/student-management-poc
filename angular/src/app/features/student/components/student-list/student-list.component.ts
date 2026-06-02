@@ -6,7 +6,7 @@ import * as StudentSelector from '../../store/student.selectors';
 import * as StudentActions from '../../store/student.actions';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
-import { first } from 'rxjs';
+import { filter, first } from 'rxjs';
 import * as BookActions from '../../../book/store/book.actions';
 import { BorrowedBook } from '../../../book/models/borrowed-book.model';
 
@@ -32,41 +32,42 @@ export class StudentListComponent {
   );
 
   ngOnInit(): void {
-    this.store.dispatch(StudentActions.loadStudents());
-    this.store.dispatch(BookActions.loadBorrowedBooks());
-    this.borrowedBooks$.subscribe(data => {
-      this.borrowedBooks = data;
-      console.log(this.borrowedBooks);
-    });
+
+    this.store.dispatch(
+      StudentActions.clearMessages()
+    );
+
+    this.store.dispatch(
+      StudentActions.loadStudents()
+    );
+
+    this.store.dispatch(
+      BookActions.loadBorrowedBooks()
+    );
+
+    this.borrowedBooks$
+      .subscribe(data => {
+        this.borrowedBooks = data;
+      });
+
   }
 
-  approveStudent(id: number) {
+  approveStudent(id: number): void {
     this.store.dispatch(
       StudentActions.approveStudent({ id })
     );
-    this.store.select(StudentSelector.selectStudentSuccessMessage)
-      .pipe(first())
-      .subscribe(message => {
-        if (message) {
-          alert(message);
-        }
-      });
   }
 
-  deleteStudent(id: number) {
+  deleteStudent(id: number): void {
     const confirmed = window.confirm(
-      'Are you sure you want to delete this student??'
+      'Are you sure you want to delete this student?'
     );
+
     if (confirmed) {
-      this.store.dispatch(StudentActions.deleteStudent({ id }));;
+      this.store.dispatch(
+        StudentActions.deleteStudent({ id })
+      );
     }
-    this.store.select(StudentSelector.selectStudentSuccessMessage)
-      .pipe(first())
-      .subscribe(message => {
-        if (message) {
-          alert(message);
-        }
-      });
   }
 
   hasBorrowedBooks(studentId: number): boolean {

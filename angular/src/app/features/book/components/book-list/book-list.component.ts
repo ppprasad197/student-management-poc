@@ -121,30 +121,6 @@ export class BookListComponent {
       });
   }
 
-  // returnBook(id: number) {
-  //   this.store.dispatch(
-  //     BookActions.returnBook({ id })
-  //   );
-  //   this.store.select(
-  //     BookSelectors.selectBookSuccessMessage
-  //   )
-  //     .pipe(first())
-  //     .subscribe(message => {
-  //       if (message) {
-  //         alert(message);
-  //       }
-  //     });
-  //   this.store.select(
-  //     BookSelectors.selectBookError
-  //   )
-  //     .pipe(first())
-  //     .subscribe(error => {
-  //       if (error) {
-  //         alert(error);
-  //       }
-  //     });
-  // }
-
   currentUser =
     this.store.select(
       AuthSelectors.selectCurrentUser

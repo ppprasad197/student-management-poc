@@ -17,6 +17,7 @@ import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class FineService {
@@ -118,8 +119,7 @@ public class FineService {
         return dto;
     }
 
-    private FineDTO calculateFine(
-            List<BorrowRecord> records) {
+    private FineDTO calculateFine(List<BorrowRecord> records) {
 
         List<FineDTO.FineItem> fineItems =
                 new ArrayList<>();
@@ -131,29 +131,20 @@ public class FineService {
 
         for (BorrowRecord record : records) {
 
-            if (fineRepository
-                    .existsByBorrowRecord(record)) {
-
+            if (fineRepository.existsByBorrowRecord(record)) {
                 continue;
             }
 
-            long daysLate =
-                    calculateLateDays(
-                            record,
-                            today
-                    );
+            long daysLate = calculateLateDays(record, today);
 
             if (daysLate > 0) {
 
                 double fineAmount =
                         daysLate * 10.0;
 
-                FineDTO.FineItem item =
-                        mapFineItem(
-                                record,
-                                daysLate,
-                                fineAmount
-                        );
+                Optional<Fine> fineRecord = fineRepository.findByBorrowRecord(record);
+
+                FineDTO.FineItem item = mapFineItem(record, daysLate, fineAmount, fineRecord.get().getPaidDate());
 
                 fineItems.add(item);
 
@@ -206,13 +197,7 @@ public class FineService {
         return 0;
     }
 
-    private FineDTO.FineItem mapFineItem(
-
-            BorrowRecord record,
-
-            long daysLate,
-
-            double fineAmount) {
+    private FineDTO.FineItem mapFineItem(BorrowRecord record, long daysLate, double fineAmount, LocalDate paidDate) {
 
         FineDTO.FineItem item =
                 new FineDTO.FineItem();
@@ -229,9 +214,7 @@ public class FineService {
                 record.getDueDate()
         );
 
-        item.setReturnDate(
-                record.getReturnDate()
-        );
+        item.setPaidDate(paidDate);
 
         item.setDaysLate(daysLate);
 
@@ -456,18 +439,18 @@ public class FineService {
 
         for (Fine fine : fines) {
 
-            BorrowRecord record =
-                    fine.getBorrowRecord();
+            BorrowRecord record = fine.getBorrowRecord();
 
-            if (record == null ||
-                    record.getUser() == null)
+            if (record == null || record.getUser() == null) {
                 continue;
+            }
 
             response.add(
                     mapToFineDto(
                             record,
                             fine.getAmount(),
-                            fine.isPaid()
+                            fine.isPaid(),
+                            fine
                     )
             );
         }
@@ -481,21 +464,20 @@ public class FineService {
 
         for (BorrowRecord record : records) {
 
-            if (record.getUser() == null)
+            if (record.getUser() == null) {
                 continue;
+            }
 
-            // Skip already generated fines
+            // Skip records that already have a Fine entity
             boolean fineExists =
                     fineRepository.existsByBorrowRecord(record);
 
-            if (fineExists)
+            if (fineExists) {
                 continue;
+            }
 
-            LocalDate dueDate =
-                    record.getDueDate();
-
-            LocalDate returnDate =
-                    record.getReturnDate();
+            LocalDate dueDate = record.getDueDate();
+            LocalDate returnDate = record.getReturnDate();
 
             long daysLate = 0;
 
@@ -503,35 +485,34 @@ public class FineService {
             if (returnDate != null &&
                     returnDate.isAfter(dueDate)) {
 
-                daysLate =
-                        ChronoUnit.DAYS.between(
-                                dueDate,
-                                returnDate
-                        );
+                daysLate = ChronoUnit.DAYS.between(
+                        dueDate,
+                        returnDate
+                );
             }
 
             // Still overdue
             else if (returnDate == null &&
                     today.isAfter(dueDate)) {
 
-                daysLate =
-                        ChronoUnit.DAYS.between(
-                                dueDate,
-                                today
-                        );
+                daysLate = ChronoUnit.DAYS.between(
+                        dueDate,
+                        today
+                );
             }
 
-            if (daysLate <= 0)
+            if (daysLate <= 0) {
                 continue;
+            }
 
-            double fineAmount =
-                    daysLate * 10;
+            double fineAmount = daysLate * 10;
 
             response.add(
                     mapToFineDto(
                             record,
                             fineAmount,
-                            false
+                            false,
+                            null
                     )
             );
         }
@@ -539,18 +520,18 @@ public class FineService {
         return response;
     }
 
+
     private AdminLibrarianFineResponseDto mapToFineDto(
             BorrowRecord record,
             double fineAmount,
-            boolean paid
+            boolean paid,
+            Fine fineRecord
     ) {
 
         AdminLibrarianFineResponseDto dto =
                 new AdminLibrarianFineResponseDto();
 
-        dto.setStudentId(
-                record.getUser().getId()
-        );
+        dto.setStudentId(record.getUser().getId());
 
         dto.setStudentName(
                 record.getUser().getFirstName()
@@ -558,28 +539,22 @@ public class FineService {
                         + record.getUser().getLastName()
         );
 
-        dto.setUserName(
-                record.getUser().getUserName()
-        );
+        dto.setUserName(record.getUser().getUserName());
 
-        dto.setBookName(
-                record.getBook().getTitle()
-        );
+        dto.setBookName(record.getBook().getTitle());
 
-        dto.setFineAmount(
-                fineAmount
-        );
+        dto.setFineAmount(fineAmount);
 
-        dto.setPaid(
-                paid
-        );
+        dto.setPaid(paid);
 
-        dto.setDueDate(
-                record.getDueDate()
-        );
+        dto.setDueDate(record.getDueDate());
 
-        dto.setReturnDate(
-                record.getReturnDate()
+        dto.setReturnDate(record.getReturnDate());
+
+        dto.setPaidDate(
+                fineRecord != null
+                        ? fineRecord.getPaidDate()
+                        : null
         );
 
         return dto;

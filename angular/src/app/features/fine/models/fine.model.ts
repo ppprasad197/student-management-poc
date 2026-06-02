@@ -12,6 +12,8 @@ export interface FineItem {
 
     fineAmount: number;
 
+    paidDate: string;
+
 }
 
 export interface FineResponse {

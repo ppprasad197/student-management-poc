@@ -19,10 +19,20 @@ public class AdminLibrarianFineResponseDto {
 
     private LocalDate returnDate;
 
+    private LocalDate paidDate;
+
+    public LocalDate getPaidDate() {
+        return paidDate;
+    }
+
+    public void setPaidDate(LocalDate paidDate) {
+        this.paidDate = paidDate;
+    }
+
     public AdminLibrarianFineResponseDto() {
     }
 
-    public AdminLibrarianFineResponseDto(Long studentId, String studentName, String userName, String bookName, double fineAmount, boolean paid, LocalDate dueDate, LocalDate returnDate) {
+    public AdminLibrarianFineResponseDto(Long studentId, String studentName, String userName, String bookName, double fineAmount, boolean paid, LocalDate dueDate, LocalDate returnDate, LocalDate paidDate) {
         this.studentId = studentId;
         this.studentName = studentName;
         this.userName = userName;
@@ -31,6 +41,7 @@ public class AdminLibrarianFineResponseDto {
         this.paid = paid;
         this.dueDate = dueDate;
         this.returnDate = returnDate;
+        this.paidDate = paidDate;
     }
 
     public Long getStudentId() {

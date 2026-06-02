@@ -25,7 +25,7 @@ export class FineComponent {
     FineSelectors.selectFineSummary
   );
 
-  allStudentFines$ =
+  allStudentFines =
     this.store.select(
       FineSelectors.selectAllStudentFines
     );

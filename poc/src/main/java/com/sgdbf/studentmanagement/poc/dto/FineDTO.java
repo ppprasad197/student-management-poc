@@ -46,15 +46,15 @@ public class FineDTO {
         private Long borrowRecordId;
         private String bookName;
         private LocalDate dueDate;
-        private LocalDate returnDate;
+        private LocalDate paidDate;
         private long daysLate;
         private double fineAmount;
 
-        public FineItem(Long borrowRecordId, String bookName, LocalDate dueDate, LocalDate returnDate, long daysLate, double fineAmount) {
+        public FineItem(Long borrowRecordId, String bookName, LocalDate dueDate, LocalDate returnDate, LocalDate paidDate, long daysLate, double fineAmount) {
             this.borrowRecordId = borrowRecordId;
             this.bookName = bookName;
             this.dueDate = dueDate;
-            this.returnDate = returnDate;
+            this.paidDate = paidDate;
             this.daysLate = daysLate;
             this.fineAmount = fineAmount;
         }
@@ -86,12 +86,12 @@ public class FineDTO {
             this.dueDate = dueDate;
         }
 
-        public LocalDate getReturnDate() {
-            return returnDate;
+        public LocalDate getPaidDate() {
+            return paidDate;
         }
 
-        public void setReturnDate(LocalDate returnDate) {
-            this.returnDate = returnDate;
+        public void setPaidDate(LocalDate paidDate) {
+            this.paidDate = paidDate;
         }
 
         public long getDaysLate() {
