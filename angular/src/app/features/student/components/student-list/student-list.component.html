@@ -1,4 +1,12 @@
-<h2>Students</h2>
+<div class="header-section">
+  <h2>Students</h2>
+  <select name="" id="" [(ngModel)]="selectedStatus" (change)="filterStudents()">
+    <option value="ALL">All</option>
+    <option value="PENDING">PENDING</option>
+    <option value="APPROVED">APPROVED</option>
+  </select>
+</div>
+
 <table>
   <thead>
     <tr>
@@ -10,7 +18,7 @@
     </tr>
   </thead>
   <tbody>
-    @for(student of students | async; track student.id){
+    @for(student of filteredStudents ; track student.id){
     <tr>
       <td>
         {{ student.firstName }}

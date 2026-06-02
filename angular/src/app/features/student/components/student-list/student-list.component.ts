@@ -9,11 +9,13 @@ import { Router, RouterLink } from '@angular/router';
 import { filter, first } from 'rxjs';
 import * as BookActions from '../../../book/store/book.actions';
 import { BorrowedBook } from '../../../book/models/borrowed-book.model';
+import { Student } from '../../models/student.model';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-student-list',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, FormsModule],
   templateUrl: './student-list.component.html',
   styleUrl: './student-list.component.css'
 })
@@ -23,15 +25,27 @@ export class StudentListComponent {
 
   borrowedBooks: BorrowedBook[] = [];
 
+  selectedStatus = 'ALL';
+
+  allStudents: Student[] = [];
+
+  filteredStudents: Student[] = [];
+
   students = this.store.select(
     selectStudentState.selectStudents
   );
+
 
   borrowedBooks$ = this.store.select(
     selectBookState.selectBorrowedBooks
   );
 
   ngOnInit(): void {
+
+    this.students.subscribe(students => {
+      this.allStudents = students;
+      this.filterStudents();  
+    });
 
     this.store.dispatch(
       StudentActions.clearMessages()
@@ -49,7 +63,17 @@ export class StudentListComponent {
       .subscribe(data => {
         this.borrowedBooks = data;
       });
+  }
 
+  filterStudents(): void {
+    if (this.selectedStatus === 'ALL') {
+      this.filteredStudents = [...this.allStudents];
+      return;
+    }
+
+    this.filteredStudents = this.allStudents.filter(
+      student => student.userStatus === this.selectedStatus
+    );
   }
 
   approveStudent(id: number): void {
