@@ -26,7 +26,7 @@ public class Book {
     @Column(nullable = false)
     private boolean available;
 
-    @Min(value = 1, message = "Quantity should be At least 1")
+
     @Column(nullable = false)
     int quantity;
 

@@ -168,11 +168,7 @@ public class BookService {
         Book book = bookRepository.findById(id)
                 .orElseThrow(() ->
                         new RuntimeException("Book not found"));
-
         Book updatedBook = mapToEntity(book, requestDto);
-
-        System.out.println("Updated book quantity: " + updatedBook.getQuantity());
-
         updatedBook = bookRepository.save(updatedBook);
 
         return mapToDto(updatedBook);
@@ -224,7 +220,7 @@ public class BookService {
         if (today.isAfter(record.getDueDate())) {
             record.setIssueDate(today);
             record.setDueDate(today.plusDays(7));
-        }else {
+        } else {
             record.setDueDate(record.getDueDate().plusDays(7));
         }
         record.setRenewCount(record.getRenewCount() + 1);

@@ -1,7 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { Store } from '@ngrx/store';
 import * as StudentActions from '../../store/student.actions';
-import { CommonModule } from '@angular/common';
+import { CommonModule, Location } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink, RouterModule } from '@angular/router';
 
@@ -14,7 +14,14 @@ import { RouterLink, RouterModule } from '@angular/router';
 })
 export class StudentDetailComponent {
   student: any;
+
+  constructor(private location: Location) { }
+
   ngOnInit(): void {
     this.student = history.state.student;
+  }
+
+  goBack() {
+    this.location.back();
   }
 }

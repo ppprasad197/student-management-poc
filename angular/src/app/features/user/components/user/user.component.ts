@@ -22,10 +22,19 @@ export class UserComponent {
   private store = inject(Store);
   private router = inject(Router);
 
+  allUsers: User[] = [];
+  filteredUsers: User[] = [];
+  selectedStatus = 'ALL';
+
   users = this.store.select(UserSelectors.selectUsers);
 
   ngOnInit() {
     this.store.dispatch(UserActions.loadUsers());
+
+    this.users.subscribe(user => {
+      this.allUsers = user;
+      this.filterUsers();
+    });
   }
 
   approveUser(id: number) {
@@ -39,7 +48,19 @@ export class UserComponent {
     if (confirmed) {
       this.store.dispatch(
         UserActions.deleteUser({ id })
-      ); 
+      );
     }
+  }
+
+  filterUsers(): void {
+
+    if (this.selectedStatus === 'ALL') {
+      this.filteredUsers = [...this.allUsers];
+      return;
+    }
+
+    this.filteredUsers = this.allUsers.filter(
+      user => user.userStatus === this.selectedStatus
+    );
   }
 }

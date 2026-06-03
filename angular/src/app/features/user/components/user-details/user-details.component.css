@@ -29,6 +29,7 @@
     color: #1e293b;
 }
 
+
 /* ✅ Responsive */
 @media (max-width: 600px) {
     .details-container {

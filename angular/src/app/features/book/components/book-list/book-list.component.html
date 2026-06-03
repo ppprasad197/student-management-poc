@@ -1,23 +1,43 @@
 <div class="book-header">
-    <h2>Book List</h2>
 
-    @if(currentUser | async; as user){
+    <h2>Books</h2>
+
     <div class="right-actions">
 
-        @if(user.role === 'ADMIN' || user.role === 'LIBRARIAN'){
-        <button class="add-book-btn" [routerLink]="['/addBook']">
-            Add Book
-        </button>
-        }
+        <select [(ngModel)]="selectedCategory"
+                (ngModelChange)="filterBooks()">
+            <option value="ALL">All Categories</option>
+            <option value="Computer Engineering">Computer</option>
+            <option value="Mechanical Engineering">Mechanical</option>
+            <option value="Electrical Engineering">Electrical</option>
+            <option value="Electronics Engineering">Electronics</option>
+            <option value="Mathematics">Mathematics</option>
+        </select>
 
-        @if(user.role==='STUDENT'){
-        <button class="add-book-btn" routerLink="/myBorrowedBooks">
-            My Borrowed Books
-        </button>
-        }
+        <select [(ngModel)]="selectedStatus"
+                (ngModelChange)="filterBooks()">
+            <option value="ALL">All Status</option>
+            <option value="true">Available</option>
+            <option value="false">Not Available</option>
+        </select>
 
+        @if(currentUser | async; as user){
+
+            @if(user.role === 'ADMIN' || user.role === 'LIBRARIAN'){
+                <button class="add-book-btn"
+                        [routerLink]="['/addBook']">
+                    Add Book
+                </button>
+            }
+
+            @if(user.role === 'STUDENT'){
+                <button class="add-book-btn"
+                        routerLink="/myBorrowedBooks">
+                    My Borrowed Books
+                </button>
+            }
+        }
     </div>
-    }
 </div>
 
 
@@ -34,7 +54,7 @@
     </thead>
     <tbody>
 
-        @for(book of books | async; track book.id){
+        @for(book of filteredBooks ; track book.id){
         <tr>
             <td>{{ book.title }}</td>
             <td>{{ book.author }}</td>

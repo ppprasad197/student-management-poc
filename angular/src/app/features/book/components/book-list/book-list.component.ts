@@ -20,6 +20,12 @@ export class BookListComponent {
 
   private store = inject(Store);
 
+  selectedCategory = 'ALL';
+  selectedStatus = 'ALL';
+  allBooks: Book[] = [];
+  filteredBooks: Book[] = [];
+  categories: string[] = [];
+
   books =
     this.store.select(BookSelectors.selectBooks);
 
@@ -27,6 +33,12 @@ export class BookListComponent {
     this.store.dispatch(
       BookActions.loadBooks()
     );
+
+    this.books.subscribe(books => {
+      this.allBooks = books;
+      this.filterBooks();
+    }
+    )
   }
 
   deleteBook(id: number) {
@@ -125,4 +137,22 @@ export class BookListComponent {
     this.store.select(
       AuthSelectors.selectCurrentUser
     );
+
+  filterBooks(): void {
+
+    this.filteredBooks = this.allBooks.filter(book => {
+
+      const categoryMatch =
+        this.selectedCategory === 'ALL' ||
+        book.category === this.selectedCategory;
+
+      const statusMatch =
+        this.selectedStatus === 'ALL' ||
+        (this.selectedStatus === 'true' && book.quantity > 0) ||
+        (this.selectedStatus === 'false' && book.quantity <= 0);
+
+      return categoryMatch && statusMatch;
+    });
+
+  }
 }

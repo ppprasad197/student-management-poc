@@ -2,12 +2,28 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 16px;
+    margin: 15px;
+}
+
+.header-section h2 {
+    margin: 0;
+    color: #2c3e50;
+    font-weight: 600;
 }
 
 .header-section select {
-    padding: 6px 10px;
-    border-radius: 4px;
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+    cursor: pointer;
+    background-color: white;
+    min-width: 180px;
+}
+
+.header-section select:focus {
+    outline: none;
+    border-color: #3498db;
 }
 
 

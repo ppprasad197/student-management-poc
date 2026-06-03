@@ -1,3 +1,4 @@
+import { Location } from '@angular/common';
 import { Component } from '@angular/core';
 
 @Component({
@@ -8,5 +9,12 @@ import { Component } from '@angular/core';
   styleUrl: './user-details.component.css'
 })
 export class UserDetailsComponent {
+
+  constructor(private location: Location) { }
+
   user = history.state.user;
+
+  goBack() {
+    this.location.back();
+  }
 }

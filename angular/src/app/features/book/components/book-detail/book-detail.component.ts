@@ -1,3 +1,4 @@
+import { Location } from '@angular/common';
 import { Component } from '@angular/core';
 
 @Component({
@@ -9,7 +10,15 @@ import { Component } from '@angular/core';
 })
 export class BookDetailComponent {
   book: any;
+
+  constructor(private location: Location) { }
+
   ngOnInit() {
     this.book = history.state.book;
   }
+
+  goBack() {
+    this.location.back();
+  }
+
 }
