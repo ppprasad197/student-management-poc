@@ -8,6 +8,15 @@ export const selectBooks = createSelector(
     (state) => state.book
 )
 
+export const selectBookPage = createSelector(
+    selectBookState,
+    state => ({
+        books: state.book,
+        currentPage: state.currentPage,
+        totalPages: state.totalPages
+    })
+);
+
 export const selectMyBorrowedBooks =
     createSelector(
         selectBookState,

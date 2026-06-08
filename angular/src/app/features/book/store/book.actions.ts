@@ -3,12 +3,17 @@ import { Book } from '../models/book.model';
 import { BorrowedBook } from '../models/borrowed-book.model';
 
 export const loadBooks = createAction(
-  '[Book]Load Books'
+  '[Book]Load Books',
+  props<{ page: number; size: number }>()
 );
 
 export const loadBookSuccess = createAction(
   '[Book]Load Books Success',
-  props<{ books: Book[] }>()
+  props<{
+    books: Book[];
+    currentPage: number;
+    totalPages: number
+  }>()
 );
 
 export const loadBookFailure = createAction(
@@ -23,7 +28,7 @@ export const addBook = createAction(
 
 export const addBookSuccess = createAction(
   '[Book] Add Book Success',
-  props<{ book: Book; message:string}>()
+  props<{ book: Book; message: string }>()
 );
 
 export const addBookFailure = createAction(

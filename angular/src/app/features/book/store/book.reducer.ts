@@ -11,7 +11,9 @@ export const initialState: BookState = {
   error: null,
   myBorrowedBooks: [],
   borrowedBooks: [],
-  successMessage: null
+  successMessage: null,
+  totalPages: 0,
+  currentPage: 0,
 };
 
 export const bookReducer = createReducer(
@@ -22,10 +24,12 @@ export const bookReducer = createReducer(
     loading: true
   })),
 
-  on(BookActions.loadBookSuccess, (state, { books }) => ({
+  on(BookActions.loadBookSuccess, (state, { books, totalPages, currentPage }) => ({
     ...state,
     loading: false,
-    book: books
+    book: books,
+    totalPages: totalPages,
+    currentPage: currentPage
   })),
 
   on(BookActions.loadBookFailure, (state, { error }) => ({

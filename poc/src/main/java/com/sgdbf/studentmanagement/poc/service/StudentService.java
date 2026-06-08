@@ -1,21 +1,10 @@
 package com.sgdbf.studentmanagement.poc.service;
 
-import com.sgdbf.studentmanagement.poc.entity.Student;
-import com.sgdbf.studentmanagement.poc.entity.User;
-import com.sgdbf.studentmanagement.poc.enums.Role;
-import com.sgdbf.studentmanagement.poc.enums.UserStatus;
-import com.sgdbf.studentmanagement.poc.repository.StudentRepository;
-import com.sgdbf.studentmanagement.poc.repository.UserRepository;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 public class StudentService {
-    private final StudentRepository studentRepository;
+    /*private final StudentRepository studentRepository;
     private final UserRepository userRepository;
     private final PasswordEncoder encoder;
     private final UserService userService;
@@ -30,7 +19,6 @@ public class StudentService {
     public List<Student> getAll() {
         return studentRepository.findAll();
     }
-
 
     @Transactional
     public Student save(Student student) {
@@ -136,5 +124,5 @@ public class StudentService {
         }
 
         return studentRepository.save(existing);
-    }
+    }*/
 }

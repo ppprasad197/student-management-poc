@@ -8,4 +8,6 @@ export interface BookState {
     myBorrowedBooks: BorrowedBook[];
     borrowedBooks: BorrowedBook[];
     successMessage: string | null;
+    totalPages: number;
+    currentPage: number;
 }

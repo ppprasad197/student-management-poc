@@ -4,6 +4,8 @@ import com.sgdbf.studentmanagement.poc.dto.UserResponseDto;
 import com.sgdbf.studentmanagement.poc.entity.User;
 import com.sgdbf.studentmanagement.poc.enums.Role;
 import com.sgdbf.studentmanagement.poc.enums.UserStatus;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
@@ -20,7 +22,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     User findByUserNameAndRole(String userName, Role role);
 
-    List<User> findAllByRole(Role role);
+    Page<User> findAllByRole(Pageable pageable, Role role);
 
-    List<User> findByRoleNot(Role role);
+    Page<User> findByRoleNot(Role role, Pageable pageable);
+
 }

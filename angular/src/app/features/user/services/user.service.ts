@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { User } from '../models/user.model';
 import { HttpClient } from '@angular/common/http';
+import { UserPageResponse } from '../models/user_page.model';
+import { tap } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -10,10 +12,10 @@ export class UserService {
 
   constructor(private http: HttpClient) { }
 
-  getAllUsers() {
-    return this.http.get<User[]>(
-      `${this.baseUrl}/users`
-    );
+  getAllUsers(page: number, size: number) {
+    return this.http.get<UserPageResponse>(
+      `${this.baseUrl}/users?page=${page}&size=${size}`
+    )
   }
 
   approveUser(id: number) {

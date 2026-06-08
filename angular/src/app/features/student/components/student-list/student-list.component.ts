@@ -32,19 +32,26 @@ export class StudentListComponent {
   filteredStudents: Student[] = [];
 
   students = this.store.select(
-    selectStudentState.selectStudents
+    selectStudentState.selectStudentPage
   );
-
 
   borrowedBooks$ = this.store.select(
     selectBookState.selectBorrowedBooks
   );
 
-  ngOnInit(): void {
+  currentPage = 0;
+  totalPages = 0;
 
-    this.students.subscribe(students => {
-      this.allStudents = students;
-      this.filterStudents();  
+  page = 0;
+  size = 5;
+
+  ngOnInit(): void {
+    this.loadStudents();
+    this.students.subscribe(response => {
+      this.allStudents = response.students;
+      this.currentPage = response.currentPage;
+      this.totalPages = response.totalPages;
+      this.filterStudents();
     });
 
     this.store.dispatch(
@@ -52,7 +59,10 @@ export class StudentListComponent {
     );
 
     this.store.dispatch(
-      StudentActions.loadStudents()
+      StudentActions.loadStudents({
+        page: this.page,
+        size: this.size
+      })
     );
 
     this.store.dispatch(
@@ -98,6 +108,29 @@ export class StudentListComponent {
     return this.borrowedBooks.some(
       book => book.studentId === studentId
     );
+  }
+
+  loadStudents() {
+    this.store.dispatch(
+      StudentActions.loadStudents({
+        page: this.page,
+        size: this.size
+      })
+    )
+  }
+
+  nextPage() {
+    if (this.currentPage < this.totalPages - 1) {
+      this.page++;
+      this.loadStudents();
+    }
+  }
+
+  previousPage() {
+    if (this.currentPage > 0) {
+      this.page--;
+      this.loadStudents();
+    }
   }
 
 }

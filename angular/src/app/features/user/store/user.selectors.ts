@@ -7,6 +7,16 @@ export const selectUserState =
 export const selectUsers =
     createSelector(selectUserState, (state) => state.users);
 
+export const selectUserPage =
+    createSelector(
+        selectUserState,
+        state => ({
+            users: state.users,
+            currentPage: state.currentPage,
+            totalPages: state.totalPages
+        })
+    );
+
 export const selectUserSuccessMessage = createSelector(
     selectUserState,
     (state) => state.successMessage

@@ -18,10 +18,14 @@ export class StudentEffects {
   loadStudents = createEffect(() =>
     this.actions.pipe(
       ofType(StudentActions.loadStudents),
-      switchMap(() =>
-        this.studentService.getStudents().pipe(
-          map((students) =>
-            StudentActions.loadStudentsSuccess({ students })
+      switchMap(({ page, size }) =>
+        this.studentService.getStudents(page, size).pipe(
+          map((response) =>
+            StudentActions.loadStudentsSuccess({
+              students: response.students,
+              currentPage: response.currentPage,
+              totalPages: response.totalPages
+            })
           ),
           catchError((error) =>
             of(StudentActions.loadStudentsFailure({
@@ -102,7 +106,10 @@ export class StudentEffects {
         StudentActions.deleteStudentSuccess,
         StudentActions.updateStudentSuccess
       ),
-      map(() => StudentActions.loadStudents())
+      map(() => StudentActions.loadStudents({
+        page: 0,
+        size: 5
+      }))
     )
   );
 

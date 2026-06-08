@@ -3,8 +3,11 @@ package com.sgdbf.studentmanagement.poc.controller;
 import com.sgdbf.studentmanagement.poc.dto.BookRequestDto;
 import com.sgdbf.studentmanagement.poc.dto.BookResponseDto;
 import com.sgdbf.studentmanagement.poc.entity.Book;
+import com.sgdbf.studentmanagement.poc.pagination.BookPageResponse;
 import com.sgdbf.studentmanagement.poc.service.BookService;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -22,10 +25,16 @@ public class BookController {
         this.bookService = bookService;
     }
 
+//    @PreAuthorize("hasAnyRole('ADMIN','STUDENT','LIBRARIAN')")
+//    @GetMapping
+//    public List<BookResponseDto> getAllBooks() {
+//        return bookService.getAll();
+//    }
+
     @PreAuthorize("hasAnyRole('ADMIN','STUDENT','LIBRARIAN')")
     @GetMapping
-    public List<BookResponseDto> getAllBooks() {
-        return bookService.getAll();
+    public ResponseEntity<BookPageResponse> getAllBooks(@PageableDefault(page = 0, size = 5) Pageable pageable) {
+        return ResponseEntity.ok(bookService.getAll(pageable));
     }
 
     @GetMapping("/{id}")

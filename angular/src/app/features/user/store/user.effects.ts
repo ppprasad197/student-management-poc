@@ -10,17 +10,20 @@ export class UserEffects {
   private actions = inject(Actions);
   constructor(private userService: UserService, private router: Router) { }
 
+
   loadUsers = createEffect(() =>
     this.actions.pipe(
       ofType(UserActions.loadUsers),
-      switchMap(() =>
-        this.userService.getAllUsers().pipe(
-          map((users) =>
+      switchMap(({ page, size }) =>
+        this.userService.getAllUsers(page, size).pipe(
+          map((response) =>
             UserActions.loadUsersSuccess({
-              users
+              users: response.users,
+              currentPage: response.currentPage,
+              totalPages: response.totalPages
             })
           ),
-          catchError((error) =>
+          catchError(error =>
             of(
               UserActions.loadUsersFailure({
                 error: error.message
@@ -110,7 +113,10 @@ export class UserEffects {
         UserActions.updateUserSuccess
       ),
       map(() =>
-        UserActions.loadUsers()
+        UserActions.loadUsers({
+          page: 0,
+          size: 5
+        })
       )
     )
   );

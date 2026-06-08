@@ -6,6 +6,8 @@ export const userFeatureKey = 'user';
 
 export const initialState: UserState = {
   users: [],
+  currentPage: 0,
+  totalPages: 0,
   loading: false,
   error: null,
   successMessage: null
@@ -21,11 +23,12 @@ export const userReducer = createReducer(
   ),
 
   on(UserActions.loadUsersSuccess,
-    (state, { users }) => ({
+    (state, { users, currentPage, totalPages }) => ({
       ...state,
       users,
+      currentPage,
+      totalPages,
       loading: false,
-
     })
   ),
 
@@ -37,52 +40,21 @@ export const userReducer = createReducer(
     })
   ),
 
-  // on(UserActions.approveUserSuccess,
-  //   (state, { user }) => ({
-  //     ...state,
-  //     users: state.users.map((u) =>
-  //       u.id === user.id
-  //         ? user
-  //         : u
-  //     )
-  //   })
-  // ),
-
   on(UserActions.approveUserSuccess, (state) => ({
     ...state,
     successMessage: 'User approved successfully'
   })),
-
-  // on(UserActions.deleteUserSuccess,
-  //   (state, { id }) => ({
-  //     ...state,
-  //     users: state.users.filter(
-  //       (u) => u.id !== id
-  //     )
-  //   })
-  // ),
 
   on(UserActions.deleteUserSuccess, (state) => ({
     ...state,
     successMessage: 'User deleted successfully'
   })),
 
-  // on(UserActions.updateUserSuccess,
-  //   (state, { user }) => ({
-  //     ...state,
-  //     users: state.users.map((u) =>
-  //       u.id === user.id
-  //         ? user
-  //         : u
-  //     )
-  //   })
-  // )
-
   on(UserActions.updateUserSuccess, (state) => ({
     ...state,
     successMessage: 'User updated successfully'
   })),
-  
+
   on(UserActions.clearMessages, (state) => ({
     ...state,
     successMessage: null,

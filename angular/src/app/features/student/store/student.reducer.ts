@@ -6,6 +6,8 @@ export const studentFeatureKey = 'student';
 
 export const initialState: StudentState = {
   students: [],
+  totalPages: 0,
+  currentPage: 0,
   loading: false,
   error: null,
   successMessage: null
@@ -19,10 +21,13 @@ export const studentReducer = createReducer(
     loading: true
   })),
 
-  on(StudentActions.loadStudentsSuccess, (state, { students }) => ({
+  on(StudentActions.loadStudentsSuccess, (state, { students, currentPage, totalPages }) => ({
     ...state,
     loading: false,
     students: students,
+    currentPage: currentPage,
+    totalPages: totalPages,
+    error:null
   })),
 
 
@@ -69,7 +74,7 @@ export const studentReducer = createReducer(
     successMessage: null,
     error: null
   })),
-  
+
   on(
     StudentActions.updateStudentSuccess,
     (state, { message }) => ({

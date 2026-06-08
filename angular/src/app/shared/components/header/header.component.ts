@@ -29,6 +29,11 @@ export class HeaderComponent {
   }
 
   ngOnInit() {
+
+    this.currentUser.subscribe(user => {
+      console.log('Current User:', user);
+    });
+
     document.addEventListener(
       'click',
       () => { this.showProfileMenu = false }

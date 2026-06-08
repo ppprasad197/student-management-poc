@@ -3,6 +3,8 @@ import { Injectable } from '@angular/core';
 import { Book } from '../models/book.model';
 import { returnBook } from '../store/book.actions';
 import { BorrowedBook } from '../models/borrowed-book.model';
+import { BookPageResponse } from '../models/BookPageResponse';
+import { tap } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -13,8 +15,11 @@ export class BookService {
 
   private baseUrl = "http://localhost:8080/books";
 
-  getBooks() {
-    return this.http.get<Book[]>(this.baseUrl);
+  getBooks(page: number, size: number) {
+    return this.http
+      .get<BookPageResponse>(
+        `${this.baseUrl}?page=${page}&size=${size}`
+      )
   }
 
   addBook(book: Book) {
@@ -35,21 +40,15 @@ export class BookService {
     return this.http.delete(`${this.baseUrl}/${id}`);
   }
 
- borrowBook(id: number) {
-
-  return this.http.post(
-
-    `${this.baseUrl}/borrow/${id}`,
-
-    {},
-
-    {
-      responseType: 'text'
-    }
-
-  );
-
-}
+  borrowBook(id: number) {
+    return this.http.post(
+      `${this.baseUrl}/borrow/${id}`,
+      {},
+      {
+        responseType: 'text'
+      }
+    );
+  }
 
   returnBook(id: number) {
     return this.http.post(

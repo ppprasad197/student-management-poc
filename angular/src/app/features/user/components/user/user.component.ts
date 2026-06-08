@@ -26,13 +26,20 @@ export class UserComponent {
   filteredUsers: User[] = [];
   selectedStatus = 'ALL';
 
-  users = this.store.select(UserSelectors.selectUsers);
+  page = 0;
+  size = 5;
+
+  currentPage = 0;
+  totalPages = 0;
+
+  users = this.store.select(UserSelectors.selectUserPage);
 
   ngOnInit() {
-    this.store.dispatch(UserActions.loadUsers());
-
-    this.users.subscribe(user => {
-      this.allUsers = user;
+    this.loadUsers();
+    this.users.subscribe(data => {
+      this.allUsers = data.users;
+      this.currentPage = data.currentPage;
+      this.totalPages = data.totalPages;
       this.filterUsers();
     });
   }
@@ -53,14 +60,34 @@ export class UserComponent {
   }
 
   filterUsers(): void {
-
     if (this.selectedStatus === 'ALL') {
       this.filteredUsers = [...this.allUsers];
       return;
     }
-
     this.filteredUsers = this.allUsers.filter(
       user => user.userStatus === this.selectedStatus
     );
+  }
+
+  loadUsers() {
+    this.store.dispatch(UserActions.loadUsers({
+      page: this.page,
+      size: this.size
+    })
+    );
+  }
+
+  nextPage() {
+    if (this.currentPage < this.totalPages - 1) {
+      this.page++;
+      this.loadUsers();
+    }
+  }
+
+  previousPage() {
+    if (this.currentPage > 0) {
+      this.page--;
+      this.loadUsers();
+    }
   }
 }

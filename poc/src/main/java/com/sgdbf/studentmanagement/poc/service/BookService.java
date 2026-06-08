@@ -6,8 +6,11 @@ import com.sgdbf.studentmanagement.poc.dto.BorrowRecordResponseDto;
 import com.sgdbf.studentmanagement.poc.dto.FineDTO;
 import com.sgdbf.studentmanagement.poc.entity.*;
 import com.sgdbf.studentmanagement.poc.enums.Role;
+import com.sgdbf.studentmanagement.poc.pagination.BookPageResponse;
 import com.sgdbf.studentmanagement.poc.repository.*;
 //import com.sgdbf.studentmanagement.poc.security.JwtUtil;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -32,13 +35,10 @@ public class BookService {
     }
 
     public Book borrowBook(Long id, String userName) {
-
         User user = getStudent(userName);
-
         Book book = bookRepository.findById(id)
                 .orElseThrow(() ->
                         new RuntimeException("Book not found"));
-
         boolean isAlreadyBorrowedByStudent =
                 borrowRepository
                         .existsByBookAndUserAndReturnDateIsNull(
@@ -47,43 +47,30 @@ public class BookService {
                         );
 
         if (isAlreadyBorrowedByStudent) {
-
             throw new RuntimeException(
                     "Book is already borrowed"
             );
-
         }
 
         if (book.getQuantity() <= 0) {
-
             throw new RuntimeException(
                     "Book is not available"
             );
-
         }
 
         if (!canStudentBorrowNewBook(user, userName)) {
-
             throw new RuntimeException(
                     "You cannot borrow book"
             );
-
         }
 
         book.setQuantity(book.getQuantity() - 1);
-
         bookRepository.save(book);
         createBorrowRecord(user, book);
-
-        System.out.println(
-                "Logged in user's username : " + userName
-        );
-
         return book;
     }
 
     public void createBorrowRecord(User user, Book book) {
-
         BorrowRecord borrowRecord = new BorrowRecord();
         borrowRecord.setUser(user);
         borrowRecord.setBook(book);
@@ -103,19 +90,14 @@ public class BookService {
         int activeBooks = borrowRepository.countByUserAndReturnDateIsNull(user);
 
         if (activeBooks >= 3) {
-            System.out.println("Maximum books already borrowed");
             return false;
         }
-
         FineDTO fineData = fineService.getMyFines(username);
-
         double totalDue = fineData.getTotalAmount();
 
         if (totalDue > 0) {
-            System.out.println("Pending fine: " + totalDue);
             return false;
         }
-
         return true;
     }
 
@@ -124,20 +106,27 @@ public class BookService {
         if (book != null) {
             book.setQuantity(quantity);
         }
+        assert book != null;
         bookRepository.save(book);
     }
 
-    public List<BookResponseDto> getAll() {
-
-        return bookRepository.findAll()
-                .stream()
-                .map(this::mapToDto)
-                .toList();
+    public BookPageResponse getAll(Pageable pageable) {
+        Page<Book> books = bookRepository.findAll(pageable);
+        BookPageResponse response = new BookPageResponse();
+        response.setBooks(
+                books.getContent()
+                        .stream()
+                        .map(this::mapToDto)
+                        .toList()
+        );
+        response.setCurrentPage(books.getNumber());
+        response.setTotalPages(books.getTotalPages());
+        response.setTotalElements((int) books.getTotalElements());
+        return response;
     }
 
 
     public BookResponseDto getById(Long id) {
-
         Book book = bookRepository.findById(id)
                 .orElseThrow(() ->
                         new RuntimeException("Book not found"));
@@ -151,16 +140,12 @@ public class BookService {
         if (requestDto.getQuantity() < 0) {
             throw new RuntimeException("Invalid quantity");
         }
-
         Book book = mapToEntity(
                 new Book(),
                 requestDto
         );
-
         Book savedBook = bookRepository.save(book);
-
         return mapToDto(savedBook);
-
     }
 
     public BookResponseDto update(Long id, BookRequestDto requestDto) {
@@ -176,6 +161,7 @@ public class BookService {
 
     public void delete(Long id) {
         Book book = bookRepository.findById(id).orElse(null);
+        assert book != null;
         bookRepository.delete(book);
     }
 
@@ -228,14 +214,12 @@ public class BookService {
     }
 
     public BorrowRecord getBorrowRecord(User user, Long bookId) {
-
         Book book = bookRepository.findById(bookId)
                 .orElseThrow(() ->
                         new RuntimeException("Book not found"));
 
         return borrowRepository
                 .findByUserAndBookAndReturnDateIsNull(user, book);
-
     }
 
     private BookResponseDto mapToDto(Book book) {
@@ -263,7 +247,6 @@ public class BookService {
         book.setQuantity(requestDto.getQuantity());
 
         return book;
-
     }
 
     public List<BorrowRecordResponseDto> getMyBorrowedBooks(

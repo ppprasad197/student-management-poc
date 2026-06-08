@@ -8,6 +8,16 @@ export const selectStudents = createSelector(
     (state) => state.students
 );
 
+export const selectStudentPage =
+    createSelector(
+        selectStudentState,
+        state => ({
+            students: state.students,
+            currentPage: state.currentPage,
+            totalPages: state.totalPages
+        })
+    );
+
 export const selectLoading = createSelector(
     selectStudentState,
     (state) => state.loading

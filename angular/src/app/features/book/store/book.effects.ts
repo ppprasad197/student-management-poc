@@ -2,7 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { BookService } from '../services/book.service';
 import * as BookActions from '../store/book.actions';
-import { catchError, map, of, switchMap } from 'rxjs';
+import { catchError, map, of, switchMap, zip } from 'rxjs';
 import { Book } from '../models/book.model';
 import { BorrowedBook } from '../models/borrowed-book.model';
 
@@ -16,11 +16,13 @@ export class BookEffects {
   loadBooks = createEffect(() =>
     this.actions.pipe(
       ofType(BookActions.loadBooks),
-      switchMap(() =>
-        this.bookService.getBooks().pipe(
-          map((books) =>
+      switchMap(({ page, size }) =>
+        this.bookService.getBooks(page, size).pipe(
+          map((response) =>
             BookActions.loadBookSuccess({
-              books
+              books: response.books,
+              currentPage: response.currentPage,
+              totalPages: response.totalPages
             })),
           catchError((error) =>
             of(
@@ -56,7 +58,7 @@ export class BookEffects {
     this.actions.pipe(
       ofType(BookActions.deleteBookSuccess),
       map(() =>
-        BookActions.loadBooks()
+        BookActions.loadBooks({ page: 0, size: 5 })
       )
     )
   );
@@ -88,7 +90,7 @@ export class BookEffects {
     this.actions.pipe(
       ofType(BookActions.addBookSuccess),
       map(() =>
-        BookActions.loadBooks()
+        BookActions.loadBooks({ page: 0, size: 5 })
       )
     )
   );
@@ -107,7 +109,7 @@ export class BookEffects {
           catchError((error) =>
             of(
               BookActions.updateBookFailure({
-               error: error.error || error.message
+                error: error.error || error.message
               })
             )
           )
@@ -143,7 +145,7 @@ export class BookEffects {
     this.actions.pipe(
       ofType(BookActions.borrowBookSuccess),
       map(() =>
-        BookActions.loadBooks()
+        BookActions.loadBooks({ page: 0, size: 5 })
       )
     )
   );

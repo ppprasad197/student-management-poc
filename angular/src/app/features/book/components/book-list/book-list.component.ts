@@ -26,16 +26,24 @@ export class BookListComponent {
   filteredBooks: Book[] = [];
   categories: string[] = [];
 
+  page = 0;
+  size = 5;
+
+  totalPages = 0;
+  currentPage = 0;
+
   books =
-    this.store.select(BookSelectors.selectBooks);
+    this.store.select(BookSelectors.selectBookPage);
 
   ngOnInit(): void {
     this.store.dispatch(
-      BookActions.loadBooks()
+      BookActions.loadBooks({ page: this.page, size: this.size })
     );
 
-    this.books.subscribe(books => {
-      this.allBooks = books;
+    this.books.subscribe(resposne => {
+      this.allBooks = resposne.books;
+      this.totalPages = resposne.totalPages;
+      this.currentPage = resposne.currentPage;
       this.filterBooks();
     }
     )
@@ -153,6 +161,28 @@ export class BookListComponent {
 
       return categoryMatch && statusMatch;
     });
+  }
 
+  loadBooks() {
+    this.store.dispatch(
+      BookActions.loadBooks({
+        page: this.page,
+        size: this.size
+      })
+    )
+  }
+
+  nextPage() {
+    if (this.currentPage < this.totalPages - 1) {
+      this.page++;
+      this.loadBooks();
+    }
+  }
+
+  previousPage() {
+    if (this.currentPage > 0) {
+      this.page--;
+      this.loadBooks();
+    }
   }
 }

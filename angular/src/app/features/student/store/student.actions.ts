@@ -3,12 +3,17 @@ import { Student } from '../models/student.model';
 import { catchError } from 'rxjs';
 
 export const loadStudents = createAction(
-  '[Student]Load Students'
+  '[Student]Load Students',
+  props<{ page: number; size: number }>()
 );
 
 export const loadStudentsSuccess = createAction(
   '[Student]Load Student Success',
-  props<{ students: Student[] }>()
+  props<{
+    students: Student[],
+    currentPage: number,
+    totalPages: number
+  }>()
 );
 
 export const loadStudentsFailure = createAction(

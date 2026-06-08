@@ -1,13 +1,19 @@
 import { createAction, createActionGroup, emptyProps, props } from '@ngrx/store';
 import { User } from '../models/user.model';
 
+
 export const loadUsers = createAction(
-  '[User] Load Users'
+  '[User] Load Users',
+  props<{ page: number; size: number }>()
 );
 
 export const loadUsersSuccess = createAction(
   '[User] Load Users Success',
-  props<{ users: User[] }>()
+  props<{
+    users: User[];
+    currentPage: number;
+    totalPages: number;
+  }>()
 );
 
 export const loadUsersFailure = createAction(
@@ -52,7 +58,7 @@ export const updateUser = createAction(
 
 export const updateUserSuccess = createAction(
   '[User] Update User Success',
-  props<{message:string}>()
+  props<{ message: string }>()
 );
 
 export const updateUserFailure = createAction(
