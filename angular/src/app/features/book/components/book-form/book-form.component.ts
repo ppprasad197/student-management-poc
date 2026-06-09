@@ -7,6 +7,7 @@ import { CommonModule } from '@angular/common';
 import { Book } from '../../models/book.model';
 import { filter, first } from 'rxjs';
 import * as BookSelectors from '../../store/book.selectors';
+import { NotificationService } from '../../../../shared/services/notification.service';
 
 
 @Component({
@@ -32,7 +33,7 @@ export class BookFormComponent {
 
   private book = history.state.book;
 
-  constructor(private store: Store, private router: Router) { }
+  constructor(private store: Store, private router: Router, private notification: NotificationService) { }
 
   ngOnInit() {
     if (this.book) {
@@ -63,11 +64,11 @@ export class BookFormComponent {
         BookSelectors.selectBookSuccessMessage
       )
         .pipe(
-          filter(message => !!message),
+          filter((message): message is string => !!message),
           first()
         )
         .subscribe(message => {
-          alert(message);
+          this.notification.success(message);
           this.store.dispatch(
             BookActions.clearBookMessages()
           )
@@ -77,11 +78,11 @@ export class BookFormComponent {
         BookSelectors.selectBookError
       )
         .pipe(
-          filter(error => !!error),
+          filter((error): error is string => !!error),
           first()
         )
         .subscribe(error => {
-          alert(error);
+          this.notification.error(error);
           this.store.dispatch(
             BookActions.clearBookMessages()
           )
@@ -94,16 +95,15 @@ export class BookFormComponent {
         })
       );
 
-
       this.store.select(
         BookSelectors.selectBookSuccessMessage
       )
         .pipe(
-          filter(message => !!message),
+          filter((message): message is string => !!message),
           first()
         )
         .subscribe(message => {
-          alert(message);
+          this.notification.success(message);
           this.store.dispatch(
             BookActions.clearBookMessages()
           )
@@ -113,11 +113,11 @@ export class BookFormComponent {
         BookSelectors.selectBookError
       )
         .pipe(
-          filter(error => !!error),
+          filter((error): error is string => !!error),
           first()
         )
         .subscribe(error => {
-          alert(error);
+          this.notification.error(error);
           this.store.dispatch(
             BookActions.clearBookMessages()
           )

@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import * as AuthActions from './auth.actions';
 import { catchError, map, mergeMap, of, switchMap, tap } from 'rxjs';
 import { Store } from '@ngrx/store';
+import { NotificationService } from '../../shared/services/notification.service';
 
 
 
@@ -14,6 +15,7 @@ export class AuthEffects {
   private authService = inject(AuthService);
   private router = inject(Router);
   private store = inject(Store);
+  private notification = inject(NotificationService);
 
   login = createEffect(() =>
     this.actions.pipe(
@@ -147,7 +149,7 @@ export class AuthEffects {
     () =>
       this.actions.pipe(
         ofType(AuthActions.loginSuccess),
-        tap(({ message }) => alert(message))
+        tap(({ message }) => this.notification.success(message))
       ),
     { dispatch: false }
   );
@@ -156,7 +158,7 @@ export class AuthEffects {
     () =>
       this.actions.pipe(
         ofType(AuthActions.loginFailure),
-        tap(({ error }) => alert(error))
+        tap(({ error }) => this.notification.error(error))
       ),
     { dispatch: false }
   );
@@ -165,7 +167,7 @@ export class AuthEffects {
     () =>
       this.actions.pipe(
         ofType(AuthActions.signupSuccess),
-        tap(({ message }) => alert(message))
+        tap(({ message }) => this.notification.success(message))
       ),
     { dispatch: false }
   );
@@ -174,7 +176,7 @@ export class AuthEffects {
     () =>
       this.actions.pipe(
         ofType(AuthActions.signupFailure),
-        tap(({ error }) => { alert(error); console.log("Signup error : " + error) }),
+        tap(({ error }) => { this.notification.error(error); console.log("Signup error : " + error) }),
       ),
     { dispatch: false }
   );

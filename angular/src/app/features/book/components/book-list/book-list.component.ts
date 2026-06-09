@@ -8,6 +8,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import * as AuthSelectors from '../../../../store/auth/auth.selectors';
+import { NotificationService } from '../../../../shared/services/notification.service';
 
 @Component({
   selector: 'app-book-list',
@@ -19,6 +20,7 @@ import * as AuthSelectors from '../../../../store/auth/auth.selectors';
 export class BookListComponent {
 
   private store = inject(Store);
+  private notification = inject(NotificationService);
 
   selectedCategory = 'ALL';
   selectedStatus = 'ALL';
@@ -61,52 +63,24 @@ export class BookListComponent {
         BookSelectors.selectBookSuccessMessage
       )
         .pipe(
-          filter(message => !!message),
+          filter((message): message is string => !!message),
           first()
         )
         .subscribe(message => {
-          alert(message);
+          this.notification.success(message);
         });
 
       this.store.select(
         BookSelectors.selectBookError
       )
         .pipe(
-          filter(error => !!error),
+          filter((error): error is string => !!error),
           first()
         )
         .subscribe(error => {
-          alert(error);
+          this.notification.error(error);
         });
     }
-  }
-
-  updateBook(id: number, book: Book) {
-    this.store.dispatch(BookActions.updateBook({ id, book }));
-
-    this.store.dispatch(BookActions.clearBookMessages());
-
-    this.store.select(
-      BookSelectors.selectBookSuccessMessage
-    )
-      .pipe(
-        filter(message => !!message),
-        first()
-      )
-      .subscribe(message => {
-        alert(message);
-      });
-
-    this.store.select(
-      BookSelectors.selectBookError
-    )
-      .pipe(
-        filter(error => !!error),
-        first()
-      )
-      .subscribe(error => {
-        alert(error);
-      });
   }
 
   borrowBook(id: number) {
@@ -122,22 +96,22 @@ export class BookListComponent {
       BookSelectors.selectBookSuccessMessage
     )
       .pipe(
-        filter(message => !!message),
+        filter((message): message is string => !!message),
         first()
       )
       .subscribe(message => {
-        alert(message);
+        this.notification.success(message);
       });
 
     this.store.select(
       BookSelectors.selectBookError
     )
       .pipe(
-        filter(error => !!error),
+        filter((error): error is string => !!error),
         first()
       )
       .subscribe(error => {
-        alert(error);
+        this.notification.error(error);
       });
   }
 

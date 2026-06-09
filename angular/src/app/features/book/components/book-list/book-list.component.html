@@ -4,8 +4,7 @@
 
     <div class="right-actions">
 
-        <select [(ngModel)]="selectedCategory"
-                (ngModelChange)="filterBooks()">
+        <select [(ngModel)]="selectedCategory" (ngModelChange)="filterBooks()">
             <option value="ALL">All Categories</option>
             <option value="Computer Engineering">Computer</option>
             <option value="Mechanical Engineering">Mechanical</option>
@@ -14,8 +13,7 @@
             <option value="Mathematics">Mathematics</option>
         </select>
 
-        <select [(ngModel)]="selectedStatus"
-                (ngModelChange)="filterBooks()">
+        <select [(ngModel)]="selectedStatus" (ngModelChange)="filterBooks()">
             <option value="ALL">All Status</option>
             <option value="true">Available</option>
             <option value="false">Not Available</option>
@@ -23,19 +21,17 @@
 
         @if(currentUser | async; as user){
 
-            @if(user.role === 'ADMIN' || user.role === 'LIBRARIAN'){
-                <button class="add-book-btn"
-                        [routerLink]="['/addBook']">
-                    Add Book
-                </button>
-            }
+        @if(user.role === 'ADMIN' || user.role === 'LIBRARIAN'){
+        <button class="add-book-btn" [routerLink]="['/addBook']">
+            Add Book
+        </button>
+        }
 
-            @if(user.role === 'STUDENT'){
-                <button class="add-book-btn"
-                        routerLink="/myBorrowedBooks">
-                    My Borrowed Books
-                </button>
-            }
+        @if(user.role === 'STUDENT'){
+        <button class="add-book-btn" routerLink="/myBorrowedBooks">
+            My Borrowed Books
+        </button>
+        }
         }
     </div>
 </div>
@@ -97,7 +93,7 @@
 </table>
 
 <div class="pagination">
-    <button (click)="previousPage()" [disabled]="currentPage===0">Previous</button>
+    <button class="pagination-btn" (click)="previousPage()" [disabled]="currentPage===0">Previous</button>
     <span>Page {{currentPage+1}} of {{totalPages}}</span>
-    <button (click)="nextPage()" [disabled]="currentPage===totalPages-1">Next</button>
+    <button class="pagination-btn" (click)="nextPage()" [disabled]="currentPage===totalPages-1">Next</button>
 </div>

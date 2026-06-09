@@ -16,6 +16,7 @@ import { fineReducer } from './features/fine/store/fine.reducer';
 import { userReducer } from './features/user/store/user.reducer';
 import { UserEffects } from './features/user/store/user.effects';
 import { provideStoreDevtools } from '@ngrx/store-devtools';
+import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 
 export const appConfig: ApplicationConfig = {
   providers: [provideZoneChangeDetection({ eventCoalescing: true }), provideRouter(routes),
@@ -28,6 +29,6 @@ export const appConfig: ApplicationConfig = {
     logOnly: false
   }),
   provideEffects([AuthEffects, StudentEffects, BookEffects, FineEffects, UserEffects]),
-  provideHttpClient(withInterceptors([authInterceptor])),
+  provideHttpClient(withInterceptors([authInterceptor])), provideAnimationsAsync(),
   ]
 };

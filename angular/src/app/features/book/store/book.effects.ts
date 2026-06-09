@@ -145,7 +145,7 @@ export class BookEffects {
     this.actions.pipe(
       ofType(BookActions.borrowBookSuccess),
       map(() =>
-        BookActions.loadBooks({ page: 0, size: 5 })
+        BookActions.loadBooks({ page: 0, size: 5  })
       )
     )
   );

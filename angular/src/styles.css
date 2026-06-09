@@ -22,7 +22,6 @@
   transform: scale(0.98);
 }
 
-
 .pagination {
   margin-top: 20px;
   display: flex;
@@ -31,7 +30,7 @@
   gap: 15px;
 }
 
-.pagination button {
+.pagination-btn {
   padding: 8px 14px;
   border: none;
   border-radius: 5px;
@@ -40,7 +39,21 @@
   color: white;
 }
 
-.pagination button:disabled {
+.pagination-btn:disabled {
   background-color: #bdc3c7;
   cursor: not-allowed;
+}
+
+
+/* html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; } */
+
+.success-snackbar {
+  --mdc-snackbar-container-color: #2ecc71;
+  --mat-snack-bar-button-color: white;
+}
+
+.error-snackbar {
+  --mdc-snackbar-container-color: #e74c3c;
+  --mat-snack-bar-button-color: white;
 }
