@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { FinePaymentResponse, FineResponse, FineSummary } from '../models/fine.model';
-import { Observable } from 'rxjs';
+import { Observable, tap } from 'rxjs';
 import { AdminFine } from '../../user/models/adminFine.model';
 
 @Injectable({
@@ -13,21 +13,24 @@ export class FineService {
 
   constructor(private http: HttpClient) { }
 
-  getMyFines():
-    Observable<FineResponse> {
-    console.log("get my fines called");
+  getMyFines(): Observable<FineResponse> {
     return this.http.get<FineResponse>(
       `${this.baseUrl}/myFine`
+    ).pipe(
+      tap(response => {
+        console.log('Fine Response:', response);
+        console.log('Total Amount:', response.totalAmount);
+      })
     );
   }
 
-  getSummary():Observable<FineSummary> {
+  getSummary(): Observable<FineSummary> {
     return this.http.get<FineSummary>(
       `${this.baseUrl}/summary`
     );
   }
 
-  payFine(amount: number):Observable<FinePaymentResponse> {
+  payFine(amount: number): Observable<FinePaymentResponse> {
     return this.http.post<FinePaymentResponse>(
       `${this.baseUrl}/pay`,
       { amount }

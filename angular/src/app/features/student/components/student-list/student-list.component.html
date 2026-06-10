@@ -29,9 +29,10 @@
       <td>{{student.userName}}</td>
       <td>{{ student.userStatus }}</td>
       <td>
-        <button [routerLink]="['/studentDetail']" [state]="{student:student}">
+        <button (click)="viewStudent(student)">
           View
         </button>
+
         <button [routerLink]="['/updateStudent']" [state]="{student:student}">
           Update
         </button>

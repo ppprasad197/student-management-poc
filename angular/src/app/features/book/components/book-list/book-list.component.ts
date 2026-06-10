@@ -9,6 +9,8 @@ import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import * as AuthSelectors from '../../../../store/auth/auth.selectors';
 import { NotificationService } from '../../../../shared/services/notification.service';
+import { MatDialog } from '@angular/material/dialog';
+import { BookViewDialogComponent } from '../book-view-dialog/book-view-dialog.component';
 
 @Component({
   selector: 'app-book-list',
@@ -21,6 +23,7 @@ export class BookListComponent {
 
   private store = inject(Store);
   private notification = inject(NotificationService);
+  private dialog = inject(MatDialog);
 
   selectedCategory = 'ALL';
   selectedStatus = 'ALL';
@@ -158,5 +161,11 @@ export class BookListComponent {
       this.page--;
       this.loadBooks();
     }
+  }
+
+  viewBook(book: Book) {
+    this.dialog.open(BookViewDialogComponent, {
+      width: '600px', data: book
+    })
   }
 }

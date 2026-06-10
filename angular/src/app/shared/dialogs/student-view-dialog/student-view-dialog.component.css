@@ -1,0 +1,17 @@
+
+
+
+@media (max-width: 600px) {
+
+    .dialog-container {
+        min-width: auto;
+        width: 100%;
+        padding: 15px;
+    }
+
+    .dialog-container p {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 5px;
+    }
+}

@@ -65,9 +65,9 @@
             </td>
             <td>{{ book.quantity }}</td>
             <td>
-                <button [routerLink]="['/bookDetails'] " [state]="{book:book}">
-                    View
-                </button>
+               
+                <button (click)="viewBook(book)">View</button>
+
                 @if(currentUser | async; as user){
                 @if(user.role === 'ADMIN' || user.role === 'LIBRARIAN'){
                 <button [routerLink]="['/updateBook']" [state]="{ book: book }">

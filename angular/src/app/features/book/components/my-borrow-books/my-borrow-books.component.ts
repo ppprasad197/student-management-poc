@@ -6,6 +6,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { filter, first } from 'rxjs';
+import { NotificationService } from '../../../../shared/services/notification.service';
 
 @Component({
   selector: 'app-my-borrow-books',
@@ -17,6 +18,7 @@ import { filter, first } from 'rxjs';
 export class MyBorrowBooksComponent {
 
   private store = inject(Store);
+  private notification = inject(NotificationService);
 
   borrowedBooks$ = this.store.select(
     BookSelectors.selectMyBorrowedBooks
@@ -29,7 +31,6 @@ export class MyBorrowBooksComponent {
   }
 
   returnBook(id: number) {
-
     this.store.dispatch(
       BookActions.clearBookMessages()
     );
@@ -42,27 +43,26 @@ export class MyBorrowBooksComponent {
       BookSelectors.selectBookSuccessMessage
     )
       .pipe(
-        filter(message => !!message),
+        filter((message): message is string => !!message),
         first()
       )
       .subscribe(message => {
-        alert(message);
+        this.notification.success(message);
       });
 
     this.store.select(
       BookSelectors.selectBookError
     )
       .pipe(
-        filter(error => !!error),
+        filter((error): error is string => !!error),
         first()
       )
       .subscribe(error => {
-        alert(error);
+        this.notification.error(error);
       });
   }
 
   renewBook(id: number) {
-
     this.store.dispatch(
       BookActions.clearBookMessages()
     );
@@ -75,23 +75,22 @@ export class MyBorrowBooksComponent {
       BookSelectors.selectBookSuccessMessage
     )
       .pipe(
-        filter(message => !!message),
+        filter((message): message is string => !!message),
         first()
       )
       .subscribe(message => {
-        alert(message);
+        this.notification.success(message);
       });
 
     this.store.select(
       BookSelectors.selectBookError
     )
       .pipe(
-        filter(error => !!error),
+        filter((error): error is string => !!error),
         first()
       )
       .subscribe(error => {
-        alert(error);
-        console.log("Error is : " + error)
+        this.notification.error(error);
       });
   }
 }

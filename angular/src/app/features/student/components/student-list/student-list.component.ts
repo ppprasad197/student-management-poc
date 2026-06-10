@@ -11,6 +11,8 @@ import * as BookActions from '../../../book/store/book.actions';
 import { BorrowedBook } from '../../../book/models/borrowed-book.model';
 import { Student } from '../../models/student.model';
 import { FormsModule } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
+import { StudentViewDialogComponent } from '../../../../shared/dialogs/student-view-dialog/student-view-dialog.component';
 
 @Component({
   selector: 'app-student-list',
@@ -22,6 +24,7 @@ import { FormsModule } from '@angular/forms';
 export class StudentListComponent {
   private store = inject(Store);
   private router = inject(Router);
+  private dialog = inject(MatDialog);
 
   borrowedBooks: BorrowedBook[] = [];
 
@@ -131,6 +134,14 @@ export class StudentListComponent {
       this.page--;
       this.loadStudents();
     }
+  }
+
+  viewStudent(student: Student) {
+    this.dialog.open(StudentViewDialogComponent,
+      {
+        width: '600px', data: student
+      }
+    )
   }
 
 }

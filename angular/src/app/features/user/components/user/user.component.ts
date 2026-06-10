@@ -8,6 +8,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import * as selectStudentState from '../../../student/store/student.selectors';
+import { MatDialog } from '@angular/material/dialog';
+import { UserViewDialogComponent } from '../user-view-dialog/user-view-dialog.component';
 
 
 @Component({
@@ -21,6 +23,7 @@ export class UserComponent {
 
   private store = inject(Store);
   private router = inject(Router);
+  private dialog = inject(MatDialog);
 
   allUsers: User[] = [];
   filteredUsers: User[] = [];
@@ -89,5 +92,11 @@ export class UserComponent {
       this.page--;
       this.loadUsers();
     }
+  }
+
+  viewUser(user: User) {
+    this.dialog.open(UserViewDialogComponent, {
+      width: '600px', data: user
+    })
   }
 }

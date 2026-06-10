@@ -32,13 +32,9 @@ public class FineController {
 
     @PreAuthorize("hasRole('STUDENT')")
     @GetMapping("/myFine")
-    public ResponseEntity<FineDTO> getMyFines(
-            Authentication authentication) {
-        return ResponseEntity.ok(
-                fineService.getMyFines(
-                        authentication.getName()
-                )
-        );
+    public ResponseEntity<FineDTO> getMyFines(Authentication authentication) {
+        System.out.println("Controller reached");
+        return ResponseEntity.ok(fineService.getMyFines(authentication.getName()));
     }
 
     @PreAuthorize("hasRole('STUDENT')")

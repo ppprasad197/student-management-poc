@@ -39,7 +39,7 @@
                 {{ user.userStatus }}
             </td>
             <td>
-                <button [routerLink]="['/userDetails']" [state]="{ user: user }">
+                <button (click)="viewUser(user)">
                     View
                 </button>
                 <button [routerLink]="['/updateUser']" [state]="{ user: user }">

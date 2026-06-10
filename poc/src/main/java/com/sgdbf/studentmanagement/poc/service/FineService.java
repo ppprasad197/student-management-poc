@@ -70,17 +70,10 @@ public class FineService {
         return response;
     }
 
-    public FineDTO getMyFines(
-            String username) {
+    public FineDTO getMyFines(String username) {
+        User user = getStudent(username);
 
-        User user =
-                getStudent(username);
-
-        List<BorrowRecord> records =
-                borrowRepository
-                        .findByUserAndReturnDateIsNull(
-                                user
-                        );
+        List<BorrowRecord> records = borrowRepository.findByUserAndReturnDateIsNull(user);
 
         return calculateFine(records);
     }
@@ -121,13 +114,11 @@ public class FineService {
 
     private FineDTO calculateFine(List<BorrowRecord> records) {
 
-        List<FineDTO.FineItem> fineItems =
-                new ArrayList<>();
+        List<FineDTO.FineItem> fineItems = new ArrayList<>();
 
         double totalAmount = 0;
 
-        LocalDate today =
-                LocalDate.now();
+        LocalDate today = LocalDate.now();
 
         for (BorrowRecord record : records) {
 
@@ -144,7 +135,11 @@ public class FineService {
 
                 Optional<Fine> fineRecord = fineRepository.findByBorrowRecord(record);
 
-                FineDTO.FineItem item = mapFineItem(record, daysLate, fineAmount, fineRecord.get().getPaidDate());
+                LocalDate paidDate = fineRecord
+                        .map(Fine::getPaidDate)
+                        .orElse(null);
+
+                FineDTO.FineItem item = mapFineItem(record, daysLate, fineAmount, paidDate);
 
                 fineItems.add(item);
 
@@ -152,46 +147,30 @@ public class FineService {
             }
         }
 
-        FineDTO response =
-                new FineDTO();
+        FineDTO response = new FineDTO();
 
         response.setFines(fineItems);
 
         response.setTotalAmount(totalAmount);
 
-        response.setTotalFines(
-                fineItems.size()
-        );
+        response.setTotalFines(fineItems.size());
 
         return response;
     }
 
-    private long calculateLateDays(
-            BorrowRecord record,
-            LocalDate today) {
-
+    private long calculateLateDays(BorrowRecord record, LocalDate today) {
         LocalDate dueDate =
                 record.getDueDate();
 
         LocalDate returnDate =
                 record.getReturnDate();
 
-        if (returnDate != null
-                && returnDate.isAfter(dueDate)) {
-
-            return ChronoUnit.DAYS.between(
-                    dueDate,
-                    returnDate
-            );
+        if (returnDate != null && returnDate.isAfter(dueDate)) {
+            return ChronoUnit.DAYS.between(dueDate, returnDate);
         }
 
-        if (returnDate == null
-                && today.isAfter(dueDate)) {
-
-            return ChronoUnit.DAYS.between(
-                    dueDate,
-                    today
-            );
+        if (returnDate == null && today.isAfter(dueDate)) {
+            return ChronoUnit.DAYS.between(dueDate, today);
         }
 
         return 0;
@@ -249,7 +228,6 @@ public class FineService {
                             );
 
             if (exists) {
-
                 continue;
             }
 
@@ -306,7 +284,6 @@ public class FineService {
     }
 
     private void validatePendingFines(FineDTO fineDTO) {
-
         if (fineDTO.getFines().isEmpty()) {
             throw new RuntimeException(
                     "No pending fines"
