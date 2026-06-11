@@ -157,6 +157,13 @@ export const bookReducer = createReducer(
   on(BookActions.addBookFailure, (state, { error }) => ({
     ...state,
     error
+  })),
+
+  on(BookActions.setCurrentPage, (state, { page }) => ({
+    ...state,
+    currentPage: page
   }))
 );
+
+
 

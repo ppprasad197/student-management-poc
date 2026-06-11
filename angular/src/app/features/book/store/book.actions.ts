@@ -144,3 +144,7 @@ export const clearBookMessages = createAction(
   '[Book] Clear Messages'
 );
 
+export const setCurrentPage = createAction(
+  '[Book] Set Current Page',
+  props<{ page: number }>()
+)

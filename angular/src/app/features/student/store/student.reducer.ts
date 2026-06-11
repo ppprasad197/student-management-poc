@@ -27,7 +27,7 @@ export const studentReducer = createReducer(
     students: students,
     currentPage: currentPage,
     totalPages: totalPages,
-    error:null
+    error: null
   })),
 
 
@@ -82,7 +82,12 @@ export const studentReducer = createReducer(
       successMessage: message,
       error: null
     })
-  )
+  ),
+
+  on(StudentActions.setCurrentPage, (state, { page }) => ({
+    ...state,
+    currentPage: page
+  })),
 
 );
 

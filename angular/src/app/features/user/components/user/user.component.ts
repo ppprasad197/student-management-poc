@@ -38,7 +38,14 @@ export class UserComponent {
   users = this.store.select(UserSelectors.selectUserPage);
 
   ngOnInit() {
-    this.loadUsers();
+
+    this.store.select(UserSelectors.selectCurrentPage)
+      .pipe(first())
+      .subscribe(page => {
+        this.page = page ?? 0;
+        this.loadUsers();
+      });
+
     this.users.subscribe(data => {
       this.allUsers = data.users;
       this.currentPage = data.currentPage;
@@ -83,6 +90,13 @@ export class UserComponent {
   nextPage() {
     if (this.currentPage < this.totalPages - 1) {
       this.page++;
+
+      this.store.dispatch(
+        UserActions.setCurrentPage({
+          page: this.page
+        })
+      );
+
       this.loadUsers();
     }
   }
@@ -90,6 +104,12 @@ export class UserComponent {
   previousPage() {
     if (this.currentPage > 0) {
       this.page--;
+
+      this.store.dispatch(
+        UserActions.setCurrentPage({
+          page: this.page
+        })
+      );
       this.loadUsers();
     }
   }

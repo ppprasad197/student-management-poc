@@ -2,13 +2,16 @@ import { inject, Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { UserService } from '../services/user.service';
 import * as UserActions from '../store/user.actions';
-import { catchError, map, of, switchMap, tap } from 'rxjs';
+import { catchError, map, of, switchMap, tap, withLatestFrom } from 'rxjs';
 import { Route, Router } from '@angular/router';
 import { NotificationService } from '../../../shared/services/notification.service';
+import { Store } from '@ngrx/store';
+import * as selectUserState from './user.selectors';
 
 @Injectable()
 export class UserEffects {
   private actions = inject(Actions);
+  private store = inject(Store);
   constructor(private userService: UserService, private router: Router,
     private notification: NotificationService) { }
 
@@ -113,9 +116,12 @@ export class UserEffects {
         UserActions.deleteUserSuccess,
         UserActions.updateUserSuccess
       ),
-      map(() =>
+      withLatestFrom(
+        this.store.select(selectUserState.selectCurrentPage)
+      ),
+      map(([action, currentPage]) =>
         UserActions.loadUsers({
-          page: 0,
+          page: currentPage,
           size: 5
         })
       )

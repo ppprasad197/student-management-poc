@@ -26,3 +26,8 @@ export const selectError = createSelector(
     (state) => state.error
 );
 
+export const selectCurrentPage = createSelector(
+    selectUserState,
+    (state) => state.currentPage
+);
+

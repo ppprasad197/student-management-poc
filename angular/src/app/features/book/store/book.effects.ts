@@ -2,15 +2,18 @@ import { inject, Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { BookService } from '../services/book.service';
 import * as BookActions from '../store/book.actions';
-import { catchError, map, of, switchMap, zip } from 'rxjs';
+import { catchError, map, of, switchMap, withLatestFrom, zip } from 'rxjs';
 import { Book } from '../models/book.model';
 import { BorrowedBook } from '../models/borrowed-book.model';
+import { Store } from '@ngrx/store';
+import * as selectBookState from './book.selectors';
 
 
 @Injectable()
 export class BookEffects {
 
   private actions = inject(Actions);
+  private store = inject(Store);
   constructor(private bookService: BookService) { }
 
   loadBooks = createEffect(() =>
@@ -57,8 +60,9 @@ export class BookEffects {
   deleteBookSuccess = createEffect(() =>
     this.actions.pipe(
       ofType(BookActions.deleteBookSuccess),
-      map(() =>
-        BookActions.loadBooks({ page: 0, size: 5 })
+      withLatestFrom(this.store.select(selectBookState.selectCurrentPage)),
+      map(([action, currentPage]) =>
+        BookActions.loadBooks({ page: currentPage, size: 5 })
       )
     )
   );
@@ -89,8 +93,9 @@ export class BookEffects {
   addBookSuccess = createEffect(() =>
     this.actions.pipe(
       ofType(BookActions.addBookSuccess),
-      map(() =>
-        BookActions.loadBooks({ page: 0, size: 5 })
+      withLatestFrom(this.store.select(selectBookState.selectCurrentPage)),
+      map(([action, currentPage]) =>
+        BookActions.loadBooks({ page: currentPage, size: 5 })
       )
     )
   );
@@ -144,8 +149,9 @@ export class BookEffects {
   borrowBookSuccess = createEffect(() =>
     this.actions.pipe(
       ofType(BookActions.borrowBookSuccess),
-      map(() =>
-        BookActions.loadBooks({ page: 0, size: 5  })
+      withLatestFrom(this.store.select(selectBookState.selectCurrentPage)),
+      map(([action, currentPage]) =>
+        BookActions.loadBooks({ page: currentPage, size: 5 })
       )
     )
   );

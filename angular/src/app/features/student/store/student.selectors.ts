@@ -1,5 +1,6 @@
 import { createFeatureSelector, createSelector } from '@ngrx/store';
 import { StudentState } from './student.state';
+import { state } from '@angular/animations';
 
 export const selectStudentState = createFeatureSelector<StudentState>('students');
 
@@ -31,4 +32,9 @@ export const selectError = createSelector(
 export const selectStudentSuccessMessage = createSelector(
     selectStudentState,
     (state) => state.successMessage
+);
+
+export const selectCurrentPage = createSelector(
+    selectStudentState,
+    state => state.currentPage
 );

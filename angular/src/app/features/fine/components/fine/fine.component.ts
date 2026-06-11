@@ -72,7 +72,6 @@ export class FineComponent {
   }
 
   payFine(amount: number) {
-    console.log("total fine amount : " + amount);
     this.store.dispatch(
       FineActions.payFine({ amount })
     );

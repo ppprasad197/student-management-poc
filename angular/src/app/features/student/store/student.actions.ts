@@ -73,3 +73,8 @@ export const updateStudentFailure = createAction(
 export const clearMessages = createAction(
   '[Student] Clear Messages'
 );
+
+export const setCurrentPage = createAction(
+  '[Student]Set Current Page',
+  props<{ page: number }>()
+)

@@ -19,10 +19,6 @@ export class StudentService {
     return this.httpClient.get<StudentPageResponse>(
       `${this.baseUrl}/students?page=${page}&size=${size}`,
       { withCredentials: true }
-    ).pipe(
-      tap(response => {
-        console.log('Backend Response:', response);
-      })
     );
   }
 
@@ -38,7 +34,6 @@ export class StudentService {
   }
 
   deleteStudent(id: number) {
-    console.log("Deleting student with id : " + id);
     return this.httpClient.delete(
       `${this.baseUrl}/delete/${id}`,
       {

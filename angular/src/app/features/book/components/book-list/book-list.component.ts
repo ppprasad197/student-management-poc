@@ -41,9 +41,14 @@ export class BookListComponent {
     this.store.select(BookSelectors.selectBookPage);
 
   ngOnInit(): void {
-    this.store.dispatch(
-      BookActions.loadBooks({ page: this.page, size: this.size })
-    );
+
+    // this.store.select(BookSelectors.selectCurrentPage).pipe(first())
+    //   .subscribe(page => {
+    //     this.page = page ?? 0;
+    //     this.loadBooks();
+    //   });
+
+    this.loadBooks();
 
     this.books.subscribe(resposne => {
       this.allBooks = resposne.books;

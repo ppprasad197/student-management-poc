@@ -5,21 +5,23 @@ import * as FineActions from '../store/fine.actions';
 import { of } from 'rxjs';
 import { catchError, map, switchMap, tap } from 'rxjs/operators';
 import { FineService } from '../services/fine.service';
+import { NotificationService } from '../../../shared/services/notification.service';
 
 @Injectable()
 export class FineEffects {
 
 
-  private actions$ = inject(Actions);
+  private actions = inject(Actions);
   private fineService = inject(FineService);
+  private notification = inject(NotificationService);
 
   constructor() {
-    console.log('actions$', this.actions$);
+    console.log('actions$', this.actions);
   }
 
 
   loadMyFines = createEffect(() =>
-    this.actions$.pipe(
+    this.actions.pipe(
       ofType(FineActions.loadMyFines),
       switchMap(() =>
         this.fineService.getMyFines().pipe(
@@ -42,7 +44,7 @@ export class FineEffects {
   );
 
   loadSummary = createEffect(() =>
-    this.actions$.pipe(
+    this.actions.pipe(
       ofType(FineActions.loadFineSummary),
       switchMap(() =>
         this.fineService.getSummary().pipe(
@@ -65,7 +67,7 @@ export class FineEffects {
   );
 
   payFine = createEffect(() =>
-    this.actions$.pipe(
+    this.actions.pipe(
       ofType(FineActions.payFine),
       switchMap(({ amount }) =>
         this.fineService.payFine(amount).pipe(
@@ -89,26 +91,26 @@ export class FineEffects {
 
   payFineSuccessAlert = createEffect(
     () =>
-      this.actions$.pipe(
+      this.actions.pipe(
         ofType(FineActions.payFineSuccess),
-        tap(() => alert('Fine paid Successfully'))
+        tap(() => this.notification.success('Fine paid Successfully'))
       ),
     { dispatch: false }
   );
 
   payFineFailureAlert = createEffect(
     () =>
-      this.actions$.pipe(
+      this.actions.pipe(
         ofType(FineActions.payFineFailure),
         tap(({ error }) =>
-          alert(error || 'Failed to approve user')
+          this.notification.error(error || 'Failed to approve user')
         )
       ),
     { dispatch: false }
   );
 
   loadAllStudentFines = createEffect(() =>
-    this.actions$.pipe(
+    this.actions.pipe(
       ofType(FineActions.loadAllStudentFines),
       switchMap(() =>
         this.fineService.getAllStudentFines().pipe(
@@ -132,7 +134,7 @@ export class FineEffects {
   );
 
   reloadFineData = createEffect(() =>
-    this.actions$.pipe(
+    this.actions.pipe(
       ofType(FineActions.payFineSuccess),
       switchMap(() => [
         FineActions.loadMyFines(),

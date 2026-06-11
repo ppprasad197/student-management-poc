@@ -41,7 +41,6 @@ export const payFineSuccess = createAction(
   props<{ response: FinePaymentResponse }>()
 );
 
-
 export const payFineFailure = createAction(
   '[Fine] Pay Fine Failure',
   props<{ error: string }>()

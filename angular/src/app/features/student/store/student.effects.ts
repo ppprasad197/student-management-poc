@@ -3,15 +3,18 @@ import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { Action } from 'rxjs/internal/scheduler/Action';
 import { StudentService } from '../services/student.service';
 import * as StudentActions from './student.actions';
-import { catchError, delay, map, of, switchMap, tap } from 'rxjs';
+import { catchError, delay, map, of, switchMap, tap, withLatestFrom } from 'rxjs';
 import * as AuthActions from '../../../store/auth/auth.actions';
 import { Router } from '@angular/router';
 import { NotificationService } from '../../../shared/services/notification.service';
+import { Store } from '@ngrx/store';
+import * as selectStudentState from '../../student/store/student.selectors';
 
 
 @Injectable()
 export class StudentEffects {
   private actions = inject(Actions);
+  private store = inject(Store);
 
   constructor(private studentService: StudentService, private router: Router, private notification: NotificationService) { }
 
@@ -106,12 +109,15 @@ export class StudentEffects {
         StudentActions.deleteStudentSuccess,
         StudentActions.updateStudentSuccess
       ),
-      map(() => StudentActions.loadStudents({
-        page: 0,
-        size: 5
-      }))
-    )
-  );
+      withLatestFrom(
+        this.store.select(selectStudentState.selectCurrentPage)
+      ), map(([action, currentPage]) =>
+        StudentActions.loadStudents({
+          page: currentPage,
+          size: 5
+        })
+      )
+    ));
 
   approveStudentSuccessAlert = createEffect(
     () =>

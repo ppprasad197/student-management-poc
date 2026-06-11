@@ -68,4 +68,9 @@ export const updateUserFailure = createAction(
 
 export const clearMessages = createAction(
   '[User] Clear Messages'
-);  
+);
+
+export const setCurrentPage = createAction(
+  '[User] Set Current Page',
+  props<{ page: number }>()
+)

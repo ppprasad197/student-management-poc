@@ -94,7 +94,6 @@ export class SignupComponent {
 
     // SIGNUP
     else {
-      console.log('Frozen?', Object.isFrozen(this.signupData));
       this.store.dispatch(
         AuthActions.signUp({
           data: { ...this.signupData }

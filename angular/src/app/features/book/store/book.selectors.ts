@@ -40,3 +40,8 @@ export const selectBookError =
         selectBookState,
         (state) => state.error
     );
+
+export const selectCurrentPage = createSelector(
+    selectBookState,
+    state => state.currentPage
+);

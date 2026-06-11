@@ -50,15 +50,26 @@ export const userReducer = createReducer(
     successMessage: 'User deleted successfully'
   })),
 
-  on(UserActions.updateUserSuccess, (state) => ({
-    ...state,
-    successMessage: 'User updated successfully'
-  })),
+  on(UserActions.loadUsersSuccess,
+    (state, { users, currentPage, totalPages }) => {
+      return {
+        ...state,
+        users,
+        currentPage,
+        totalPages
+      };
+    }
+  ),
 
   on(UserActions.clearMessages, (state) => ({
     ...state,
     successMessage: null,
     error: null
+  })),
+
+  on(UserActions.setCurrentPage, (state, { page }) => ({
+    ...state,
+    currentPage: page
   }))
 
 );

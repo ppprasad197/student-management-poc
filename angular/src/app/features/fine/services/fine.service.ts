@@ -16,12 +16,7 @@ export class FineService {
   getMyFines(): Observable<FineResponse> {
     return this.http.get<FineResponse>(
       `${this.baseUrl}/myFine`
-    ).pipe(
-      tap(response => {
-        console.log('Fine Response:', response);
-        console.log('Total Amount:', response.totalAmount);
-      })
-    );
+    )
   }
 
   getSummary(): Observable<FineSummary> {

@@ -49,6 +49,13 @@ export class StudentListComponent {
   size = 5;
 
   ngOnInit(): void {
+
+    this.store.select(selectStudentState.selectCurrentPage).pipe(first())
+      .subscribe(page => {
+        this.page = page ?? 0;
+        this.loadStudents();
+      });
+
     this.loadStudents();
     this.students.subscribe(response => {
       this.allStudents = response.students;
