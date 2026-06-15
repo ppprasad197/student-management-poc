@@ -249,22 +249,18 @@ public class BookService {
         return book;
     }
 
-    public List<BorrowRecordResponseDto> getMyBorrowedBooks(
-            String username) {
+    public List<BorrowRecordResponseDto> getMyBorrowedBooks(String username) {
 
         User user = getStudent(username);
 
-        List<BorrowRecord> records =
-                borrowRepository
-                        .findByUserAndReturnDateIsNull(user);
+        List<BorrowRecord> records =borrowRepository.findByUserAndReturnDateIsNull(user);
 
         return records.stream()
                 .map(this::mapBorrowRecordToDto)
                 .toList();
     }
 
-    private BorrowRecordResponseDto mapBorrowRecordToDto(
-            BorrowRecord record) {
+    private BorrowRecordResponseDto mapBorrowRecordToDto(BorrowRecord record) {
 
         BorrowRecordResponseDto dto = new BorrowRecordResponseDto();
 
@@ -283,6 +279,8 @@ public class BookService {
         dto.setReturnDate(record.getReturnDate());
 
         dto.setRenewCount(record.getRenewCount());
+
+        dto.setStudentId(record.getUser().getId());
 
         return dto;
     }

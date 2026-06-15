@@ -81,4 +81,13 @@ export class BookService {
       'http://localhost:8080/borrowRecord/getAllBorrowedBooksByStudents'
     );
   }
+
+  exportBooks() {
+    return this.http.get(
+      `http://localhost:8080/borrowRecord/export`,
+      {
+        responseType: 'blob'
+      }
+    );
+  }
 }

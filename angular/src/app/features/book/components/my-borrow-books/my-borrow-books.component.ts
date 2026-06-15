@@ -11,6 +11,7 @@ import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
 import * as  selectAuthState from '../../../../store/auth/auth.selectors';
 import { BorrowedBook } from '../../models/borrowed-book.model';
+import { BookService } from '../../services/book.service';
 
 @Component({
   selector: 'app-my-borrow-books',
@@ -23,6 +24,7 @@ export class MyBorrowBooksComponent {
 
   private store = inject(Store);
   private notification = inject(NotificationService);
+  private bookService = inject(BookService);
 
   currentUser = this.store.select(selectAuthState.selectCurrentUser);
 
@@ -152,5 +154,18 @@ export class MyBorrowBooksComponent {
       data,
       `borrowed-books-${this.username}.xlsx`
     );
+  }
+
+
+  exportToExcelBE() {
+    this.bookService.exportBooks()
+      .subscribe(blob => {
+
+        saveAs(
+          blob,
+          `borrowed-books-${this.username}.xlsx`
+        );
+
+      });
   }
 }

@@ -25,12 +25,6 @@ public class BookController {
         this.bookService = bookService;
     }
 
-//    @PreAuthorize("hasAnyRole('ADMIN','STUDENT','LIBRARIAN')")
-//    @GetMapping
-//    public List<BookResponseDto> getAllBooks() {
-//        return bookService.getAll();
-//    }
-
     @PreAuthorize("hasAnyRole('ADMIN','STUDENT','LIBRARIAN')")
     @GetMapping
     public ResponseEntity<BookPageResponse> getAllBooks(@PageableDefault(page = 0, size = 5) Pageable pageable) {
