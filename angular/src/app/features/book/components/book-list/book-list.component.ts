@@ -11,6 +11,7 @@ import * as AuthSelectors from '../../../../store/auth/auth.selectors';
 import { NotificationService } from '../../../../shared/services/notification.service';
 import { MatDialog } from '@angular/material/dialog';
 import { BookViewDialogComponent } from '../book-view-dialog/book-view-dialog.component';
+import { PopupService } from '../../../../shared/services/popup.service';
 
 @Component({
   selector: 'app-book-list',
@@ -24,6 +25,7 @@ export class BookListComponent {
   private store = inject(Store);
   private notification = inject(NotificationService);
   private dialog = inject(MatDialog);
+  private popup = inject(PopupService);
 
   selectedCategory = 'ALL';
   selectedStatus = 'ALL';
@@ -41,13 +43,6 @@ export class BookListComponent {
     this.store.select(BookSelectors.selectBookPage);
 
   ngOnInit(): void {
-
-    // this.store.select(BookSelectors.selectCurrentPage).pipe(first())
-    //   .subscribe(page => {
-    //     this.page = page ?? 0;
-    //     this.loadBooks();
-    //   });
-
     this.loadBooks();
 
     this.books.subscribe(resposne => {
@@ -75,7 +70,7 @@ export class BookListComponent {
           first()
         )
         .subscribe(message => {
-          this.notification.success(message);
+          this.popup.openSuccess(message);
         });
 
       this.store.select(
@@ -86,7 +81,7 @@ export class BookListComponent {
           first()
         )
         .subscribe(error => {
-          this.notification.error(error);
+          this.popup.openError(error);
         });
     }
   }

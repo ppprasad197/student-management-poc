@@ -12,6 +12,7 @@ import { saveAs } from 'file-saver';
 import * as  selectAuthState from '../../../../store/auth/auth.selectors';
 import { BorrowedBook } from '../../models/borrowed-book.model';
 import { BookService } from '../../services/book.service';
+import { PopupService } from '../../../../shared/services/popup.service';
 
 @Component({
   selector: 'app-my-borrow-books',
@@ -25,6 +26,7 @@ export class MyBorrowBooksComponent {
   private store = inject(Store);
   private notification = inject(NotificationService);
   private bookService = inject(BookService);
+  private popup = inject(PopupService);
 
   currentUser = this.store.select(selectAuthState.selectCurrentUser);
 
@@ -170,7 +172,7 @@ export class MyBorrowBooksComponent {
         first()
       )
       .subscribe(message => {
-        this.notification.success(message);
+        this.popup.openSuccess(message);
       });
 
     this.store.select(
@@ -181,7 +183,7 @@ export class MyBorrowBooksComponent {
         first()
       )
       .subscribe(error => {
-        this.notification.error(error);
+        this.popup.openError(error);
       });
   }
 }

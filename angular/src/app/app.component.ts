@@ -4,11 +4,12 @@ import { HeaderComponent } from './shared/components/header/header.component';
 import * as AuthActions from './store/auth/auth.actions';
 import { Store } from '@ngrx/store';
 import { CommonModule } from '@angular/common';
+import { PopupComponent } from './shared/popups/popup/popup.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, HeaderComponent, CommonModule],
+  imports: [RouterOutlet, HeaderComponent, CommonModule, PopupComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
