@@ -25,13 +25,15 @@ public class BookService {
     private final FineRepository fineRepository;
     private final FineService fineService;
     private final UserRepository userRepository;
+    private final BorrowRecordService borrowRecordService;
 
-    public BookService(BookRepository bookRepository, BorrowRepository borrowRepository, FineRepository fineRepository, FineService fineService, UserRepository userRepository) {
+    public BookService(BookRepository bookRepository, BorrowRepository borrowRepository, FineRepository fineRepository, FineService fineService, UserRepository userRepository, BorrowRecordService borrowRecordService) {
         this.bookRepository = bookRepository;
         this.borrowRepository = borrowRepository;
         this.fineRepository = fineRepository;
         this.fineService = fineService;
         this.userRepository = userRepository;
+        this.borrowRecordService = borrowRecordService;
     }
 
     public Book borrowBook(Long id, String userName) {
@@ -160,8 +162,13 @@ public class BookService {
     }
 
     public void delete(Long id) {
-        Book book = bookRepository.findById(id).orElse(null);
-        assert book != null;
+        Book book = bookRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Book not found"));
+
+        boolean record = borrowRecordService.findByBookId(id);
+        if (record) {
+            throw new RuntimeException("You can not delete this book it is already borrowed");
+        }
         bookRepository.delete(book);
     }
 
@@ -249,39 +256,39 @@ public class BookService {
         return book;
     }
 
-    public List<BorrowRecordResponseDto> getMyBorrowedBooks(String username) {
-
-        User user = getStudent(username);
-
-        List<BorrowRecord> records =borrowRepository.findByUserAndReturnDateIsNull(user);
-
-        return records.stream()
-                .map(this::mapBorrowRecordToDto)
-                .toList();
-    }
-
-    private BorrowRecordResponseDto mapBorrowRecordToDto(BorrowRecord record) {
-
-        BorrowRecordResponseDto dto = new BorrowRecordResponseDto();
-
-        dto.setId(record.getId());
-
-        dto.setBookId(record.getBook().getId());
-
-        dto.setBookTitle(record.getBook().getTitle());
-
-        dto.setAuthor(record.getBook().getAuthor());
-
-        dto.setIssueDate(record.getIssueDate());
-
-        dto.setDueDate(record.getDueDate());
-
-        dto.setReturnDate(record.getReturnDate());
-
-        dto.setRenewCount(record.getRenewCount());
-
-        dto.setStudentId(record.getUser().getId());
-
-        return dto;
-    }
+//    public List<BorrowRecordResponseDto> getMyBorrowedBooks(String username) {
+//
+//        User user = getStudent(username);
+//
+//        List<BorrowRecord> records = borrowRepository.findByUserAndReturnDateIsNull(user);
+//
+//        return records.stream()
+//                .map(this::mapBorrowRecordToDto)
+//                .toList();
+//    }
+//
+//    private BorrowRecordResponseDto mapBorrowRecordToDto(BorrowRecord record) {
+//
+//        BorrowRecordResponseDto dto = new BorrowRecordResponseDto();
+//
+//        dto.setId(record.getId());
+//
+//        dto.setBookId(record.getBook().getId());
+//
+//        dto.setBookTitle(record.getBook().getTitle());
+//
+//        dto.setAuthor(record.getBook().getAuthor());
+//
+//        dto.setIssueDate(record.getIssueDate());
+//
+//        dto.setDueDate(record.getDueDate());
+//
+//        dto.setReturnDate(record.getReturnDate());
+//
+//        dto.setRenewCount(record.getRenewCount());
+//
+//        dto.setStudentId(record.getUser().getId());
+//
+//        return dto;
+//    }
 }

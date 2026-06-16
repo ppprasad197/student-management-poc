@@ -2,8 +2,10 @@ package com.sgdbf.studentmanagement.poc.service;
 
 import com.sgdbf.studentmanagement.poc.dto.BorrowRecordResponseDto;
 import com.sgdbf.studentmanagement.poc.entity.BorrowRecord;
+import com.sgdbf.studentmanagement.poc.entity.User;
 import com.sgdbf.studentmanagement.poc.enums.Role;
 import com.sgdbf.studentmanagement.poc.repository.BorrowRepository;
+import com.sgdbf.studentmanagement.poc.repository.UserRepository;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.stereotype.Service;
@@ -16,11 +18,12 @@ import java.util.List;
 @Service
 public class BorrowRecordService {
     private final BorrowRepository borrowRepository;
-    private final BookService bookService;
+    private final UserRepository userRepository;
 
-    public BorrowRecordService(BorrowRepository borrowRepository, BookService bookService) {
+
+    public BorrowRecordService(BorrowRepository borrowRepository, UserRepository userRepository) {
         this.borrowRepository = borrowRepository;
-        this.bookService = bookService;
+        this.userRepository = userRepository;
     }
 
     public List<BorrowRecordResponseDto> getAllBorrowedBooksByStudents() {
@@ -29,51 +32,51 @@ public class BorrowRecordService {
                 borrowRepository.findAllByReturnDateIsNull();
 
         return borrowRecords.stream()
-                .map(this::mapToDto)
+                .map(this::mapBorrowRecordToDto)
                 .toList();
     }
 
-    private BorrowRecordResponseDto mapToDto(BorrowRecord borrowRecord) {
-
-        BorrowRecordResponseDto dto = new BorrowRecordResponseDto();
-
-        dto.setId(
-                borrowRecord.getId()
-        );
-
-        dto.setBookId(
-                borrowRecord.getBook().getId()
-        );
-
-        dto.setBookTitle(
-                borrowRecord.getBook().getTitle()
-        );
-
-        dto.setAuthor(
-                borrowRecord.getBook().getAuthor()
-        );
-
-        dto.setIssueDate(
-                borrowRecord.getIssueDate()
-        );
-
-        dto.setDueDate(
-                borrowRecord.getDueDate()
-        );
-
-        dto.setReturnDate(
-                borrowRecord.getReturnDate()
-        );
-
-        dto.setRenewCount(
-                borrowRecord.getRenewCount()
-        );
-        dto.setStudentId(borrowRecord.getUser() != null ? borrowRecord.getUser().getId() : null);
-        return dto;
-    }
+//    private BorrowRecordResponseDto mapToDto(BorrowRecord borrowRecord) {
+//
+//        BorrowRecordResponseDto dto = new BorrowRecordResponseDto();
+//
+//        dto.setId(
+//                borrowRecord.getId()
+//        );
+//
+//        dto.setBookId(
+//                borrowRecord.getBook().getId()
+//        );
+//
+//        dto.setBookTitle(
+//                borrowRecord.getBook().getTitle()
+//        );
+//
+//        dto.setAuthor(
+//                borrowRecord.getBook().getAuthor()
+//        );
+//
+//        dto.setIssueDate(
+//                borrowRecord.getIssueDate()
+//        );
+//
+//        dto.setDueDate(
+//                borrowRecord.getDueDate()
+//        );
+//
+//        dto.setReturnDate(
+//                borrowRecord.getReturnDate()
+//        );
+//
+//        dto.setRenewCount(
+//                borrowRecord.getRenewCount()
+//        );
+//        dto.setStudentId(borrowRecord.getUser() != null ? borrowRecord.getUser().getId() : null);
+//        return dto;
+//    }
 
     public ByteArrayInputStream exportMyBorrowedBooks(String username) throws IOException {
-        List<BorrowRecordResponseDto> books = bookService.getMyBorrowedBooks(username);
+        List<BorrowRecordResponseDto> books = getMyBorrowedBooks(username);
         Workbook workbook = new XSSFWorkbook();
         Sheet sheet = workbook.createSheet("My Borrowed Books");
 
@@ -104,5 +107,49 @@ public class BorrowRecordService {
         workbook.write(out);
         workbook.close();
         return new ByteArrayInputStream(out.toByteArray());
+    }
+
+    public List<BorrowRecordResponseDto> getMyBorrowedBooks(String username) {
+
+        User user = getStudent(username);
+
+        List<BorrowRecord> records = borrowRepository.findByUserAndReturnDateIsNull(user);
+
+        return records.stream()
+                .map(this::mapBorrowRecordToDto)
+                .toList();
+    }
+
+    public User getStudent(String username) {
+        return userRepository.findByUserNameAndRole(username, Role.STUDENT);
+    }
+
+    private BorrowRecordResponseDto mapBorrowRecordToDto(BorrowRecord record) {
+
+        BorrowRecordResponseDto dto = new BorrowRecordResponseDto();
+
+        dto.setId(record.getId());
+
+        dto.setBookId(record.getBook().getId());
+
+        dto.setBookTitle(record.getBook().getTitle());
+
+        dto.setAuthor(record.getBook().getAuthor());
+
+        dto.setIssueDate(record.getIssueDate());
+
+        dto.setDueDate(record.getDueDate());
+
+        dto.setReturnDate(record.getReturnDate());
+
+        dto.setRenewCount(record.getRenewCount());
+
+        dto.setStudentId(record.getUser().getId());
+
+        return dto;
+    }
+
+    public Boolean findByBookId(Long id) {
+        return borrowRepository.existsByBookIdAndReturnDateIsNull(id);
     }
 }

@@ -148,3 +148,17 @@ export const setCurrentPage = createAction(
   '[Book] Set Current Page',
   props<{ page: number }>()
 )
+
+export const exportBorrowedBooks = createAction(
+  '[Book] Export Borrowed Books'
+);
+
+export const exportBorrowedBooksSuccess = createAction(
+  '[Book] Export Borrowed Books Success',
+  props<{ blob: Blob; message: string }>()
+);
+
+export const exportBorrowedBooksFailure = createAction(
+  '[Book] Export Borrowed Books Failure',
+  props<{ error: string }>()
+);

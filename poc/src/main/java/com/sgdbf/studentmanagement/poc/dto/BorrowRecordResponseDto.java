@@ -21,7 +21,6 @@ public class BorrowRecordResponseDto {
 
     private Long studentId;
 
-
     public BorrowRecordResponseDto() {
     }
 

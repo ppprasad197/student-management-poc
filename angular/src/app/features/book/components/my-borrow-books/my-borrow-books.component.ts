@@ -158,14 +158,30 @@ export class MyBorrowBooksComponent {
 
 
   exportToExcelBE() {
-    this.bookService.exportBooks()
-      .subscribe(blob => {
+    this.store.dispatch(
+      BookActions.exportBorrowedBooks()
+    );
 
-        saveAs(
-          blob,
-          `borrowed-books-${this.username}.xlsx`
-        );
+    this.store.select(
+      BookSelectors.selectBookSuccessMessage
+    )
+      .pipe(
+        filter((message): message is string => !!message),
+        first()
+      )
+      .subscribe(message => {
+        this.notification.success(message);
+      });
 
+    this.store.select(
+      BookSelectors.selectBookError
+    )
+      .pipe(
+        filter((error): error is string => !!error),
+        first()
+      )
+      .subscribe(error => {
+        this.notification.error(error);
       });
   }
 }

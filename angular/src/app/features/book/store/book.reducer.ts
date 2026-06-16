@@ -162,7 +162,13 @@ export const bookReducer = createReducer(
   on(BookActions.setCurrentPage, (state, { page }) => ({
     ...state,
     currentPage: page
-  }))
+  })),
+
+  on(BookActions.exportBorrowedBooksSuccess, (state, { message }) => ({
+    ...state,
+    loading: false,
+    successMessage: message
+  })),
 );
 
 

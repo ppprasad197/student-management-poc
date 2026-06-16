@@ -55,18 +55,18 @@ public class UserService {
         userRepository.save(userToSave);
     }
 
-
     public void approveUser(Long id) {
-        User user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
+        User user = getUserById(id);
         user.setUserStatus(UserStatus.APPROVED);
         userRepository.save(user);
     }
 
     public void rejectUser(Long id) {
-        User user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
+        User user = getUserById(id);
         user.setUserStatus(UserStatus.REJECTED);
         userRepository.save(user);
     }
+
 
     public List<UserResponseDto> findByUserStatus(UserStatus userStatus) {
         List<User> users = userRepository.findByUserStatus(userStatus);
@@ -76,16 +76,14 @@ public class UserService {
     }
 
     public void deleteUserById(Long id) {
-        userRepository.deleteById(id);
+        User user = getUserById(id);
+        userRepository.delete(user);
     }
 
     @Transactional
     public UserResponseDto updateUser(Long id, UserRequestDto requestDto) {
 
-        User existingUser = userRepository.findById(id)
-                .orElseThrow(() ->
-                        new RuntimeException("User not found")
-                );
+        User existingUser = getUserById(id);
 
         if (requestDto.getEmail() != null
                 && !requestDto.getEmail().equals(existingUser.getEmail())) {
@@ -203,5 +201,12 @@ public class UserService {
         response.setTotalElements(users.getTotalElements());
 
         return response;
+    }
+
+    private User getUserById(Long id) {
+        return userRepository.findById(id)
+                .orElseThrow(() ->
+                        new RuntimeException("User not found")
+                );
     }
 }

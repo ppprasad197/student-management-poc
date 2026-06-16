@@ -35,7 +35,7 @@ public class BorrowRecordController {
     @GetMapping("/myBorrowedBooks")
     @PreAuthorize("hasRole('STUDENT')")
     public List<BorrowRecordResponseDto> getMyBorrowedBooks(Authentication authentication) {
-        return bookService.getMyBorrowedBooks(authentication.getName());
+        return borrowRecordService.getMyBorrowedBooks(authentication.getName());
     }
 
     @GetMapping("/getAllBorrowedBooksByStudents")

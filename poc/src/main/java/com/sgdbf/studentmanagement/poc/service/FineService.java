@@ -202,9 +202,7 @@ public class FineService {
         return item;
     }
 
-    private int persistFines(
-            FineDTO fineDTO,
-            String username) {
+    private int persistFines(FineDTO fineDTO,String username) {
 
         User user =
                 getStudent(username);
@@ -408,9 +406,7 @@ public class FineService {
 
         LocalDate today = LocalDate.now();
 
-        // =====================================================
-        // STEP 1 -> Existing paid/generated fines
-        // =====================================================
+        // STEP 1 -> Existing paid/generated fine
 
         List<Fine> fines = fineRepository.findAll();
 
@@ -432,9 +428,7 @@ public class FineService {
             );
         }
 
-        // =====================================================
         // STEP 2 -> Current unpaid overdue fines
-        // =====================================================
 
         List<BorrowRecord> records =
                 borrowRepository.findAll();

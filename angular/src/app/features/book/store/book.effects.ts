@@ -2,11 +2,13 @@ import { inject, Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { BookService } from '../services/book.service';
 import * as BookActions from '../store/book.actions';
-import { catchError, map, of, switchMap, withLatestFrom, zip } from 'rxjs';
+import { catchError, map, of, switchMap, tap, withLatestFrom, zip } from 'rxjs';
 import { Book } from '../models/book.model';
 import { BorrowedBook } from '../models/borrowed-book.model';
 import { Store } from '@ngrx/store';
+import { saveAs } from 'file-saver';
 import * as selectBookState from './book.selectors';
+import * as selectAuthState from '../../../store/auth/auth.selectors';
 
 
 @Injectable()
@@ -263,4 +265,46 @@ export class BookEffects {
       )
     )
   );
+
+  exportBorrowedBooks = createEffect(() =>
+    this.actions.pipe(
+      ofType(BookActions.exportBorrowedBooks),
+      switchMap(() =>
+        this.bookService.exportBooks().pipe(
+          map(blob =>
+            BookActions.exportBorrowedBooksSuccess({
+              blob,
+              message: "Books exported successfully"
+            })
+          ),
+          catchError(error =>
+            of(
+              BookActions.exportBorrowedBooksFailure({
+                error: error.message
+              })
+            )
+          )
+        )
+      )
+    )
+  );
+
+  exportBorrowedBooksSuccess = createEffect(
+    () =>
+      this.actions.pipe(
+        ofType(BookActions.exportBorrowedBooksSuccess),
+
+        withLatestFrom(this.store.select(selectAuthState.selectCurrentUser)),
+
+        tap(([{ blob }, user]) => {
+          const username = user?.userName ?? 'user'
+          saveAs(
+            blob,
+            `borrowed-books-${username}.xlsx`
+          );
+        })
+      ),
+    { dispatch: false }
+  );
+
 }
