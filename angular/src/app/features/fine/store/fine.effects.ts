@@ -6,6 +6,7 @@ import { of } from 'rxjs';
 import { catchError, map, switchMap, tap } from 'rxjs/operators';
 import { FineService } from '../services/fine.service';
 import { NotificationService } from '../../../shared/services/notification.service';
+import { PopupService } from '../../../shared/services/popup.service';
 
 @Injectable()
 export class FineEffects {
@@ -14,11 +15,9 @@ export class FineEffects {
   private actions = inject(Actions);
   private fineService = inject(FineService);
   private notification = inject(NotificationService);
+  private popup = inject(PopupService);
 
-  constructor() {
-    console.log('actions$', this.actions);
-  }
-
+  constructor() { }
 
   loadMyFines = createEffect(() =>
     this.actions.pipe(
@@ -30,7 +29,6 @@ export class FineEffects {
               fines
             })
           ),
-
           catchError((error) =>
             of(
               FineActions.loadMyFinesFailure({
@@ -53,7 +51,6 @@ export class FineEffects {
               summary
             })
           ),
-
           catchError((error) =>
             of(
               FineActions.loadFineSummaryFailure({
@@ -76,7 +73,6 @@ export class FineEffects {
               response
             })
           ),
-
           catchError((error) =>
             of(
               FineActions.payFineFailure({
@@ -93,7 +89,7 @@ export class FineEffects {
     () =>
       this.actions.pipe(
         ofType(FineActions.payFineSuccess),
-        tap(() => this.notification.success('Fine paid Successfully'))
+        tap(() => this.popup.openSuccess('Fine paid Successfully'))
       ),
     { dispatch: false }
   );
@@ -103,7 +99,7 @@ export class FineEffects {
       this.actions.pipe(
         ofType(FineActions.payFineFailure),
         tap(({ error }) =>
-          this.notification.error(error || 'Failed to approve user')
+          this.popup.openError(error || 'Failed to approve user')
         )
       ),
     { dispatch: false }

@@ -7,13 +7,14 @@ import { Route, Router } from '@angular/router';
 import { NotificationService } from '../../../shared/services/notification.service';
 import { Store } from '@ngrx/store';
 import * as selectUserState from './user.selectors';
+import { PopupService } from '../../../shared/services/popup.service';
 
 @Injectable()
 export class UserEffects {
   private actions = inject(Actions);
   private store = inject(Store);
   constructor(private userService: UserService, private router: Router,
-    private notification: NotificationService) { }
+    private notification: NotificationService, private popup: PopupService) { }
 
   loadUsers = createEffect(() =>
     this.actions.pipe(
@@ -132,7 +133,7 @@ export class UserEffects {
     () =>
       this.actions.pipe(
         ofType(UserActions.approveUserSuccess),
-        tap(() => this.notification.success('User Approved Successfully'))
+        tap(() => this.popup.openSuccess('User Approved Successfully'))
       ),
     { dispatch: false }
   );
@@ -141,7 +142,7 @@ export class UserEffects {
     () =>
       this.actions.pipe(
         ofType(UserActions.deleteUserSuccess),
-        tap(() => this.notification.success('User Deleted Successfully'))
+        tap(() => this.popup.openSuccess('User Deleted Successfully'))
       ),
     { dispatch: false }
   );
@@ -151,7 +152,7 @@ export class UserEffects {
       this.actions.pipe(
         ofType(UserActions.updateUserSuccess),
         tap(() => {
-          this.notification.success('User Updated Successfully');
+          this.popup.openSuccess('User Updated Successfully');
           this.router.navigate(['/users']);
         })
       ),
@@ -163,7 +164,7 @@ export class UserEffects {
       this.actions.pipe(
         ofType(UserActions.approveUserFailure),
         tap(({ error }) =>
-          this.notification.error(error || 'Failed to approve user')
+          this.popup.openError(error || 'Failed to approve user')
         )
       ),
     { dispatch: false }
@@ -174,7 +175,7 @@ export class UserEffects {
       this.actions.pipe(
         ofType(UserActions.deleteUserFailure),
         tap(({ error }) =>
-          this.notification.error(error || 'Failed to delete user')
+          this.popup.openError(error || 'Failed to delete user')
         )
       ),
     { dispatch: false }
@@ -185,10 +186,10 @@ export class UserEffects {
       this.actions.pipe(
         ofType(UserActions.updateUserFailure),
         tap(({ error }) =>
-          this.notification.error(error || 'Failed to update user')
+          this.popup.openError(error || 'Failed to update user')
         )
       ),
     { dispatch: false }
   );
-
+      
 }

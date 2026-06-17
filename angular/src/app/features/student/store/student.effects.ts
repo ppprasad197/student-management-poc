@@ -9,6 +9,7 @@ import { Router } from '@angular/router';
 import { NotificationService } from '../../../shared/services/notification.service';
 import { Store } from '@ngrx/store';
 import * as selectStudentState from '../../student/store/student.selectors';
+import { PopupService } from '../../../shared/services/popup.service';
 
 
 @Injectable()
@@ -16,7 +17,8 @@ export class StudentEffects {
   private actions = inject(Actions);
   private store = inject(Store);
 
-  constructor(private studentService: StudentService, private router: Router, private notification: NotificationService) { }
+  constructor(private studentService: StudentService, private router: Router,
+    private notification: NotificationService, private popup: PopupService) { }
 
   loadStudents = createEffect(() =>
     this.actions.pipe(
@@ -123,7 +125,7 @@ export class StudentEffects {
     () =>
       this.actions.pipe(
         ofType(StudentActions.approveStudentSuccess),
-        tap(() => this.notification.success('Student Approved Successfully'))
+        tap(() => this.popup.openSuccess('Student Approved Successfully'))
       ),
     { dispatch: false }
   );
@@ -132,7 +134,7 @@ export class StudentEffects {
     () =>
       this.actions.pipe(
         ofType(StudentActions.deleteStudentSuccess),
-        tap(() => this.notification.success('Student Deleted Successfully'))
+        tap(() => this.popup.openSuccess('Student Deleted Successfully'))
       ),
     { dispatch: false }
   );
@@ -141,7 +143,7 @@ export class StudentEffects {
     () =>
       this.actions.pipe(
         ofType(StudentActions.updateStudentSuccess),
-        tap(({ message }) => { this.notification.success(message), this.router.navigate(['/student']); })
+        tap(({ message }) => { this.popup.openSuccess(message), this.router.navigate(['/student']); })
       ),
     { dispatch: false }
   );
@@ -150,7 +152,7 @@ export class StudentEffects {
     () =>
       this.actions.pipe(
         ofType(StudentActions.approveStudentFailure),
-        tap(({ error }) => this.notification.error(error))
+        tap(({ error }) => this.popup.openError(error))
       ),
     { dispatch: false }
   );
@@ -159,7 +161,7 @@ export class StudentEffects {
     () =>
       this.actions.pipe(
         ofType(StudentActions.deleteStudentFailure),
-        tap(({ error }) => this.notification.error(error))
+        tap(({ error }) => this.popup.openError(error))
       ),
     { dispatch: false }
   );
@@ -168,7 +170,7 @@ export class StudentEffects {
     () =>
       this.actions.pipe(
         ofType(StudentActions.updateStudentFailure),
-        tap(({ error }) => this.notification.error(error))
+        tap(({ error }) => this.popup.openError(error))
       ),
     { dispatch: false }
   );

@@ -6,6 +6,7 @@ import * as AuthActions from './auth.actions';
 import { catchError, map, mergeMap, of, switchMap, tap } from 'rxjs';
 import { Store } from '@ngrx/store';
 import { NotificationService } from '../../shared/services/notification.service';
+import { PopupService } from '../../shared/services/popup.service';
 
 
 
@@ -16,6 +17,7 @@ export class AuthEffects {
   private router = inject(Router);
   private store = inject(Store);
   private notification = inject(NotificationService);
+  private popup = inject(PopupService);
 
   login = createEffect(() =>
     this.actions.pipe(
@@ -149,7 +151,7 @@ export class AuthEffects {
     () =>
       this.actions.pipe(
         ofType(AuthActions.loginSuccess),
-        tap(({ message }) => this.notification.success(message))
+        tap(({ message }) => this.popup.openSuccess(message))
       ),
     { dispatch: false }
   );
@@ -158,7 +160,7 @@ export class AuthEffects {
     () =>
       this.actions.pipe(
         ofType(AuthActions.loginFailure),
-        tap(({ error }) => this.notification.error(error))
+        tap(({ error }) => this.popup.openError(error))
       ),
     { dispatch: false }
   );
@@ -167,7 +169,7 @@ export class AuthEffects {
     () =>
       this.actions.pipe(
         ofType(AuthActions.signupSuccess),
-        tap(({ message }) => this.notification.success(message))
+        tap(({ message }) => this.popup.openSuccess(message))
       ),
     { dispatch: false }
   );
@@ -176,7 +178,7 @@ export class AuthEffects {
     () =>
       this.actions.pipe(
         ofType(AuthActions.signupFailure),
-        tap(({ error }) => { this.notification.error(error); console.log("Signup error : " + error) }),
+        tap(({ error }) => { this.popup.openError(error); }),
       ),
     { dispatch: false }
   );
