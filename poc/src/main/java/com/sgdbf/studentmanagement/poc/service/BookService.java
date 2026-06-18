@@ -39,31 +39,19 @@ public class BookService {
     public Book borrowBook(Long id, String userName) {
         User user = getStudent(userName);
         Book book = bookRepository.findById(id)
-                .orElseThrow(() ->
-                        new RuntimeException("Book not found"));
-        boolean isAlreadyBorrowedByStudent =
-                borrowRepository
-                        .existsByBookAndUserAndReturnDateIsNull(
-                                book,
-                                user
-                        );
+                .orElseThrow(() -> new RuntimeException("Book not found"));
+        boolean isAlreadyBorrowedByStudent = borrowRepository.existsByBookAndUserAndReturnDateIsNull(book, user);
 
         if (isAlreadyBorrowedByStudent) {
-            throw new RuntimeException(
-                    "Book is already borrowed"
-            );
+            throw new RuntimeException("Book is already borrowed");
         }
 
         if (book.getQuantity() <= 0) {
-            throw new RuntimeException(
-                    "Book is not available"
-            );
+            throw new RuntimeException("Book is not available");
         }
 
         if (!canStudentBorrowNewBook(user, userName)) {
-            throw new RuntimeException(
-                    "You cannot borrow book"
-            );
+            throw new RuntimeException("You cannot borrow book");
         }
 
         book.setQuantity(book.getQuantity() - 1);
@@ -85,7 +73,11 @@ public class BookService {
     }
 
     public User getStudent(String username) {
-        return userRepository.findByUserNameAndRole(username, Role.STUDENT);
+        User user = userRepository.findByUserNameAndRole(username, Role.STUDENT);
+        if (user == null) {
+            throw new RuntimeException("User not found");
+        }
+        return user;
     }
 
     public boolean canStudentBorrowNewBook(User user, String username) {
@@ -113,7 +105,7 @@ public class BookService {
     }
 
     public BookPageResponse getAll(Pageable pageable) {
-        Page<Book> books = bookRepository.findAll(pageable);
+        Page<Book> books = bookRepository.findAllByIsDeletedFalse(pageable);
         BookPageResponse response = new BookPageResponse();
         response.setBooks(
                 books.getContent()
@@ -127,34 +119,27 @@ public class BookService {
         return response;
     }
 
+    public Book findBook(Long id) {
+        return bookRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Book not found"));
+    }
 
     public BookResponseDto getById(Long id) {
-        Book book = bookRepository.findById(id)
-                .orElseThrow(() ->
-                        new RuntimeException("Book not found"));
-
+        Book book = findBook(id);
         return mapToDto(book);
     }
 
-
     public BookResponseDto save(BookRequestDto requestDto) {
-
         if (requestDto.getQuantity() < 0) {
             throw new RuntimeException("Invalid quantity");
         }
-        Book book = mapToEntity(
-                new Book(),
-                requestDto
-        );
+        Book book = mapToEntity(new Book(), requestDto);
         Book savedBook = bookRepository.save(book);
         return mapToDto(savedBook);
     }
 
     public BookResponseDto update(Long id, BookRequestDto requestDto) {
-
-        Book book = bookRepository.findById(id)
-                .orElseThrow(() ->
-                        new RuntimeException("Book not found"));
+        Book book = findBook(id);
         Book updatedBook = mapToEntity(book, requestDto);
         updatedBook = bookRepository.save(updatedBook);
 
@@ -162,14 +147,15 @@ public class BookService {
     }
 
     public void delete(Long id) {
-        Book book = bookRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Book not found"));
-
+        Book book = findBook(id);
         boolean record = borrowRecordService.findByBookId(id);
+
         if (record) {
             throw new RuntimeException("You can not delete this book it is already borrowed");
+        } else {
+            book.setDeleted(true);
+            bookRepository.save(book);
         }
-        bookRepository.delete(book);
     }
 
     public void returnBook(Long bookId, String userName) {
@@ -193,23 +179,18 @@ public class BookService {
     public void renewBook(Long bookId, String userName) {
 
         User user = getStudent(userName);
-
         BorrowRecord record = getBorrowRecord(user, bookId);
-
         LocalDate today = LocalDate.now();
 
         //  Step 1: Check pending fines
         FineDTO fineData = fineService.getMyFines(userName);
         double totalDue = fineData.getTotalAmount();
-
         if (totalDue > 0 && today.isAfter(record.getDueDate())) {
             throw new RuntimeException("Please pay pending fine: " + totalDue + " Rs");
         }
-
         if (record.getRenewCount() >= 2) {
             throw new RuntimeException("Cannot renew more than 2 times");
         }
-
         if (today.isAfter(record.getDueDate())) {
             record.setIssueDate(today);
             record.setDueDate(today.plusDays(7));
@@ -221,12 +202,8 @@ public class BookService {
     }
 
     public BorrowRecord getBorrowRecord(User user, Long bookId) {
-        Book book = bookRepository.findById(bookId)
-                .orElseThrow(() ->
-                        new RuntimeException("Book not found"));
-
-        return borrowRepository
-                .findByUserAndBookAndReturnDateIsNull(user, book);
+        Book book = findBook(bookId);
+        return borrowRepository.findByUserAndBookAndReturnDateIsNull(user, book);
     }
 
     private BookResponseDto mapToDto(Book book) {
@@ -255,40 +232,4 @@ public class BookService {
 
         return book;
     }
-
-//    public List<BorrowRecordResponseDto> getMyBorrowedBooks(String username) {
-//
-//        User user = getStudent(username);
-//
-//        List<BorrowRecord> records = borrowRepository.findByUserAndReturnDateIsNull(user);
-//
-//        return records.stream()
-//                .map(this::mapBorrowRecordToDto)
-//                .toList();
-//    }
-//
-//    private BorrowRecordResponseDto mapBorrowRecordToDto(BorrowRecord record) {
-//
-//        BorrowRecordResponseDto dto = new BorrowRecordResponseDto();
-//
-//        dto.setId(record.getId());
-//
-//        dto.setBookId(record.getBook().getId());
-//
-//        dto.setBookTitle(record.getBook().getTitle());
-//
-//        dto.setAuthor(record.getBook().getAuthor());
-//
-//        dto.setIssueDate(record.getIssueDate());
-//
-//        dto.setDueDate(record.getDueDate());
-//
-//        dto.setReturnDate(record.getReturnDate());
-//
-//        dto.setRenewCount(record.getRenewCount());
-//
-//        dto.setStudentId(record.getUser().getId());
-//
-//        return dto;
-//    }
 }

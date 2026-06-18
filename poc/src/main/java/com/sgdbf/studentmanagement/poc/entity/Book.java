@@ -22,10 +22,10 @@ public class Book {
     private String category;
     private String description;
 
-
     @Column(nullable = false)
     private boolean available;
 
+    private boolean isDeleted;
 
     @Column(nullable = false)
     int quantity;
@@ -33,13 +33,14 @@ public class Book {
     public Book() {
     }
 
-    public Book(Long id, String title, String author, String category, String description, boolean available, int quantity) {
+    public Book(Long id, String title, String author, String category, String description, boolean available, boolean isDeleted, int quantity) {
         this.id = id;
         this.title = title;
         this.author = author;
         this.category = category;
         this.description = description;
         this.available = available;
+        this.isDeleted = isDeleted;
         this.quantity = quantity;
     }
 
@@ -97,5 +98,13 @@ public class Book {
 
     public void setAvailable(boolean available) {
         this.available = available;
+    }
+
+    public boolean isDeleted() {
+        return isDeleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        isDeleted = deleted;
     }
 }

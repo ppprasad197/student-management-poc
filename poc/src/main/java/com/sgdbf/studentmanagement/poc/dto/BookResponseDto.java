@@ -8,11 +8,13 @@ public class BookResponseDto {
     private String description;
     private boolean available;
     int quantity;
+    boolean isDeleted;
 
     public BookResponseDto() {
     }
 
-    public BookResponseDto(Long id, String title, String author, String category, String description, boolean available, int quantity) {
+
+    public BookResponseDto(Long id, String title, String author, String category, String description, boolean available, int quantity, boolean isDeleted) {
         this.id = id;
         this.title = title;
         this.author = author;
@@ -20,6 +22,7 @@ public class BookResponseDto {
         this.description = description;
         this.available = available;
         this.quantity = quantity;
+        this.isDeleted = isDeleted;
     }
 
     public Long getId() {
@@ -76,5 +79,13 @@ public class BookResponseDto {
 
     public void setQuantity(int quantity) {
         this.quantity = quantity;
+    }
+
+    public boolean isDeleted() {
+        return isDeleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        isDeleted = deleted;
     }
 }

@@ -89,7 +89,6 @@ public class UserService {
                 && !requestDto.getEmail().equals(existingUser.getEmail())) {
 
             if (userRepository.existsByEmail(requestDto.getEmail())) {
-
                 throw new RuntimeException("Email already exists");
             }
 
@@ -101,13 +100,11 @@ public class UserService {
                 && !requestDto.getUserName().equals(existingUser.getUserName())) {
 
             if (userRepository.existsByUserName(requestDto.getUserName())) {
-
                 throw new RuntimeException("Username already exists");
             }
 
             existingUser.setUserName(requestDto.getUserName());
         }
-
 
         if (requestDto.getFirstName() != null) {
             existingUser.setFirstName(requestDto.getFirstName());
@@ -125,10 +122,8 @@ public class UserService {
             existingUser.setUserStatus(requestDto.getUserStatus());
         }
 
-
         if (requestDto.getPassword() != null
                 && !requestDto.getPassword().isEmpty()) {
-
             existingUser.setPassword(
                     passwordEncoder.encode(requestDto.getPassword())
             );
@@ -156,8 +151,7 @@ public class UserService {
     public StudentPageResponse getAllStudents(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
 
-        Page<User> students =
-                userRepository.findAllByRole(pageable, Role.STUDENT);
+        Page<User> students = userRepository.findAllByRole(pageable, Role.STUDENT);
 
         StudentPageResponse studentPageResponse = new StudentPageResponse();
 
@@ -183,11 +177,9 @@ public class UserService {
 
         Pageable pageable = PageRequest.of(page, size);
 
-        Page<User> users =
-                userRepository.findByRoleNot(Role.STUDENT, pageable);
+        Page<User> users = userRepository.findByRoleNot(Role.STUDENT, pageable);
 
-        UserPageResponse response =
-                new UserPageResponse();
+        UserPageResponse response = new UserPageResponse();
 
         response.setUsers(
                 users.getContent()
@@ -204,9 +196,6 @@ public class UserService {
     }
 
     private User getUserById(Long id) {
-        return userRepository.findById(id)
-                .orElseThrow(() ->
-                        new RuntimeException("User not found")
-                );
+        return userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
     }
 }

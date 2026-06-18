@@ -8,6 +8,7 @@ import { Book } from '../../models/book.model';
 import { filter, first } from 'rxjs';
 import * as BookSelectors from '../../store/book.selectors';
 import { NotificationService } from '../../../../shared/services/notification.service';
+import { PopupService } from '../../../../shared/services/popup.service';
 
 
 @Component({
@@ -28,12 +29,14 @@ export class BookFormComponent {
     category: '',
     description: '',
     quantity: 0,
-    available: true
+    available: true,
+    isDeleted: false
   };
 
   private book = history.state.book;
 
-  constructor(private store: Store, private router: Router, private notification: NotificationService) { }
+  constructor(private store: Store, private router: Router,
+    private notification: NotificationService, private popup: PopupService) { }
 
   ngOnInit() {
     if (this.book) {
@@ -46,7 +49,8 @@ export class BookFormComponent {
         category: this.book.category,
         description: this.book.description,
         quantity: this.book.quantity,
-        available: this.book.available
+        available: this.book.available,
+        isDeleted: false
       };
     }
   }
@@ -68,7 +72,7 @@ export class BookFormComponent {
           first()
         )
         .subscribe(message => {
-          this.notification.success(message);
+          this.popup.openSuccess(message);
           this.store.dispatch(
             BookActions.clearBookMessages()
           )
@@ -82,7 +86,7 @@ export class BookFormComponent {
           first()
         )
         .subscribe(error => {
-          this.notification.error(error);
+          this.popup.openError(error);
           this.store.dispatch(
             BookActions.clearBookMessages()
           )
@@ -103,7 +107,7 @@ export class BookFormComponent {
           first()
         )
         .subscribe(message => {
-          this.notification.success(message);
+          this.popup.openSuccess(message);
           this.store.dispatch(
             BookActions.clearBookMessages()
           )
@@ -117,7 +121,7 @@ export class BookFormComponent {
           first()
         )
         .subscribe(error => {
-          this.notification.error(error);
+          this.popup.openError(error);
           this.store.dispatch(
             BookActions.clearBookMessages()
           )

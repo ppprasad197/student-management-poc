@@ -6,4 +6,5 @@ export interface Book {
     description: string;
     available: boolean;
     quantity: number;
+    isDeleted: boolean;
 }

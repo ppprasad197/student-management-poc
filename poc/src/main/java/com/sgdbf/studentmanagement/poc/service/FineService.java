@@ -31,84 +31,45 @@ public class FineService {
         this.userRepository = userRepository;
     }
 
-    public FinePaymentResponseDTO payFine(
-            double amount,
-            String username) {
+    public FinePaymentResponseDTO payFine(double amount, String username) {
 
         validatePaymentAmount(amount);
-
-        FineDTO fineDTO =
-                getMyFines(username);
-
+        FineDTO fineDTO = getMyFines(username);
         validatePendingFines(fineDTO);
-
-        double totalDue =
-                fineDTO.getTotalAmount();
-
-        validateFullPayment(
-                amount,
-                totalDue
-        );
-
-        int savedCount =
-                persistFines(
-                        fineDTO,
-                        username
-                );
-
-        FinePaymentResponseDTO response =
-                new FinePaymentResponseDTO();
-
-        response.setMessage(
-                "All fines cleared successfully"
-        );
-
+        double totalDue = fineDTO.getTotalAmount();
+        validateFullPayment(amount, totalDue);
+        int savedCount = persistFines(fineDTO, username);
+        FinePaymentResponseDTO response = new FinePaymentResponseDTO();
+        response.setMessage("All fines cleared successfully");
         response.setTotalPaid(totalDue);
-
         response.setFinesCleared(savedCount);
-
         return response;
     }
 
     public FineDTO getMyFines(String username) {
         User user = getStudent(username);
-
         List<BorrowRecord> records = borrowRepository.findByUserAndReturnDateIsNull(user);
-
         return calculateFine(records);
     }
 
-    public FineSummaryDto getFineSummary(
-            String username) {
+    public FineSummaryDto getFineSummary(String username) {
 
-        User user =
-                getUser(username);
+        User user = getUser(username);
 
-        List<Fine> fines =
-                fineRepository.findByUser(user);
-
+        List<Fine> fines = fineRepository.findByUser(user);
         double total = 0;
-
         double paid = 0;
 
         for (Fine fine : fines) {
-
             total += fine.getAmount();
-
             paid += fine.getPaidAmount();
         }
 
         double remaining = total - paid;
-
-        FineSummaryDto dto =
-                new FineSummaryDto();
-
+        FineSummaryDto dto = new FineSummaryDto();
         dto.setTotalFine(total);
-
         dto.setPaid(paid);
-
         dto.setRemaining(remaining);
-
         return dto;
     }
 
@@ -121,23 +82,16 @@ public class FineService {
         LocalDate today = LocalDate.now();
 
         for (BorrowRecord record : records) {
-
             if (fineRepository.existsByBorrowRecord(record)) {
                 continue;
             }
-
             long daysLate = calculateLateDays(record, today);
-
             if (daysLate > 0) {
-
-                double fineAmount =
-                        daysLate * 10.0;
+                double fineAmount = daysLate * 10.0;
 
                 Optional<Fine> fineRecord = fineRepository.findByBorrowRecord(record);
 
-                LocalDate paidDate = fineRecord
-                        .map(Fine::getPaidDate)
-                        .orElse(null);
+                LocalDate paidDate = fineRecord.map(Fine::getPaidDate).orElse(null);
 
                 FineDTO.FineItem item = mapFineItem(record, daysLate, fineAmount, paidDate);
 
@@ -148,300 +102,123 @@ public class FineService {
         }
 
         FineDTO response = new FineDTO();
-
         response.setFines(fineItems);
-
         response.setTotalAmount(totalAmount);
-
         response.setTotalFines(fineItems.size());
-
         return response;
     }
 
     private long calculateLateDays(BorrowRecord record, LocalDate today) {
-        LocalDate dueDate =
-                record.getDueDate();
+        LocalDate dueDate = record.getDueDate();
 
-        LocalDate returnDate =
-                record.getReturnDate();
-
+        LocalDate returnDate = record.getReturnDate();
         if (returnDate != null && returnDate.isAfter(dueDate)) {
             return ChronoUnit.DAYS.between(dueDate, returnDate);
         }
-
         if (returnDate == null && today.isAfter(dueDate)) {
             return ChronoUnit.DAYS.between(dueDate, today);
         }
-
         return 0;
     }
 
     private FineDTO.FineItem mapFineItem(BorrowRecord record, long daysLate, double fineAmount, LocalDate paidDate) {
 
-        FineDTO.FineItem item =
-                new FineDTO.FineItem();
-
-        item.setBorrowRecordId(
-                record.getId()
-        );
-
-        item.setBookName(
-                record.getBook().getTitle()
-        );
-
-        item.setDueDate(
-                record.getDueDate()
-        );
-
+        FineDTO.FineItem item = new FineDTO.FineItem();
+        item.setBorrowRecordId(record.getId());
+        item.setBookName(record.getBook().getTitle());
+        item.setDueDate(record.getDueDate());
         item.setPaidDate(paidDate);
-
         item.setDaysLate(daysLate);
-
         item.setFineAmount(fineAmount);
-
         return item;
     }
 
-    private int persistFines(FineDTO fineDTO,String username) {
+    private int persistFines(FineDTO fineDTO, String username) {
 
-        User user =
-                getStudent(username);
+        User user = getStudent(username);
+        List<Fine> finesToSave = new ArrayList<>();
 
-        List<Fine> finesToSave =
-                new ArrayList<>();
-
-        for (FineDTO.FineItem item
-                : fineDTO.getFines()) {
-
-            BorrowRecord record =
-                    getBorrowRecord(
-                            item.getBorrowRecordId()
-                    );
-
-            boolean exists =
-                    fineRepository
-                            .existsByUserAndBorrowRecord(
-                                    user,
-                                    record
-                            );
+        for (FineDTO.FineItem item : fineDTO.getFines()) {
+            BorrowRecord record = getBorrowRecord(item.getBorrowRecordId());
+            boolean exists = fineRepository.existsByUserAndBorrowRecord(user, record);
 
             if (exists) {
                 continue;
             }
 
-            Fine fine =
-                    createFineEntity(
-                            user,
-                            record,
-                            item.getFineAmount()
-                    );
-
+            Fine fine = createFineEntity(user, record, item.getFineAmount());
             finesToSave.add(fine);
         }
-
         fineRepository.saveAll(finesToSave);
-
         return finesToSave.size();
     }
 
-    private Fine createFineEntity(
+    private Fine createFineEntity(User user, BorrowRecord record, double amount) {
 
-            User user,
-
-            BorrowRecord record,
-
-            double amount) {
-
-        Fine fine =
-                new Fine();
-
+        Fine fine = new Fine();
         fine.setUser(user);
-
         fine.setBorrowRecord(record);
-
         fine.setAmount(amount);
-
         fine.setPaidAmount(amount);
-
         fine.setPaid(true);
-
-        fine.setPaidDate(
-                LocalDate.now()
-        );
-
+        fine.setPaidDate(LocalDate.now());
         return fine;
     }
 
     private void validatePaymentAmount(double amount) {
-
         if (amount <= 0) {
-            throw new RuntimeException(
-                    "Invalid amount"
-            );
+            throw new RuntimeException("Invalid amount");
         }
     }
 
     private void validatePendingFines(FineDTO fineDTO) {
         if (fineDTO.getFines().isEmpty()) {
-            throw new RuntimeException(
-                    "No pending fines"
-            );
+            throw new RuntimeException("No pending fines");
         }
     }
 
     private void validateFullPayment(double amount, double totalDue) {
         if (amount != totalDue) {
-            throw new RuntimeException(
-                    "You must pay full fine. Total due: "
-                            + totalDue
-            );
+            throw new RuntimeException("You must pay full fine. Total due: " + totalDue);
         }
     }
 
     private User getStudent(String username) {
-        return userRepository
-                .findByUserNameAndRole(username, Role.STUDENT);
+        return userRepository.findByUserNameAndRole(username, Role.STUDENT);
     }
 
     private User getUser(String username) {
-        return userRepository
-                .findByUserName(username)
-                .orElseThrow(() ->
-                        new RuntimeException(
-                                "User not found"
-                        )
-                );
+        return userRepository.findByUserName(username).orElseThrow(() -> new RuntimeException("User not found"));
     }
 
     private BorrowRecord getBorrowRecord(Long borrowRecordId) {
-        return borrowRepository
-                .findById(borrowRecordId)
-                .orElseThrow(() ->
-                        new RuntimeException(
-                                "Borrow record not found"
-                        )
-                );
+        return borrowRepository.findById(borrowRecordId).orElseThrow(() -> new RuntimeException("Borrow record not found"));
     }
-
-//    public List<AdminLibrarianFineResponseDto> getAllStudentFines() {
-//
-//        List<BorrowRecord> records = borrowRepository.findAll();
-//
-//        List<AdminLibrarianFineResponseDto> response =
-//                new ArrayList<>();
-//
-//        LocalDate today = LocalDate.now();
-//
-//        for (BorrowRecord record : records) {
-//
-//            if (record.getUser() == null)
-//                continue;
-//
-//            LocalDate dueDate =
-//                    record.getDueDate();
-//
-//            LocalDate returnDate =
-//                    record.getReturnDate();
-//
-//            long daysLate = 0;
-//
-//            if (returnDate != null &&
-//                    returnDate.isAfter(dueDate)) {
-//
-//                daysLate =ChronoUnit.DAYS.between(dueDate,returnDate);
-//
-//            } else if (returnDate == null &&
-//                    today.isAfter(dueDate)) {
-//                daysLate =ChronoUnit.DAYS.between(dueDate,today);
-//            }
-//
-//            if (daysLate <= 0)
-//                continue;
-//
-//            double fineAmount =
-//                    daysLate * 10;
-//
-//            boolean paid =
-//                    fineRepository
-//                            .existsByBorrowRecord(record);
-//
-//            AdminLibrarianFineResponseDto dto =
-//                    new AdminLibrarianFineResponseDto();
-//
-//            dto.setStudentId(
-//                    record.getUser().getId()
-//            );
-//
-//            dto.setStudentName(
-//                    record.getUser().getFirstName()
-//                            + " "
-//                            + record.getUser().getLastName()
-//            );
-//
-//            dto.setUserName(
-//                    record.getUser().getUserName()
-//            );
-//
-//            dto.setBookName(
-//                    record.getBook().getTitle()
-//            );
-//
-//            dto.setFineAmount(fineAmount);
-//
-//            dto.setPaid(paid);
-//
-//            dto.setDueDate(dueDate);
-//
-//            dto.setReturnDate(returnDate);
-//
-//            response.add(dto);
-//        }
-//        return response;
-//    }
 
     public List<AdminLibrarianFineResponseDto> getAllStudentFines() {
 
-        List<AdminLibrarianFineResponseDto> response =
-                new ArrayList<>();
-
+        List<AdminLibrarianFineResponseDto> response = new ArrayList<>();
         LocalDate today = LocalDate.now();
 
         // STEP 1 -> Existing paid/generated fine
-
         List<Fine> fines = fineRepository.findAll();
-
         for (Fine fine : fines) {
-
             BorrowRecord record = fine.getBorrowRecord();
-
             if (record == null || record.getUser() == null) {
                 continue;
             }
-
-            response.add(
-                    mapToFineDto(
-                            record,
-                            fine.getAmount(),
-                            fine.isPaid(),
-                            fine
-                    )
-            );
+            response.add(mapToFineDto(record, fine.getAmount(), fine.isPaid(), fine));
         }
 
         // STEP 2 -> Current unpaid overdue fines
 
-        List<BorrowRecord> records =
-                borrowRepository.findAll();
-
+        List<BorrowRecord> records = borrowRepository.findAll();
         for (BorrowRecord record : records) {
-
             if (record.getUser() == null) {
                 continue;
             }
-
             // Skip records that already have a Fine entity
-            boolean fineExists =
-                    fineRepository.existsByBorrowRecord(record);
+            boolean fineExists = fineRepository.existsByBorrowRecord(record);
 
             if (fineExists) {
                 continue;
@@ -453,23 +230,13 @@ public class FineService {
             long daysLate = 0;
 
             // Returned late
-            if (returnDate != null &&
-                    returnDate.isAfter(dueDate)) {
-
-                daysLate = ChronoUnit.DAYS.between(
-                        dueDate,
-                        returnDate
-                );
+            if (returnDate != null && returnDate.isAfter(dueDate)) {
+                daysLate = ChronoUnit.DAYS.between(dueDate, returnDate);
             }
 
             // Still overdue
-            else if (returnDate == null &&
-                    today.isAfter(dueDate)) {
-
-                daysLate = ChronoUnit.DAYS.between(
-                        dueDate,
-                        today
-                );
+            else if (returnDate == null && today.isAfter(dueDate)) {
+                daysLate = ChronoUnit.DAYS.between(dueDate, today);
             }
 
             if (daysLate <= 0) {
@@ -477,127 +244,26 @@ public class FineService {
             }
 
             double fineAmount = daysLate * 10;
-
-            response.add(
-                    mapToFineDto(
-                            record,
-                            fineAmount,
-                            false,
-                            null
-                    )
-            );
+            response.add(mapToFineDto(record, fineAmount, false, null));
         }
 
         return response;
     }
 
 
-    private AdminLibrarianFineResponseDto mapToFineDto(
-            BorrowRecord record,
-            double fineAmount,
-            boolean paid,
-            Fine fineRecord
-    ) {
+    private AdminLibrarianFineResponseDto mapToFineDto(BorrowRecord record, double fineAmount, boolean paid, Fine fineRecord) {
 
-        AdminLibrarianFineResponseDto dto =
-                new AdminLibrarianFineResponseDto();
-
+        AdminLibrarianFineResponseDto dto = new AdminLibrarianFineResponseDto();
         dto.setStudentId(record.getUser().getId());
-
-        dto.setStudentName(
-                record.getUser().getFirstName()
-                        + " "
-                        + record.getUser().getLastName()
-        );
-
+        dto.setStudentName(record.getUser().getFirstName() + " " + record.getUser().getLastName());
         dto.setUserName(record.getUser().getUserName());
-
         dto.setBookName(record.getBook().getTitle());
-
         dto.setFineAmount(fineAmount);
-
         dto.setPaid(paid);
-
         dto.setDueDate(record.getDueDate());
-
         dto.setReturnDate(record.getReturnDate());
-
-        dto.setPaidDate(
-                fineRecord != null
-                        ? fineRecord.getPaidDate()
-                        : null
-        );
-
+        dto.setPaidDate(fineRecord != null ? fineRecord.getPaidDate() : null);
         return dto;
     }
-
-//    public void generateFineIfLate(List<BorrowRecord> record) {
-//
-//        if (record.getReturnDate() == null) return;
-//
-//        if (record.getReturnDate().isAfter(record.getDueDate())) {
-//
-//            long daysLate = ChronoUnit.DAYS.between(
-//                    record.getDueDate(),
-//                    record.getReturnDate()
-//            );
-//
-//            double fineAmount = daysLate * 10;
-//
-//            Fine fine = new Fine();
-//            fine.setStudent(record.getStudent());
-//            fine.setBorrowRecord(record);
-//            fine.setAmount(fineAmount);
-//            fine.setPaidAmount(0);
-//            fine.setPaid(false);
-//            fine.setLastPaymentDate(null);
-//
-//            fineRepository.save(fine);
-//        }
-//    }
-
-//    public double generateFineIfLate(List<BorrowRecord> records) {
-//
-//        LocalDate today = LocalDate.now();
-//        double totalFineAmount = 0;
-//
-//        for (BorrowRecord record : records) {
-//            if (record.getReturnDate() == null && today.isAfter(record.getDueDate())) {
-//                double daysLate = ChronoUnit.DAYS.between(
-//                        record.getDueDate(),
-//                        today
-//                );
-//                double fineAmount = daysLate * 10;
-//                Fine fine = new Fine();
-//                fine.setStudent(record.getStudent());
-//                fine.setBorrowRecord(record);
-//                fine.setAmount(fineAmount);
-//                fine.setPaidAmount(0);
-//                fine.setPaid(false);
-//
-//                fineRepository.save(fine);
-//                totalFineAmount += fineAmount;
-//            }
-//        }
-//
-//        return totalFineAmount;
-//    }
-
-//    public boolean canStudentBorrow(Student student) {
-//
-//        List<Fine> fines = fineRepository.findByStudent(student);
-//
-//        double total = 0;
-//        double paid = 0;
-//
-//        for (Fine fine : fines) {
-//            total += fine.getAmount();
-//            paid += fine.getPaidAmount();
-//        }
-//
-//        if (total == 0) return true;
-//
-//        return paid >= (total * 0.5); // at least 50% paid
-//    }
 
 }

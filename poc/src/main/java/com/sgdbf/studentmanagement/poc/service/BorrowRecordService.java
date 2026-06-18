@@ -27,53 +27,11 @@ public class BorrowRecordService {
     }
 
     public List<BorrowRecordResponseDto> getAllBorrowedBooksByStudents() {
-
-        List<BorrowRecord> borrowRecords =
-                borrowRepository.findAllByReturnDateIsNull();
-
+        List<BorrowRecord> borrowRecords = borrowRepository.findAllByReturnDateIsNull();
         return borrowRecords.stream()
                 .map(this::mapBorrowRecordToDto)
                 .toList();
     }
-
-//    private BorrowRecordResponseDto mapToDto(BorrowRecord borrowRecord) {
-//
-//        BorrowRecordResponseDto dto = new BorrowRecordResponseDto();
-//
-//        dto.setId(
-//                borrowRecord.getId()
-//        );
-//
-//        dto.setBookId(
-//                borrowRecord.getBook().getId()
-//        );
-//
-//        dto.setBookTitle(
-//                borrowRecord.getBook().getTitle()
-//        );
-//
-//        dto.setAuthor(
-//                borrowRecord.getBook().getAuthor()
-//        );
-//
-//        dto.setIssueDate(
-//                borrowRecord.getIssueDate()
-//        );
-//
-//        dto.setDueDate(
-//                borrowRecord.getDueDate()
-//        );
-//
-//        dto.setReturnDate(
-//                borrowRecord.getReturnDate()
-//        );
-//
-//        dto.setRenewCount(
-//                borrowRecord.getRenewCount()
-//        );
-//        dto.setStudentId(borrowRecord.getUser() != null ? borrowRecord.getUser().getId() : null);
-//        return dto;
-//    }
 
     public ByteArrayInputStream exportMyBorrowedBooks(String username) throws IOException {
         List<BorrowRecordResponseDto> books = getMyBorrowedBooks(username);
@@ -110,11 +68,8 @@ public class BorrowRecordService {
     }
 
     public List<BorrowRecordResponseDto> getMyBorrowedBooks(String username) {
-
         User user = getStudent(username);
-
         List<BorrowRecord> records = borrowRepository.findByUserAndReturnDateIsNull(user);
-
         return records.stream()
                 .map(this::mapBorrowRecordToDto)
                 .toList();
@@ -127,25 +82,15 @@ public class BorrowRecordService {
     private BorrowRecordResponseDto mapBorrowRecordToDto(BorrowRecord record) {
 
         BorrowRecordResponseDto dto = new BorrowRecordResponseDto();
-
         dto.setId(record.getId());
-
         dto.setBookId(record.getBook().getId());
-
         dto.setBookTitle(record.getBook().getTitle());
-
         dto.setAuthor(record.getBook().getAuthor());
-
         dto.setIssueDate(record.getIssueDate());
-
         dto.setDueDate(record.getDueDate());
-
         dto.setReturnDate(record.getReturnDate());
-
         dto.setRenewCount(record.getRenewCount());
-
         dto.setStudentId(record.getUser().getId());
-
         return dto;
     }
 
