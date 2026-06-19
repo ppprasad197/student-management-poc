@@ -4,10 +4,15 @@ import com.sgdbf.studentmanagement.poc.dto.BorrowRecordResponseDto;
 import com.sgdbf.studentmanagement.poc.entity.BorrowRecord;
 import com.sgdbf.studentmanagement.poc.entity.User;
 import com.sgdbf.studentmanagement.poc.enums.Role;
+import com.sgdbf.studentmanagement.poc.pagination.BookPageResponse;
+import com.sgdbf.studentmanagement.poc.pagination.BorrowRecordPageResponse;
 import com.sgdbf.studentmanagement.poc.repository.BorrowRepository;
 import com.sgdbf.studentmanagement.poc.repository.UserRepository;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayInputStream;
@@ -91,10 +96,25 @@ public class BorrowRecordService {
         dto.setReturnDate(record.getReturnDate());
         dto.setRenewCount(record.getRenewCount());
         dto.setStudentId(record.getUser().getId());
+        dto.setStudentName(record.getUser().getFirstName() + " " + record.getUser().getLastName());
         return dto;
     }
 
     public Boolean findByBookId(Long id) {
         return borrowRepository.existsByBookIdAndReturnDateIsNull(id);
+    }
+
+    public BorrowRecordPageResponse getAllBorrowedBooks(Pageable pageable) {
+        Page<BorrowRecord> borrowRecords = borrowRepository.findAll(pageable);
+        BorrowRecordPageResponse response = new BorrowRecordPageResponse();
+
+        response.setBorrowRecords(borrowRecords.getContent()
+                .stream()
+                .map(this::mapBorrowRecordToDto)
+                .toList());
+        response.setCurrentPage(borrowRecords.getNumber());
+        response.setTotalPages(borrowRecords.getTotalPages());
+        response.setTotalElements(borrowRecords.getNumberOfElements());
+        return response;
     }
 }
