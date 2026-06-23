@@ -1,0 +1,70 @@
+<div class="book-header">
+    <h2>Borrow Records</h2>
+
+    <div class="right-actions">
+
+        <input type="text" placeholder="Search by Student ID..." [value]="search()"
+            (input)="search.set($any($event.target).value)" />
+
+        <select [value]="status()" (change)="status.set($any($event.target).value)">
+
+            <option value="ALL">All</option>
+            <option value="ACTIVE">Currently Borrowed</option>
+            <option value="RETURNED">Returned</option>
+
+        </select>
+
+    </div>
+</div>
+
+<table>
+    <thead>
+        <tr>
+            <th>Student ID</th>
+            <th>Student Name</th>
+            <th>Book Title</th>
+            <th>Author</th>
+            <th>Issue Date</th>
+            <th>Due Date</th>
+            <th>Return Date</th>
+            <th>Renew Count</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @for(record of filteredRecords(); track record.id){
+        <tr>
+
+            <td>{{record.studentId}}</td>
+            <td>{{record.studentName}}</td>
+            <td>{{record.bookTitle}}</td>
+            <td>{{record.author}}</td>
+            <td>{{record.issueDate}}</td>
+            <td>{{record.dueDate}}</td>
+            <td>
+                {{record.returnDate ? record.returnDate : '-'}}
+            </td>
+            <td>{{record.renewCount}}</td>
+            <td>
+                @if(record.returnDate){
+                <span class="status returned">
+                    Returned
+                </span>
+                }
+                @else {
+                <span class="status active">
+                    Borrowed
+                </span>
+                }
+            </td>
+        </tr>
+        }
+    </tbody>
+</table>
+
+<div class="pagination">
+    <button class="pagination-btn" (click)="previousPage()" [disabled]="currentPage===0">Previous</button>
+    <span>Page {{currentPage+1}} of {{totalPages}}</span>
+    <button class="pagination-btn" (click)="nextPage()" [disabled]="currentPage===totalPages-1">Next</button>
+</div>

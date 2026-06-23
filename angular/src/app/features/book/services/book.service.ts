@@ -5,6 +5,7 @@ import { returnBook } from '../store/book.actions';
 import { BorrowedBook } from '../models/borrowed-book.model';
 import { BookPageResponse } from '../models/BookPageResponse';
 import { tap } from 'rxjs';
+import { BorrowedBookPageResponse } from '../models/BorrowedBookPageResponse';
 
 @Injectable({
   providedIn: 'root'
@@ -76,9 +77,17 @@ export class BookService {
     );
   }
 
+  //This method used bu student history
   getAllBorrowedBooksByStudents() {
-    return this.http.get<any[]>(
-      'http://localhost:8080/borrowRecord/getAllBorrowedBooksByStudents'
+    return this.http.get<BorrowedBookPageResponse>(
+      'http://localhost:8080/borrowRecord/getAllBorrowedBooks'
+    );
+  }
+
+  //This api for signal implentation and historical data
+  getBorrowedBooksByStudents(page: number, size: number) {
+    return this.http.get<BorrowedBookPageResponse>(
+      `http://localhost:8080/borrowRecord/getAllBorrowedBooks?page=${page}&size=${size}`
     );
   }
 

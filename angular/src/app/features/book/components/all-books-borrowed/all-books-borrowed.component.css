@@ -1,0 +1,91 @@
+/* Header Section */
+.book-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 15px;
+}
+
+.book-header h2 {
+    margin: 0;
+    color: #2c3e50;
+    font-weight: 600;
+}
+
+/* Right Side Controls */
+.right-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+/* Search + Filter */
+.right-actions input,
+.right-actions select {
+    min-width: 170px;
+    padding: 8px 12px;
+    border: 1px solid #dcdcdc;
+    border-radius: 5px;
+    background: white;
+    font-size: 14px;
+}
+
+.right-actions input:focus,
+.right-actions select:focus {
+    outline: none;
+    border-color: #3498db;
+}
+
+/* Table */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+    font-family: Arial, sans-serif;
+    background: white;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, .1);
+}
+
+thead {
+    background: #2c3e50;
+    color: white;
+}
+
+th {
+    padding: 12px;
+    text-align: left;
+    font-size: 14px;
+}
+
+td {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+    font-size: 14px;
+}
+
+tbody tr:hover {
+    background: #f8fafc;
+}
+
+/* Status */
+
+.status {
+
+    display: inline-block;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.status.active {
+
+    background: #dcfce7;
+    color: #15803d;
+}
+
+.status.returned {
+
+    background: #dbeafe;
+    color: #1d4ed8;
+}

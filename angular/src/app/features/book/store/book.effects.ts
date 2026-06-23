@@ -249,9 +249,9 @@ export class BookEffects {
         this.bookService
           .getAllBorrowedBooksByStudents()
           .pipe(
-            map((books) =>
+            map((response) =>
               BookActions.loadBorrowedBooksSuccess({
-                books
+                books: response.borrowRecords
               })
             ),
             catchError((error) =>

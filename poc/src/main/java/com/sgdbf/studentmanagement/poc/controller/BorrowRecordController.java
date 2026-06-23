@@ -46,7 +46,7 @@ public class BorrowRecordController {
         return borrowRecordService.getAllBorrowedBooksByStudents();
     }
 
-    //All borrowed books
+    //All borrowed books with historical data
     @GetMapping("/getAllBorrowedBooks")
     @PreAuthorize("hasAnyRole('LIBRARIAN','ADMIN')")
     public BorrowRecordPageResponse getAllBorrowedBooks(@PageableDefault(page = 0, size = 5) Pageable pageable) {

@@ -1,14 +1,30 @@
-/* table {
+/* Header Section */
+.book-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 15px;
+}
+
+.book-header h2 {
+    margin: 0;
+    color: #2c3e50;
+    font-weight: 600;
+}
+
+/* Table */
+
+table {
     width: 100%;
     border-collapse: collapse;
-    margin-top: 20px;
+    margin-top: 10px;
     font-family: Arial, sans-serif;
     background-color: #ffffff;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 thead {
-    background-color: #1e293b;
+    background-color: #2c3e50;
     color: white;
 }
 
@@ -16,86 +32,85 @@ th {
     padding: 12px;
     text-align: left;
     font-size: 14px;
-    letter-spacing: 0.5px;
 }
 
 td {
     padding: 10px;
     border-bottom: 1px solid #ddd;
     font-size: 14px;
-} */
-
-/* Headings */
-h2,
-h3 {
-    text-align: center;
-    margin: 15px 0;
-    color: #1e293b;
 }
 
-/* Table */
-table {
-    width: 80%;
-    margin: 20px auto;
-    border-collapse: collapse;
-}
-
-/* Header */
-thead {
-    background-color: #1e293b;
-    color: white;
-}
-
-thead th {
-    padding: 10px;
-    text-align: center;
-}
-
-/* Body */
-tbody td {
-    padding: 10px;
-    text-align: center;
-    border-bottom: 1px solid #ccc;
-}
-
-/* Hover */
 tbody tr:hover {
-    background-color: #f1f5f9;
+    background-color: #f8fafc;
 }
 
-/* Button */
-button {
+/* Status Badges */
+
+.status {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.status.paid {
+    background: #dcfce7;
+    color: #15803d;
+}
+
+.status.pending {
+    background: #fee2e2;
+    color: #dc2626;
+}
+
+/* Pay Button */
+
+.pay-btn {
     display: block;
     margin: 20px auto;
     padding: 8px 14px;
-    background-color: #1e293b;
-    color: white;
     border: none;
+    border-radius: 5px;
     cursor: pointer;
+    background-color: #2ecc71;
+    color: white;
+    font-size: 14px;
+    transition: 0.2s ease;
 }
 
-button:hover {
-    background-color: #334155;
+.pay-btn:hover {
+    opacity: 0.85;
 }
 
-/* Text (for "No Pending Fines") */
-p {
+/* Summary Card */
+
+.summary-card {
+    width: 320px;
+    margin: 25px auto;
+    padding: 20px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,.1);
     text-align: center;
-    color: #333;
+}
+
+.summary-card h3 {
+    margin: 10px 0;
+    color: #2c3e50;
 }
 
 .pending-fine {
-    color: red;
+    color: #e74c3c;
     font-weight: bold;
 }
+
+/* No Fine Message */
 
 .paid-status {
-    color: green;
-    font-weight: bold;
+    margin-top: 30px;
+    text-align: center;
+    color: #2ecc71;
     font-size: 18px;
-}
-
-.pending {
-    color: red;
     font-weight: bold;
 }

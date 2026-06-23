@@ -14,6 +14,7 @@ import { LogoutComponent } from './shared/components/logout/logout.component';
 import { UserComponent } from './features/user/components/user/user.component';
 import { UserDetailsComponent } from './features/user/components/user-details/user-details.component';
 import { StudentBorrowHistoryComponent } from './features/student/components/student-borrow-history/student-borrow-history.component';
+import { AllBooksBorrowedComponent } from './features/book/components/all-books-borrowed/all-books-borrowed.component';
 
 export const routes: Routes = [
     { path: "", component: HomeComponent },
@@ -34,5 +35,6 @@ export const routes: Routes = [
     { path: 'users', component: UserComponent },
     { path: 'userDetails', component: UserDetailsComponent },
     { path: 'updateUser', component: SignupComponent },
-    { path: 'studentBorrowHistory', component: StudentBorrowHistoryComponent }
+    { path: 'studentBorrowHistory', component: StudentBorrowHistoryComponent },
+    { path: 'studentBooks', component: AllBooksBorrowedComponent }
 ];

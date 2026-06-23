@@ -1,7 +1,9 @@
 @if(currentUser | async; as user){
 
 @if(user.role === 'STUDENT'){
-<h2>My Fines</h2>
+<div class="fine-header">
+    <h2>My Fines</h2>
+</div>
 @if(fines | async; as fineData){
 
 @if(fineData.fines.length > 0){
@@ -34,7 +36,7 @@
     </tbody>
 </table>
 
-<button (click)="payFine(fineData.totalAmount)">
+<button class="pay-btn" (click)="payFine(fineData.totalAmount)">
     Pay Full Fine
 </button>
 }
@@ -45,7 +47,7 @@
 </p>}
 
 @if(summary | async; as summary){
-<div>
+<div class="summary-card">
     <h3>Summary</h3>
     <h3 [class.pending-fine]="fineData.totalAmount>0">
         Total Due:
@@ -61,9 +63,9 @@
 }
 
 @if(user.role === 'ADMIN'||user.role === 'LIBRARIAN'){
-<h2>
-    Student Fine Records
-</h2>
+<div class="fine-header">
+    <h2>Student Fine Records</h2>
+</div>
 
 <table>
     <thead>
@@ -95,12 +97,12 @@
             </td>
             <td>
                 @if(fine.paid){
-                <span>
+                <span class="status paid">
                     Paid
                 </span>
                 }
-                @else {
-                <span class="pending">
+                @else{
+                <span class="status pending">
                     Pending
                 </span>
                 }
